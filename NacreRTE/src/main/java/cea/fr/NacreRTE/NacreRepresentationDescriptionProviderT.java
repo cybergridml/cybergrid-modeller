@@ -2,8 +2,10 @@
 package cea.fr.NacreRTE;
 
 
+
 import cea.fr.NacreRTE.View.nodes.MaingridNodeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.View.nodes.ZoneNodeDescriptionProvider;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
@@ -31,7 +33,8 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
 
     public static final List<NacreLibElementType> ELEMENTS = List.of(
-            NacreLibElementType.MAINGRID
+            NacreLibElementType.MAINGRID,
+            NacreLibElementType.ZONE
                  );
 
 
@@ -44,7 +47,6 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
     public RepresentationDescription create(IColorProvider colorProvider) {
         String domainType = SysMLMetamodelHelper.buildQualifiedName(SysmlPackage.eINSTANCE.getNamespace());
-
         var diagramDescriptionBuilder = this.diagramBuilderHelper.newDiagramDescription();
         diagramDescriptionBuilder.arrangeLayoutDirection(ArrangeLayoutDirection.RIGHT)
                 .autoLayout(false)
@@ -65,7 +67,7 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
         var palette = this.createDiagramPalette(cache);
         diagramDescription.setPalette(palette);
-
+        System.out.println("maingrid crée");
         return diagramDescription;
     }
 
@@ -74,7 +76,9 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
        List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
 
        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-      // addPropertiesCompartmentNode(providers, LcaElementType.CONTAINER, nacreColorProvider, nameGenerator);
+      providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+      //addPropertiesCompartmentNode(providers, NacreLibElementType.MAINGRID, nacreColorProvider, nameGenerator);
+      System.out.println("maingrid crée");
       return providers;
    }
 
@@ -86,7 +90,7 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
         return this.diagramBuilderHelper.newDiagramPalette()
                 //.dropNodeTool(this.createDropFromDiagramTool(cache))
                 .dropTool(this.nacreToolDescriptionService.createDropFromExplorerTool())
-                //.nodeTools(this.createNodeTools(cache))
+                .nodeTools(this.createNodeTools(cache))
                 .build();
     }
 
@@ -134,8 +138,8 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 //        return null;
 //    }
 
-//    private void addPropertiesCompartmentItemNodes(List<IDiagramElementDescriptionProvider<?>> providers, LcaElementType lcaElementType, IColorProvider lcaColorProvider, LcaDescriptionNameGenerator nameGenerator) {
-//        EReference nestedEReference = lcaElementType.isSubclassifier() ?
+    private void addPropertiesCompartmentItemNodes(List<IDiagramElementDescriptionProvider<?>> providers, NacreLibElementType lcaElementType, IColorProvider lcaColorProvider, NacreDescriptionNameGenerator nameGenerator) {
+//        EReference nestedEReference = NacreLibElementType.isSubclassifier() ?
 //                LcaNestedElements.PROPERTY.getDefinitionNestedEReference() :
 //                LcaNestedElements.PROPERTY.getUsageNestedEReference();
 //        providers.add(new PropertyCompartmentItemNodeDescriptionProviderAbstract(
@@ -148,9 +152,9 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 //                nestedEReference,
 //                lcaColorProvider,
 //                nameGenerator));
-//    }
+    }
 
-//    private void addPropertiesCompartmentNode(List<IDiagramElementDescriptionProvider<?>> providers, LcaElementType lcaElementType, IColorProvider lcaColorProvider, LcaDescriptionNameGenerator nameGenerator) {
+    private void addPropertiesCompartmentNode(List<IDiagramElementDescriptionProvider<?>> providers, NacreLibElementType nacreElementType, IColorProvider lcaColorProvider, NacreDescriptionNameGenerator nameGenerator) {
 //        EReference nestedEReference = lcaElementType.isSubclassifier() ?
 //                LcaNestedElements.PROPERTY.getDefinitionNestedEReference() :
 //                LcaNestedElements.PROPERTY.getUsageNestedEReference();
@@ -159,7 +163,7 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 //                nestedEReference,
 //                lcaColorProvider,
 //                nameGenerator));
-//    }
+   }
 
 //    private void addPortsCompartment(List<IDiagramElementDescriptionProvider<?>> providers, LcaElementType lcaElementType, IColorProvider lcaColorProvider, LcaDescriptionNameGenerator nameGenerator) {
 //        EReference nestedEReference = lcaElementType.isSubclassifier() ?

@@ -1,5 +1,6 @@
 package cea.fr.NacreRTE.View.nodes;
 
+import cea.fr.NacreRTE.NacreViewNodeToolsWithoutSectionSwitch;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
@@ -56,10 +57,11 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
         return List.of();
     }
 
+//
 //    @Override
 //    protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
-//        LcaViewNodeToolsWithoutSectionSwitch toolsWithoutSectionSwitch = new LcaViewNodeToolsWithoutSectionSwitch(
-//                LcaElementType.CONTAINER,
+//        NacreViewNodeToolsWithoutSectionSwitch toolsWithoutSectionSwitch = new NacreViewNodeToolsWithoutSectionSwitch(
+//                NacreLibElementType.MAINGRID,
 //                getDescriptionNameGenerator(),
 //                this.getAllNodeDescriptions(cache),
 //                cache);

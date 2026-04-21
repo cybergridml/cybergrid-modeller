@@ -39,10 +39,10 @@ public class NacreViewJavaServiceProviderT implements IJavaServiceProvider {
                     ModelQueryAQLService.class,
                     RepresentationMutationAQLService.class,
                     RepresentationQueryAQLService.class,
-                    NacreViewToolService.class
-                    //LcaViewCreateService.class,
-                    //LcaViewNodeService.class,
-                   // LcaDiagramAQLService.class
+                    NacreViewToolService.class,
+                    NacreViewCreateService.class,
+                    NacreViewNodeService.class,
+                    NacreDiagramAQLService.class
                    );
         }
         return List.of();

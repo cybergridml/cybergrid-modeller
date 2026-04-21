@@ -9,7 +9,6 @@ import org.eclipse.syson.sysml.Definition;
 import org.eclipse.syson.sysml.SysmlFactory;
 
 import java.util.Optional;
-
 public class NacreDefinitionsUtil {
 
     private NacreDefinitionsUtil() {
@@ -59,7 +58,7 @@ public class NacreDefinitionsUtil {
         return Optional.empty();
     }
 
-    public static Optional<Definition> getLcaDefinition(IEditingContext editingContext, NacreLibElementType nacreLibElementType, boolean isSubclassifier) {
+    public static Optional<Definition> getNacreDefinition(IEditingContext editingContext, NacreLibElementType nacreLibElementType, boolean isSubclassifier) {
         Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
         return getNacreDefinition(nResource, nacreLibElementType, isSubclassifier);
     }

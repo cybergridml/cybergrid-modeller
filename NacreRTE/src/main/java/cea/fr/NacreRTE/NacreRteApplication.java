@@ -15,6 +15,7 @@ import org.springframework.context.annotation.FilterType;
 				@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 						".*SysONDefaultLibrariesConfiguration",
 						".*SysMLv2ProjectTemplatesProvider"
+
 				})
 		}
 )
