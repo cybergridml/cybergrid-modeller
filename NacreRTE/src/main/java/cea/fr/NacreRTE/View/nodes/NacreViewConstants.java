@@ -21,23 +21,7 @@ public class NacreViewConstants {
 
 
 
-	public static final String MAINGRID_NODE_BACKGROUND_COLOR = "grey 100";
+	public static final String MAINGRID_NODE_BACKGROUND_COLOR = "yellow 100";
 
-	public static final String MAINGRID_NODE_BORDER_COLOR = "grey 800";
-
-	public static final String ZONE_NODE_BACKGROUND_COLOR = "orange 100";
-
-	public static final String ZONE_NODE_BORDER_COLOR = "orange 800";
-
-	public static final String SUBSTATION_NODE_BACKGROUND_COLOR = "green 100";
-
-	public static final String SUBSTATION_NODE_BORDER_COLOR = "green 800";
-
-	public static final String CENTRALCONTROLLER_NODE_BACKGROUND_COLOR = "orange 100";
-
-	public static final String CENTRALCONTROLLER_NODE_BORDER_COLOR = "orange 800";
-
-	public static final String ZONALCONTROLLER_NODE_BACKGROUND_COLOR = "orange 100";
-
-	public static final String ZONALCONTROLLER_NODE_BORDER_COLOR = "orange 800";
+	public static final String MAINGRID_NODE_BORDER_COLOR = "yellow 800";
 }

@@ -57,6 +57,47 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
         return List.of();
     }
 
+//
+//    @Override
+//    protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
+//        NacreViewNodeToolsWithoutSectionSwitch toolsWithoutSectionSwitch = new NacreViewNodeToolsWithoutSectionSwitch(
+//                NacreLibElementType.MAINGRID,
+//                getDescriptionNameGenerator(),
+//                this.getAllNodeDescriptions(cache),
+//                cache);
+//        return toolsWithoutSectionSwitch.doSwitch(this.eClass);
+//    }
 
+
+//    @Override
+//    protected Set<NodeDescription> getReusedChildren(IViewDiagramElementFinder cache) {
+//        var nodes = new LinkedHashSet<NodeDescription>();
+//
+//        String propertiesCompartmentName = this.getDescriptionNameGenerator().getLcaCompartmentName(
+//                LcaElementType.CONTAINER,
+//                LcaNestedElements.PROPERTY.getNestedElementName());
+//        String processFlowCompartmentName = this.getDescriptionNameGenerator().getLcaCompartmentName(
+//                LcaElementType.CONTAINER,
+//                LcaNestedElements.PROCESS.getNestedElementName());
+//        String portsCompartmentName = this.getDescriptionNameGenerator().getLcaCompartmentName(
+//                LcaElementType.CONTAINER,
+//                LcaNestedElements.PORTS.getNestedElementName());
+//
+//        cache.getNodeDescription(propertiesCompartmentName).ifPresent(nodes::add);
+//        cache.getNodeDescription(processFlowCompartmentName).ifPresent(nodes::add);
+//        cache.getNodeDescription(portsCompartmentName).ifPresent(nodes::add);
+//
+//        return nodes;
+//    }
+
+//    @Override
+//    protected Set<NodeDescription> getReusedBorderNodes(IViewDiagramElementFinder cache) {
+//        var borderNodes = new LinkedHashSet<NodeDescription>();
+//        cache.getNodeDescription(this.getDescriptionNameGenerator().getLcaBorderNodeName(LcaElementType.TECHNO_PORT, LcaNestedElements.PORTS.getUsageNestedEReference().getName())).ifPresent(borderNodes::add);
+//        cache.getNodeDescription(this.getDescriptionNameGenerator().getLcaBorderNodeName(LcaElementType.BIO_PORT, LcaNestedElements.PORTS.getUsageNestedEReference().getName())).ifPresent(borderNodes::add);
+//        cache.getNodeDescription(this.getDescriptionNameGenerator().getLcaInheritedBorderNodeName(LcaElementType.TECHNO_PORT, LcaNestedElements.PORTS.getUsageNestedEReference().getName())).ifPresent(borderNodes::add);
+//        cache.getNodeDescription(this.getDescriptionNameGenerator().getLcaInheritedBorderNodeName(LcaElementType.BIO_PORT, LcaNestedElements.PORTS.getUsageNestedEReference().getName())).ifPresent(borderNodes::add);
+//        return borderNodes;
+//    }
 
 }

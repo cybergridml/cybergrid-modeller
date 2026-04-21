@@ -3,21 +3,22 @@ package cea.fr.NacreRTE;
 
 
 
-import cea.fr.NacreRTE.View.nodes.*;
+import cea.fr.NacreRTE.View.nodes.MaingridNodeDescriptionProvider;
+import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.View.nodes.ZoneNodeDescriptionProvider;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
+import org.eclipse.sirius.components.view.builder.generated.view.ViewBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.builder.providers.IDiagramElementDescriptionProvider;
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.ViewDiagramElementFinder;
-import org.eclipse.syson.diagram.common.view.edges.AnnotationEdgeDescriptionProvider;
-import org.eclipse.syson.standard.diagrams.view.edges.*;
+import org.eclipse.syson.standard.diagrams.view.nodes.FakeNodeDescriptionProvider;
 import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.util.AQLUtils;
-import org.eclipse.syson.util.IDescriptionNameGenerator;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 
 import java.util.ArrayList;
@@ -27,24 +28,21 @@ import java.util.List;
 
 public class NacreRepresentationDescriptionProviderT implements IRepresentationDescriptionProvider {
 
-    public static final String DESCRIPTION_NAME = "CFA view";
+    public static final String DESCRIPTION_NAME = "NacreT view";
     
 
 
     public static final List<NacreLibElementType> ELEMENTS = List.of(
             NacreLibElementType.MAINGRID,
-            NacreLibElementType.ZONE,
-            NacreLibElementType.SUBSTATION,
-            NacreLibElementType.CENTRALCONTROLLER,
-            NacreLibElementType.CONTROL ,
-            NacreLibElementType.ZONALCONTROlLER
-
-    );
+            NacreLibElementType.ZONE
+                 );
 
 
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
     private final NacreDescriptionNameGenerator descriptionNameGenerator = new NacreDescriptionNameGenerator();
+
+    private final ViewBuilders viewBuilderHelper = new ViewBuilders();
     private final NacreToolDescriptionService nacreToolDescriptionService = new NacreToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
@@ -66,9 +64,10 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
                 .forEach(cache::put);
 
         diagramElementDescriptionProviders.forEach(d -> d.link(diagramDescription, cache));
-        //this.linkAllocationDefinitionEndsCompartment(cache);
+
         var palette = this.createDiagramPalette(cache);
         diagramDescription.setPalette(palette);
+        System.out.println("maingrid crée");
         return diagramDescription;
     }
 
@@ -77,24 +76,12 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
        List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
 
        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ZonalcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ControlNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new BindingConnectorAsUsageEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
-       return providers;
+      providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+      //addPropertiesCompartmentNode(providers, NacreLibElementType.MAINGRID, nacreColorProvider, nameGenerator);
+      System.out.println("maingrid crée");
+      return providers;
    }
-    private void linkAllocationDefinitionEndsCompartment(IViewDiagramElementFinder cache) {
-        NodeDescription allocationDefinitionNodeDescription = cache.getNodeDescription(this.getDescriptionNameGenerator().getNodeName(SysmlPackage.eINSTANCE.getAllocationDefinition())).get();
-        cache.getNodeDescription(
-                        this.getDescriptionNameGenerator().getCompartmentName(SysmlPackage.eINSTANCE.getAllocationDefinition(), SysmlPackage.eINSTANCE.getConnectionDefinition_ConnectionEnd()))
-                .ifPresent(allocationDefinitionNodeDescription.getReusedChildNodeDescriptions()::add);
-    }
-    protected IDescriptionNameGenerator getDescriptionNameGenerator() {
-        return this.descriptionNameGenerator;
-    }
+
     protected String getName() {
         return DESCRIPTION_NAME;
     }
@@ -134,15 +121,6 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
         return elementCreationTools;
     }
 
-    private List<IDiagramElementDescriptionProvider<?>> createAllEdgeDescriptionProviders(IColorProvider colorProvider) {
-        final var edgeDescriptionProviders = new ArrayList<IDiagramElementDescriptionProvider<?>>();
-
-
-        edgeDescriptionProviders.add(new AllocateEdgeDescriptionProvider(colorProvider));
-        edgeDescriptionProviders.add(new BindingConnectorAsUsageEdgeDescriptionProvider(colorProvider, this.getDescriptionNameGenerator()));
-
-        return edgeDescriptionProviders;
-    }
 //    private DropNodeTool createDropFromDiagramTool(IViewDiagramElementFinder cache) {
 //        var dropElementFromDiagram = this.viewBuilderHelper.newChangeContext().expression(
 //                AQLUtils.getServiceCallExpression("droppedElement", "dropElementFromDiagram", List.of("droppedNode",
@@ -161,14 +139,51 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 //    }
 
     private void addPropertiesCompartmentItemNodes(List<IDiagramElementDescriptionProvider<?>> providers, NacreLibElementType lcaElementType, IColorProvider lcaColorProvider, NacreDescriptionNameGenerator nameGenerator) {
-//
+//        EReference nestedEReference = NacreLibElementType.isSubclassifier() ?
+//                LcaNestedElements.PROPERTY.getDefinitionNestedEReference() :
+//                LcaNestedElements.PROPERTY.getUsageNestedEReference();
+//        providers.add(new PropertyCompartmentItemNodeDescriptionProviderAbstract(
+//                lcaElementType,
+//                nestedEReference,
+//                lcaColorProvider,
+//                nameGenerator));
+//        providers.add(new InheritedPropertyCompartmentItemNodeDescriptionProvider(
+//                lcaElementType,
+//                nestedEReference,
+//                lcaColorProvider,
+//                nameGenerator));
     }
 
     private void addPropertiesCompartmentNode(List<IDiagramElementDescriptionProvider<?>> providers, NacreLibElementType nacreElementType, IColorProvider lcaColorProvider, NacreDescriptionNameGenerator nameGenerator) {
-//
+//        EReference nestedEReference = lcaElementType.isSubclassifier() ?
+//                LcaNestedElements.PROPERTY.getDefinitionNestedEReference() :
+//                LcaNestedElements.PROPERTY.getUsageNestedEReference();
+//        providers.add(new PropertiesCompartmentNodeDescriptionProvider(
+//                lcaElementType,
+//                nestedEReference,
+//                lcaColorProvider,
+//                nameGenerator));
    }
 
+//    private void addPortsCompartment(List<IDiagramElementDescriptionProvider<?>> providers, LcaElementType lcaElementType, IColorProvider lcaColorProvider, LcaDescriptionNameGenerator nameGenerator) {
+//        EReference nestedEReference = lcaElementType.isSubclassifier() ?
+//                LcaNestedElements.PORTS.getDefinitionNestedEReference() :
+//                LcaNestedElements.PORTS.getUsageNestedEReference();
+//        providers.add(new PortsCompartmentNodeDescriptionProvider(
+//                lcaElementType,
+//                nestedEReference,
+//                lcaColorProvider,
+//                nameGenerator));
+//    }
 
-
-
+//    private void addProcessFlowCompartment(List<IDiagramElementDescriptionProvider<?>> providers, LcaElementType lcaElementType, IColorProvider colorProvider, LcaDescriptionNameGenerator nameGenerator) {
+//        EReference nestedEReference = lcaElementType.isSubclassifier() ?
+//                LcaNestedElements.PROCESS.getDefinitionNestedEReference() :
+//                LcaNestedElements.PROCESS.getUsageNestedEReference();
+//        providers.add(new ProcessFlowCompartmentNodeDescriptionProvider(
+//                lcaElementType,
+//                nestedEReference,
+//                colorProvider,
+//                nameGenerator));
+//    }
 }

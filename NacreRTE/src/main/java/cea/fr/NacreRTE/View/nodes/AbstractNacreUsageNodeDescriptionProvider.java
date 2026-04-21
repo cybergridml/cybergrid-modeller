@@ -1,10 +1,13 @@
 package cea.fr.NacreRTE.View.nodes;
 
 import cea.fr.NacreRTE.library.NacreLibElementType;
+import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
+import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.nodes.AbstractUsageNodeDescriptionProvider;
+import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 
 import java.util.List;
@@ -25,13 +28,17 @@ public abstract class AbstractNacreUsageNodeDescriptionProvider extends Abstract
 
     @Override
     protected String getSemanticCandidatesExpression(String domainType) {
-        String nacreLibDefName = getNacreElementType().getNacreLibDefinitionName();
-        return "aql:self.ownedMember->filter(" + domainType + ")->select(p | p.type->exists(t | t.qualifiedName = '" + nacreLibDefName + "'))";
+        return AQLUtils.getSelfServiceCallExpression("getExposedNacreElements",
+                List.of(AQLUtils.aqlString(nacreElementType.getName()),
+                        domainType,
+                        org.eclipse.sirius.components.diagrams.description.NodeDescription.ANCESTORS,
+                        IEditingContext.EDITING_CONTEXT,
+                        DiagramContext.DIAGRAM_CONTEXT));
     }
 
     @Override
     protected String getNodeDescriptionName() {
-        return this.getDescriptionNameGenerator().getNodeName(getNacreElementType().getServiceSuffix());
+        return this.getDescriptionNameGenerator().getNodeName(getLcaElementType().getServiceSuffix());
     }
 
     protected String getDomainType() {
@@ -55,14 +62,7 @@ public abstract class AbstractNacreUsageNodeDescriptionProvider extends Abstract
                 .build();
     }
 
-    @Override
-    protected InsideLabelDescription createInsideLabelDescription() {
-        InsideLabelDescription label = super.createInsideLabelDescription();
-        label.setLabelExpression("aql:self.declaredName");
-        return label;
-    }
-
-protected abstract NodeStyleDescription createNodeStyle();
+    protected abstract NodeStyleDescription createNodeStyle();
 
     @Override
     protected List<NodeToolSection> getToolSections(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
@@ -74,7 +74,7 @@ protected abstract NodeStyleDescription createNodeStyle();
         return (NacreDescriptionNameGenerator) super.getDescriptionNameGenerator();
     }
 
-    protected NacreLibElementType getNacreElementType() {
+    protected NacreLibElementType getLcaElementType() {
         return nacreElementType;
     }
 

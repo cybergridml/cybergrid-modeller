@@ -12,11 +12,16 @@ import org.eclipse.sirius.components.diagrams.IDiagramElement;
 import org.eclipse.sirius.components.view.emf.IViewRepresentationDescriptionSearchService;
 import org.eclipse.syson.diagram.common.view.services.ViewToolService;
 import org.eclipse.syson.services.api.ISysMLMoveElementService;
-import org.eclipse.syson.sysml.*;
+import org.eclipse.syson.sysml.Element;
+import org.eclipse.syson.sysml.Feature;
+import org.eclipse.syson.sysml.PortUsage;
+import org.eclipse.syson.sysml.SysmlPackage;
 
 import java.util.List;
 
-
+/**
+ * Tool-related Java services used by LCA diagrams.
+ */
 public class NacreViewToolService extends ViewToolService {
 
     private final NacreUtilService nacreUtilService;
@@ -28,13 +33,8 @@ public class NacreViewToolService extends ViewToolService {
 
     @Override
     public boolean toolShouldBeAvailable(Element element, IEditingContext editingContext, DiagramContext diagramContext, EClass newElementType) {
-        if (!(element instanceof ViewUsage)) {
-            return true;
-        }
         NacreViewDefinitionKind viewDefinitionKind = this.nacreUtilService.getNacreViewDefinitionKind(element, List.of(), editingContext);
-        if (viewDefinitionKind == null) {
-            return true;
-        }
+
         return switch (viewDefinitionKind) {
             case CFA_VIEW -> this.toolShouldBeAvailableOnCFAView(newElementType);
             case CRA_VIEW -> this.toolShouldBeAvailableOnCRAView(newElementType);

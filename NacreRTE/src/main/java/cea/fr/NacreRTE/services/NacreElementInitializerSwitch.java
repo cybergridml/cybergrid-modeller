@@ -40,34 +40,25 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             utilService.setFeatureTyping(usage, maingridDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONE) {
-            Definition zoneDefinition = NacreDefinitionsUtil.getZoneDefinition(editingContext);
+            Definition zoneDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, zoneDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONALCONTROlLER) {
-            Definition zonalcontollerDefinition = NacreDefinitionsUtil.getZONALCONTROlLERDefinition(editingContext);
+            Definition zonalcontollerDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, zonalcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
-            Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);
+            Definition centralcontollerDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.SUBSTATION) {
-            Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
+            Definition substationDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
         }
         caseUsage(usage);
         return usage;
     }
 
-    @Override
-    public Element caseAllocationUsage(AllocationUsage alloc) {
-        if (nacreLibElementType == NacreLibElementType.CONTROL) {
-            Definition controlDefinition = NacreDefinitionsUtil.getCONTROlEDefinition(editingContext);
-            utilService.setFeatureTyping(alloc, controlDefinition);
-        }
-        caseUsage(alloc);
-        return alloc;
-    }
 
     @Override
     public Element caseDefinition(Definition definition) {
@@ -88,7 +79,7 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         if (owningNamespace != null) {
             return owningNamespace.getOwnedMember().stream()
                     .filter(namespaceElt -> doFilterDefinitions ? namespaceElt instanceof Definition : namespaceElt instanceof Usage)
-                    .filter(namespaceElt -> namespaceElt instanceof Feature f && nacreLibElementType == NacreLibElementType.getNacreElementFromUsage(f))
+                    //.filter(namespaceElt -> nacreLibElementType.isTypedWith(namespaceElt, nacreLibElementType))
                     .count();
         }
         return 0;
