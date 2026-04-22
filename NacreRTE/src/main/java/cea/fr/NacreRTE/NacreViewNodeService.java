@@ -28,7 +28,7 @@ public class NacreViewNodeService extends ViewNodeService {
 
     @Override
     protected boolean needToRevealCompartment(Element element, boolean isGeneralView) {
-        return new RevealCompartmentSwitch(true).doSwitch(element);
+        return new NacreRevealCompartmentSwitch().doSwitch(element);
     }
 
     public List<Element> getExposedNacreElements(Element element, String nacreElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {

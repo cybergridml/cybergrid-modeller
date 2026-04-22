@@ -74,10 +74,9 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
   protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
        IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
        List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-
        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
       providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-      //addPropertiesCompartmentNode(providers, NacreLibElementType.MAINGRID, nacreColorProvider, nameGenerator);
+      addPropertiesCompartmentNode(providers, NacreLibElementType.MAINGRID, nacreColorProvider, nameGenerator);
       System.out.println("maingrid crée");
       return providers;
    }
