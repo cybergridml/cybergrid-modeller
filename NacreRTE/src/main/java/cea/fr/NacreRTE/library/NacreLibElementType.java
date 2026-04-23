@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public enum NacreLibElementType {
 
-    MAINGRID("NACREProfile::CFA::MainGrid", "MainGrid", "MainGrid", SysmlPackage.eINSTANCE.getPartDefinition(), false),
+    MAINGRID("NACREProfile::CFA::MainGrid", "MainGrid", "MainGrid", SysmlPackage.eINSTANCE.getPartUsage(), false),
     ZONE("NACRE::Zone", "Zone", "Zone", SysmlPackage.eINSTANCE.getPartDefinition(), false),
     SUBSTATION("NACRE::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartDefinition(), false),
     CENTRALCONTROLLER("NACRE::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartDefinition(), false),
