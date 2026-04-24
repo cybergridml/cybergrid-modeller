@@ -61,10 +61,6 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
         diagramElementDescriptionProviders.forEach(d -> d.link(diagramDescription, cache));
 
-        ELEMENTS.forEach(element ->
-                cache.getNodeDescription(descriptionNameGenerator.getNodeName(element.getServiceSuffix()))
-                        .ifPresent(diagramDescription.getNodeDescriptions()::add));
-
         var palette = this.createDiagramPalette(cache);
         diagramDescription.setPalette(palette);
         return diagramDescription;
