@@ -25,13 +25,13 @@ public abstract class AbstractNacreUsageNodeDescriptionProvider extends Abstract
 
     @Override
     protected String getSemanticCandidatesExpression(String domainType) {
-        String nacreLibDefName = getLcaElementType().getNacreLibDefinitionName();
+        String nacreLibDefName = getNacreElementType().getNacreLibDefinitionName();
         return "aql:self.ownedMember->filter(" + domainType + ")->select(p | p.type->exists(t | t.qualifiedName = '" + nacreLibDefName + "'))";
     }
 
     @Override
     protected String getNodeDescriptionName() {
-        return this.getDescriptionNameGenerator().getNodeName(getLcaElementType().getServiceSuffix());
+        return this.getDescriptionNameGenerator().getNodeName(getNacreElementType().getServiceSuffix());
     }
 
     protected String getDomainType() {
@@ -74,7 +74,7 @@ protected abstract NodeStyleDescription createNodeStyle();
         return (NacreDescriptionNameGenerator) super.getDescriptionNameGenerator();
     }
 
-    protected NacreLibElementType getLcaElementType() {
+    protected NacreLibElementType getNacreElementType() {
         return nacreElementType;
     }
 

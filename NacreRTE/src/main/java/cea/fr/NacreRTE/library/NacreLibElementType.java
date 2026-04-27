@@ -10,10 +10,10 @@ import java.util.Objects;
 public enum NacreLibElementType {
 
     MAINGRID("NACREProfile::CFA::MainGrid", "MainGrid", "MainGrid", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    ZONE("NACRE::Zone", "Zone", "Zone", SysmlPackage.eINSTANCE.getPartDefinition(), false),
-    SUBSTATION("NACRE::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartDefinition(), false),
-    CENTRALCONTROLLER("NACRE::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartDefinition(), false),
-    ZONALCONTROlLER("NACRE::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartDefinition(), false),
+    ZONE("NACREProfile::CFA::Zone", "Zone", "Zone", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    SUBSTATION("NACREProfile::CFA::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    CENTRALCONTROLLER("NACREProfile::CFA::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    ZONALCONTROlLER("NACREProfile::CFA::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
     ;
 
     /**

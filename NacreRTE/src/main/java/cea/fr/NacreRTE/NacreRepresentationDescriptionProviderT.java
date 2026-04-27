@@ -5,6 +5,7 @@ package cea.fr.NacreRTE;
 
 import cea.fr.NacreRTE.View.nodes.MaingridNodeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.View.nodes.SubstationNodeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.ZoneNodeDescriptionProvider;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
@@ -26,13 +27,15 @@ import java.util.List;
 
 public class NacreRepresentationDescriptionProviderT implements IRepresentationDescriptionProvider {
 
-    public static final String DESCRIPTION_NAME = "NacreT view";
+    public static final String DESCRIPTION_NAME = "CFA view";
     
 
 
     public static final List<NacreLibElementType> ELEMENTS = List.of(
             NacreLibElementType.MAINGRID,
-            NacreLibElementType.ZONE
+            NacreLibElementType.ZONE,
+            NacreLibElementType.SUBSTATION
+
     );
 
 
@@ -72,6 +75,7 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
        providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+       providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
        return providers;
    }
 
