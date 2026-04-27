@@ -10,7 +10,6 @@ import org.eclipse.sirius.components.view.diagram.NodeStyleDescription;
 import org.eclipse.sirius.components.view.diagram.NodeTool;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +25,7 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
         var layoutStrategy = this.diagramBuilderHelper.newListLayoutStrategyDescription()
                 .areChildNodesDraggableExpression("false")
                 .bottomGapExpression("10")
-                .growableNodes(new NodeDescription[0]) // ✅ plus simple et safe
+                .growableNodes(new ArrayList<NodeDescription>().toArray(NodeDescription[]::new))
                 .build();
 
         return this.diagramBuilderHelper.newRectangularNodeStyleDescription()
@@ -40,33 +39,24 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
 
     @Override
     protected Set<NodeDescription> getReusedChildren(IViewDiagramElementFinder cache) {
-        return Collections.emptySet(); // ✅ jamais null
+        return Set.of();
     }
 
     @Override
     protected Set<NodeDescription> getReusedBorderNodes(IViewDiagramElementFinder cache) {
-        return Collections.emptySet(); // ✅ jamais null
+        return Set.of();
     }
 
     @Override
     protected List<NodeDescription> getAllNodeDescriptions(IViewDiagramElementFinder cache) {
-        return Collections.emptyList(); // ✅ jamais null
+        return List.of();
     }
 
     @Override
     protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
-
-        NacreViewNodeToolsWithoutSectionSwitch toolsSwitch =
-                new NacreViewNodeToolsWithoutSectionSwitch(
-                        NacreLibElementType.MAINGRID,
-                        getDescriptionNameGenerator(),
-                        getAllNodeDescriptions(cache),
-                        cache
-                );
-
-        List<NodeTool> result = toolsSwitch.doSwitch(this.eClass);
-
-        // ✅ FIX PRINCIPAL : éviter le null
-        return result != null ? result : Collections.emptyList();
+        return List.of();
     }
+
+
+
 }

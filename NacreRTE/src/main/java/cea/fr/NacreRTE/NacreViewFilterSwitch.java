@@ -34,14 +34,6 @@ public class NacreViewFilterSwitch extends SysmlSwitch<Boolean> {
         this.exposedElements = Objects.requireNonNull(exposedElements);
         this.parentElement = parentElement;
     }
-
-    @Override
-    public Boolean defaultCase(EObject object) {
-        boolean displayAsTreeNode = false;
-
-        return displayAsTreeNode;
-    }
-
     /**
      * Copied from {@link ViewFilterSwitch}
      * Check if the given object is an indirect nested node of the parentElement of this class.

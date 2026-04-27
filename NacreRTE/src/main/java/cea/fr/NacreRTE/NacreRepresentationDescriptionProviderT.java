@@ -5,18 +5,17 @@ package cea.fr.NacreRTE;
 
 import cea.fr.NacreRTE.View.nodes.MaingridNodeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.View.nodes.SubstationNodeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.ZoneNodeDescriptionProvider;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
-import org.eclipse.sirius.components.view.builder.generated.view.ViewBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.builder.providers.IDiagramElementDescriptionProvider;
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.ViewDiagramElementFinder;
-import org.eclipse.syson.standard.diagrams.view.nodes.FakeNodeDescriptionProvider;
 import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
@@ -28,21 +27,21 @@ import java.util.List;
 
 public class NacreRepresentationDescriptionProviderT implements IRepresentationDescriptionProvider {
 
-    public static final String DESCRIPTION_NAME = "NacreT view";
+    public static final String DESCRIPTION_NAME = "CFA view";
     
 
 
     public static final List<NacreLibElementType> ELEMENTS = List.of(
             NacreLibElementType.MAINGRID,
-            NacreLibElementType.ZONE
-                 );
+            NacreLibElementType.ZONE,
+            NacreLibElementType.SUBSTATION
+
+    );
 
 
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
     private final NacreDescriptionNameGenerator descriptionNameGenerator = new NacreDescriptionNameGenerator();
-
-    private final ViewBuilders viewBuilderHelper = new ViewBuilders();
     private final NacreToolDescriptionService nacreToolDescriptionService = new NacreToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
@@ -67,18 +66,17 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
         var palette = this.createDiagramPalette(cache);
         diagramDescription.setPalette(palette);
-        System.out.println("maingrid crée");
         return diagramDescription;
     }
 
   protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
        IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
        List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
+
        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-      providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-      addPropertiesCompartmentNode(providers, NacreLibElementType.MAINGRID, nacreColorProvider, nameGenerator);
-      System.out.println("maingrid crée");
-      return providers;
+       providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+       providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+       return providers;
    }
 
     protected String getName() {

@@ -40,19 +40,19 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             utilService.setFeatureTyping(usage, maingridDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONE) {
-            Definition zoneDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
+            Definition zoneDefinition = NacreDefinitionsUtil.getZoneDefinition(editingContext);
             utilService.setFeatureTyping(usage, zoneDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONALCONTROlLER) {
-            Definition zonalcontollerDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
+            Definition zonalcontollerDefinition = NacreDefinitionsUtil.getZONALCONTROlLERDefinition(editingContext);
             utilService.setFeatureTyping(usage, zonalcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
-            Definition centralcontollerDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
+            Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.SUBSTATION) {
-            Definition substationDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
+            Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
         }
         caseUsage(usage);
@@ -79,7 +79,7 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         if (owningNamespace != null) {
             return owningNamespace.getOwnedMember().stream()
                     .filter(namespaceElt -> doFilterDefinitions ? namespaceElt instanceof Definition : namespaceElt instanceof Usage)
-                    //.filter(namespaceElt -> nacreLibElementType.isTypedWith(namespaceElt, nacreLibElementType))
+                    .filter(namespaceElt -> namespaceElt instanceof Feature f && nacreLibElementType == NacreLibElementType.getNacreElementFromUsage(f))
                     .count();
         }
         return 0;
