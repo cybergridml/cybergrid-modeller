@@ -70,6 +70,33 @@ public class NacreViewCreateService extends ViewCreateService {
         new NacreElementInitializerSwitch(editingContext, NacreLibElementType.SUBSTATION).doSwitch(newPartUsage);
         return newPartUsage;
     }
+    public PartUsage createCentralcontroller(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        featureMembership.getOwnedRelatedElement().add(newPartUsage);
+
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.CENTRALCONTROLLER).doSwitch(newPartUsage);
+        return newPartUsage;
+    }
+    public PartUsage createZonalcontroller(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        featureMembership.getOwnedRelatedElement().add(newPartUsage);
+
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.ZONALCONTROlLER).doSwitch(newPartUsage);
+        return newPartUsage;
+    }
+    public PartUsage createControle(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newAllocationUsage = SysmlFactory.eINSTANCE.createAllocationUsage();
+        featureMembership.getOwnedRelatedElement().add(newAllocationUsage);
+
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.CONTROL).doSwitch(newAllocationUsage);
+        return newAllocationUsage;
+    }
 
 
 

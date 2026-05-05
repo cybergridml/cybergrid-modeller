@@ -39,6 +39,11 @@ public class NacreDefinitionsUtil {
         return getNacreDefinition(nResource, NacreLibElementType.ZONALCONTROlLER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
+    public static Definition getCONTROlEDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.CONTROL, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
 
 
 

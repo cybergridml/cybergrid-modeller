@@ -16,9 +16,7 @@ import org.eclipse.syson.sysml.*;
 
 import java.util.List;
 
-/**
- * Tool-related Java services used by LCA diagrams.
- */
+
 public class NacreViewToolService extends ViewToolService {
 
     private final NacreUtilService nacreUtilService;

@@ -14,6 +14,7 @@ public enum NacreLibElementType {
     SUBSTATION("NACREProfile::CFA::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartUsage(), false),
     CENTRALCONTROLLER("NACREProfile::CFA::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartUsage(), false),
     ZONALCONTROlLER("NACREProfile::CFA::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    CONTROL("NACREProfile::CFA::Control", "Control", "Control", SysmlPackage.eINSTANCE.getAllocationUsage(), false),
     ;
 
     /**
