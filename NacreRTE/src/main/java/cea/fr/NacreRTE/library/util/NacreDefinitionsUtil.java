@@ -43,6 +43,7 @@ public class NacreDefinitionsUtil {
 
 
 
+
     public static Optional<Definition> getNacreDefinition(Resource resource, NacreLibElementType nacreLibElementType, boolean isSubclassifier) {
         if (resource == null || nacreLibElementType == null) {
             return Optional.empty();
