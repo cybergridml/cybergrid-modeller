@@ -88,15 +88,7 @@ public class NacreViewCreateService extends ViewCreateService {
         new NacreElementInitializerSwitch(editingContext, NacreLibElementType.ZONALCONTROlLER).doSwitch(newPartUsage);
         return newPartUsage;
     }
-    public PartUsage createControle(Element ownerElement, IEditingContext editingContext) {
-        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
-        ownerElement.getOwnedRelationship().add(featureMembership);
-        var newAllocationUsage = SysmlFactory.eINSTANCE.createAllocationUsage();
-        featureMembership.getOwnedRelatedElement().add(newAllocationUsage);
 
-        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.CONTROL).doSwitch(newAllocationUsage);
-        return newAllocationUsage;
-    }
 
 
 

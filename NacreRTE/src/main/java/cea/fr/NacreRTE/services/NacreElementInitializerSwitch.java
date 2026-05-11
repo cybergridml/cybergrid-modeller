@@ -59,15 +59,6 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         return usage;
     }
 
-    @Override
-    public Element caseAllocationUsage(AllocationUsage alloc) {
-        if (nacreLibElementType == NacreLibElementType.CONTROL) {
-            Definition controlDefinition = NacreDefinitionsUtil.getCONTROlEDefinition(editingContext);
-            utilService.setFeatureTyping(alloc, controlDefinition);
-        }
-        caseUsage(alloc);
-        return alloc;
-    }
 
     @Override
     public Element caseDefinition(Definition definition) {

@@ -3,6 +3,7 @@ package cea.fr.NacreRTE;
 
 
 
+import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.*;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
@@ -13,7 +14,6 @@ import org.eclipse.sirius.components.view.builder.providers.IDiagramElementDescr
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.ViewDiagramElementFinder;
-import org.eclipse.syson.diagram.common.view.edges.AnnotationEdgeDescriptionProvider;
 import org.eclipse.syson.standard.diagrams.view.edges.*;
 import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.util.AQLUtils;
@@ -36,9 +36,7 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
             NacreLibElementType.ZONE,
             NacreLibElementType.SUBSTATION,
             NacreLibElementType.CENTRALCONTROLLER,
-            NacreLibElementType.CONTROL ,
             NacreLibElementType.ZONALCONTROlLER
-
     );
 
 
@@ -81,8 +79,7 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
        providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
        providers.add(new ZonalcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ControlNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new BindingConnectorAsUsageEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
+       providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
        providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
        return providers;
    }
@@ -139,7 +136,6 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
 
 
         edgeDescriptionProviders.add(new AllocateEdgeDescriptionProvider(colorProvider));
-        edgeDescriptionProviders.add(new BindingConnectorAsUsageEdgeDescriptionProvider(colorProvider, this.getDescriptionNameGenerator()));
 
         return edgeDescriptionProviders;
     }

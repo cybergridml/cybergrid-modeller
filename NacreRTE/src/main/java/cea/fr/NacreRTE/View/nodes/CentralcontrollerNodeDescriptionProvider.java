@@ -3,10 +3,7 @@ package cea.fr.NacreRTE.View.nodes;
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
-import org.eclipse.sirius.components.view.diagram.LineStyle;
-import org.eclipse.sirius.components.view.diagram.NodeDescription;
-import org.eclipse.sirius.components.view.diagram.NodeStyleDescription;
-import org.eclipse.sirius.components.view.diagram.NodeTool;
+import org.eclipse.sirius.components.view.diagram.*;
 
 import java.util.ArrayList;
 import java.util.List;
