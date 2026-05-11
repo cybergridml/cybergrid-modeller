@@ -14,7 +14,9 @@ public enum NacreLibElementType {
     SUBSTATION("NACREProfile::CFA::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartUsage(), false),
     CENTRALCONTROLLER("NACREProfile::CFA::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartUsage(), false),
     ZONALCONTROlLER("NACREProfile::CFA::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    //CONTROL("NACREProfile::CFA::Control", "Control", "Control", SysmlPackage.eINSTANCE.getAllocationUsage(), false),
+    COMMUNICATIONMEDIA("NACREProfile::CRA::CommunicationMedia", "CommunicationMedia", "CommunicationMedia", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    COMPUTINGRESOURCE("NACREProfile::CRA::ComputingResource", "ComputingResource", "ComputingResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    SOFTWARERESOURCE("NACREProfile::CRA::SoftwareResource", "SoftwareResource", "SoftwareResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
     ;
 
     /**

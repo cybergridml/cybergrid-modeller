@@ -89,8 +89,35 @@ public class NacreViewCreateService extends ViewCreateService {
         return newPartUsage;
     }
 
+    public PartUsage createCommunicationMedia(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        featureMembership.getOwnedRelatedElement().add(newPartUsage);
 
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.COMMUNICATIONMEDIA).doSwitch(newPartUsage);
+        return newPartUsage;
+    }
 
+    public PartUsage createComputingResource(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        featureMembership.getOwnedRelatedElement().add(newPartUsage);
+
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.COMPUTINGRESOURCE).doSwitch(newPartUsage);
+        return newPartUsage;
+    }
+
+    public PartUsage createSoftwareResource(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        featureMembership.getOwnedRelatedElement().add(newPartUsage);
+
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.SOFTWARERESOURCE).doSwitch(newPartUsage);
+        return newPartUsage;
+    }
 
     /**
      * Called by the property creation tool triggered when clicking on a node's list compartment.

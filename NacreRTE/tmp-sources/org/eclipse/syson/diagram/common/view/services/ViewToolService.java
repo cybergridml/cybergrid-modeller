@@ -1,0 +1,758 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2026 Obeo.
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v2.0
+ * which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Obeo - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.syson.diagram.common.view.services;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
+import org.eclipse.sirius.components.core.api.IIdentityService;
+import org.eclipse.sirius.components.core.api.IObjectSearchService;
+import org.eclipse.sirius.components.emf.ResourceMetadataAdapter;
+import org.eclipse.sirius.components.representations.Message;
+import org.eclipse.sirius.components.representations.MessageLevel;
+import org.eclipse.sirius.components.view.emf.IViewRepresentationDescriptionSearchService;
+import org.eclipse.syson.services.ToolService;
+import org.eclipse.syson.services.api.ISysMLMoveElementService;
+import org.eclipse.syson.services.api.ViewDefinitionKind;
+import org.eclipse.syson.sysml.ActionDefinition;
+import org.eclipse.syson.sysml.ActionUsage;
+import org.eclipse.syson.sysml.ActorMembership;
+import org.eclipse.syson.sysml.CaseDefinition;
+import org.eclipse.syson.sysml.CaseUsage;
+import org.eclipse.syson.sysml.Comment;
+import org.eclipse.syson.sysml.Definition;
+import org.eclipse.syson.sysml.Documentation;
+import org.eclipse.syson.sysml.Element;
+import org.eclipse.syson.sysml.FeatureMembership;
+import org.eclipse.syson.sysml.Membership;
+import org.eclipse.syson.sysml.ObjectiveMembership;
+import org.eclipse.syson.sysml.OwningMembership;
+import org.eclipse.syson.sysml.Package;
+import org.eclipse.syson.sysml.PartDefinition;
+import org.eclipse.syson.sysml.PartUsage;
+import org.eclipse.syson.sysml.RequirementDefinition;
+import org.eclipse.syson.sysml.RequirementUsage;
+import org.eclipse.syson.sysml.StakeholderMembership;
+import org.eclipse.syson.sysml.StateDefinition;
+import org.eclipse.syson.sysml.StateUsage;
+import org.eclipse.syson.sysml.SubjectMembership;
+import org.eclipse.syson.sysml.SysmlFactory;
+import org.eclipse.syson.sysml.SysmlPackage;
+import org.eclipse.syson.sysml.Type;
+import org.eclipse.syson.sysml.Usage;
+import org.eclipse.syson.sysml.UseCaseDefinition;
+import org.eclipse.syson.sysml.UseCaseUsage;
+import org.eclipse.syson.tree.explorer.services.api.ISysONExplorerFragment;
+import org.eclipse.syson.tree.explorer.services.api.ISysONExplorerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Tool-related Java services used by all diagrams.
+ *
+ * @author arichard
+ */
+public class ViewToolService extends ToolService {
+
+    protected final IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService;
+
+    protected final ISysONExplorerService sysONExplorerService;
+
+    protected final Logger logger = LoggerFactory.getLogger(ViewToolService.class);
+
+    public ViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService,
+            IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService, ISysONExplorerService sysONExplorerService) {
+        super(identityService, objectSearchService, feedbackMessageService, moveService);
+        this.viewRepresentationDescriptionSearchService = Objects.requireNonNull(viewRepresentationDescriptionSearchService);
+        this.sysONExplorerService = Objects.requireNonNull(sysONExplorerService);
+    }
+
+    /**
+     * Check if a tool that will create an instance of the given type should be available for a diagram associated to
+     * the given {@link Element}.
+     *
+     * @param element
+     *            the given {@link Element}.
+     * @param newElementType
+     *            the given type.
+     * @return <code>true</code> if the tool should be available, <code>false</code> otherwise.
+     */
+    public boolean toolShouldBeAvailable(Element element, IEditingContext editingContext, DiagramContext diagramContext, EClass newElementType) {
+        ViewDefinitionKind viewDefinitionKind = this.utilService.getViewDefinitionKind(element, List.of(), editingContext);
+        var elt = this.utilService.getViewUsageOwner(element);
+
+        return switch (viewDefinitionKind) {
+            case INTERCONNECTION_VIEW -> this.toolShouldBeAvailableOnInterconnectionView(elt, newElementType);
+            case ACTION_FLOW_VIEW -> this.toolShouldBeAvailableOnActionFlowView(elt, newElementType);
+            case STATE_TRANSITION_VIEW -> this.toolShouldBeAvailableOnStateTransitionView(elt, newElementType);
+            default -> this.toolShouldBeAvailableOnGeneralView(elt, newElementType);
+        };
+    }
+
+    private boolean toolShouldBeAvailableOnGeneralView(Element element, EClass domainClass) {
+        boolean toolShouldBeAvailable = false;
+        if (element instanceof Package) {
+            toolShouldBeAvailable = true;
+        } else if (element instanceof Usage && !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass)) {
+            toolShouldBeAvailable = true;
+        } else if (element instanceof Definition && !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass)) {
+            toolShouldBeAvailable = true;
+        }
+        return toolShouldBeAvailable;
+    }
+
+    private boolean toolShouldBeAvailableOnInterconnectionView(Element element, EClass domainClass) {
+        boolean toolShouldBeAvailable = false;
+        if (element instanceof Package) {
+            toolShouldBeAvailable = true;
+            if (SysmlPackage.eINSTANCE.getAttributeUsage().isSuperTypeOf(domainClass)) {
+                toolShouldBeAvailable = false;
+            } else if (SysmlPackage.eINSTANCE.getPortUsage().isSuperTypeOf(domainClass)) {
+                toolShouldBeAvailable = false;
+            }
+        } else if (element instanceof Usage && !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass)) {
+            toolShouldBeAvailable = true;
+        } else if (element instanceof Definition && !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass)) {
+            toolShouldBeAvailable = true;
+        }
+        return toolShouldBeAvailable;
+    }
+
+    private boolean toolShouldBeAvailableOnActionFlowView(Element element, EClass domainClass) {
+        boolean toolShouldBeAvailable = false;
+        if (element instanceof ActionUsage) {
+            toolShouldBeAvailable = !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass);
+        } else if (element instanceof ActionDefinition) {
+            toolShouldBeAvailable = !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass);
+        } else {
+            if (SysmlPackage.eINSTANCE.getActionUsage().equals(domainClass) || SysmlPackage.eINSTANCE.getActionUsage().isSuperTypeOf(domainClass)) {
+                toolShouldBeAvailable = true;
+            } else if (SysmlPackage.eINSTANCE.getActionDefinition().equals(domainClass) || SysmlPackage.eINSTANCE.getActionDefinition().isSuperTypeOf(domainClass)) {
+                toolShouldBeAvailable = true;
+            }
+        }
+        return toolShouldBeAvailable;
+    }
+
+    private boolean toolShouldBeAvailableOnStateTransitionView(Element element, EClass domainClass) {
+        boolean toolShouldBeAvailable = false;
+        if (element instanceof StateUsage) {
+            toolShouldBeAvailable = !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass);
+        } else if (element instanceof StateDefinition) {
+            toolShouldBeAvailable = !SysmlPackage.eINSTANCE.getDefinition().isSuperTypeOf(domainClass);
+        } else {
+            if (SysmlPackage.eINSTANCE.getStateUsage().equals(domainClass) || SysmlPackage.eINSTANCE.getStateUsage().isSuperTypeOf(domainClass)) {
+                toolShouldBeAvailable = true;
+            } else if (SysmlPackage.eINSTANCE.getStateDefinition().equals(domainClass) || SysmlPackage.eINSTANCE.getStateDefinition().isSuperTypeOf(domainClass)) {
+                toolShouldBeAvailable = true;
+            }
+        }
+        return toolShouldBeAvailable;
+    }
+
+    public Usage becomeNestedUsage(Usage usage, Element newContainer) {
+        if (this.getOwnerHierarchy(newContainer).contains(usage) || Objects.equals(newContainer, usage)) {
+            String message = MessageFormat.format("Cannot change the owner of {0}, this would create a containment cycle", String.valueOf(usage.getName()));
+            this.feedbackMessageService.addFeedbackMessage(new Message(message, MessageLevel.WARNING));
+            this.logger.warn(message);
+        } else {
+            this.moveService.moveSemanticElement(usage, newContainer);
+            usage.setIsComposite(true);
+        }
+        return usage;
+    }
+
+    public RequirementUsage becomeObjectiveRequirement(RequirementUsage requirement, Element newContainer) {
+        if (newContainer instanceof UseCaseUsage || newContainer instanceof UseCaseDefinition) {
+            if (this.utilService.isEmptyObjectiveRequirement(newContainer)) {
+                var eContainer = requirement.eContainer();
+                if (eContainer instanceof ObjectiveMembership objectiveMembership) {
+                    // requirement is already an objective of another usecaseXXX
+                    newContainer.getOwnedRelationship().add(objectiveMembership);
+                } else if (eContainer instanceof OwningMembership owningMembership) {
+                    var newObjectiveMembership = SysmlFactory.eINSTANCE.createObjectiveMembership();
+                    newObjectiveMembership.getOwnedRelatedElement().add(requirement);
+                    newContainer.getOwnedRelationship().add(newObjectiveMembership);
+                    this.deleteService.deleteFromModel(owningMembership);
+                }
+            }
+        }
+        return requirement;
+    }
+
+    /**
+     * Reconnects the source of a nested actor edge.
+     * <p>
+     * The source of this edge is either an UseCase or a Requirement, and can only be reconnected to UseCase or
+     * Requirements.
+     * </p>
+     *
+     * @param self
+     *            the current UseCase or Requirement
+     * @param newSource
+     *            the new UseCase or Requirement
+     * @param otherEnd
+     *            the Actor connected to the UseCase or Requirement
+     * @return the Actor
+     */
+    public Element reconnectSourceNestedActorEdge(Element self, Element newSource, Element otherEnd) {
+        if (newSource instanceof UseCaseUsage || newSource instanceof UseCaseDefinition
+                || newSource instanceof RequirementUsage || newSource instanceof RequirementDefinition) {
+            if (otherEnd.getOwningMembership() instanceof ActorMembership actorMembership) {
+                newSource.getOwnedRelationship().add(actorMembership);
+            } else {
+                // This is an error, an Actor should always be contained in an ActorMembership.
+                String errorMessage = "Cannot reconnect the Actor, it is not owned by an " + ActorMembership.class.getSimpleName();
+                this.logger.error(errorMessage);
+                this.feedbackMessageService.addFeedbackMessage(new Message(errorMessage, MessageLevel.ERROR));
+            }
+        } else {
+            String errorMessage = "Cannot reconnect an Actor to a non-UseCase, non-Requirement element";
+            this.logger.warn(errorMessage);
+            this.feedbackMessageService.addFeedbackMessage(new Message(errorMessage, MessageLevel.WARNING));
+        }
+        return otherEnd;
+    }
+
+    /**
+     * Reconnects the source of a nested stakeholder edge.
+     * <p>
+     * The source of this edge is a Requirement, and can only be reconnected to Requirements.
+     * </p>
+     *
+     * @param self
+     *            the current Requirement
+     * @param newSource
+     *            the new Requirement
+     * @param otherEnd
+     *            the Stakeholder connected to the Requirement
+     * @return the Stakeholder
+     */
+    public Element reconnectSourceNestedStakeholderEdge(Element self, Element newSource, Element otherEnd) {
+        if (newSource instanceof RequirementUsage || newSource instanceof RequirementDefinition) {
+            if (otherEnd.getOwningMembership() instanceof StakeholderMembership stakeholderMembership) {
+                newSource.getOwnedRelationship().add(stakeholderMembership);
+            } else {
+                // This is an error, a Stakeholder should always be contained in a StakeholderMembership.
+                String errorMessage = "Cannot reconnect the Stakeholder, it is not owned by a " + StakeholderMembership.class.getSimpleName();
+                this.logger.error(errorMessage);
+                this.feedbackMessageService.addFeedbackMessage(new Message(errorMessage, MessageLevel.ERROR));
+            }
+        } else {
+            String errorMessage = "Cannot reconnect a Stakeholder to a non-Requirement element";
+            this.logger.warn(errorMessage);
+            this.feedbackMessageService.addFeedbackMessage(new Message(errorMessage, MessageLevel.WARNING));
+        }
+        return otherEnd;
+    }
+
+    /**
+     * Reconnects the source of a nested subject edge.
+     * <p>
+     * The source of this edge is either an UseCase or a Requirement, and can only be reconnected to UseCase or
+     * Requirements.
+     * </p>
+     *
+     * @param self
+     *            the current UseCase or Requirement
+     * @param newSource
+     *            the new UseCase or Requirement
+     * @param otherEnd
+     *            the Subject connected to the UseCase or Requirement
+     * @return the Subject
+     */
+    public Element reconnectSourceNestedSubjectEdge(Element self, Element newSource, Element otherEnd) {
+        if (newSource instanceof CaseUsage || newSource instanceof CaseDefinition
+                || newSource instanceof RequirementUsage || newSource instanceof RequirementDefinition) {
+            if (otherEnd.getOwningMembership() instanceof SubjectMembership subjectMembership) {
+                newSource.getOwnedRelationship().add(subjectMembership);
+            } else {
+                // This is an error, an Subject should always be contained in an ActorMembership.
+                String errorMessage = "Cannot reconnect the Subject, it is not owned by a " + SubjectMembership.class.getSimpleName();
+                this.logger.error(errorMessage);
+                this.feedbackMessageService.addFeedbackMessage(new Message(errorMessage, MessageLevel.ERROR));
+            }
+        } else {
+            String errorMessage = "Cannot reconnect a Subject to a non-UseCase, non-Requirement element";
+            this.logger.warn(errorMessage);
+            this.feedbackMessageService.addFeedbackMessage(new Message(errorMessage, MessageLevel.WARNING));
+        }
+        return otherEnd;
+    }
+
+    public Element reconnnectSourceCompositionEdge(Element self, Element newSource, Element otherEnd) {
+        Element result = otherEnd;
+        if (this.getOwnerHierarchy(newSource).contains(otherEnd) || Objects.equals(newSource, otherEnd)) {
+            String message = MessageFormat.format("Cannot change the owner of {0}, this would create a containment cycle", String.valueOf(otherEnd.getName()));
+            this.feedbackMessageService.addFeedbackMessage(new Message(message, MessageLevel.WARNING));
+            this.logger.warn(message);
+        } else {
+            this.moveService.moveSemanticElement(otherEnd, newSource);
+            result = otherEnd;
+        }
+        return result;
+    }
+
+    public Element reconnnectTargetCompositionEdge(Element self, Element oldTarget, Element newTarget, Element otherEnd) {
+        if (this.getOwnerHierarchy(otherEnd).contains(newTarget) || Objects.equals(otherEnd, newTarget)) {
+            String message = MessageFormat.format("Cannot change the owner of {0}, this would create a containment cycle", String.valueOf(otherEnd.getName()));
+            this.feedbackMessageService.addFeedbackMessage(new Message(message, MessageLevel.WARNING));
+            this.logger.warn(message);
+        } else {
+            var oldContainer = oldTarget.eContainer();
+            if (newTarget instanceof Usage && oldContainer instanceof FeatureMembership featureMembership) {
+                // Move the old target to the innermost package
+                // We don't use moveToClosestContainingPackage here because we are moving oldTarget in the closest
+                // containing package and updating newTarget at the same time.
+                var pack = this.getClosestContainingPackageFrom(self);
+                if (pack != null) {
+                    var owningMembership = SysmlFactory.eINSTANCE.createOwningMembership();
+                    pack.getOwnedRelationship().add(owningMembership);
+                    owningMembership.getOwnedRelatedElement().add(oldTarget);
+                    // reuse feature membership of the previous nested
+                    var oldMembership = newTarget.eContainer();
+                    featureMembership.getOwnedRelatedElement().add(newTarget);
+                    if (oldMembership instanceof OwningMembership oldOwningMembership) {
+                        this.deleteService.deleteFromModel(oldOwningMembership);
+                    }
+                }
+            }
+        }
+        return self;
+    }
+
+    /**
+     * Reconnects the annotation to the annotated element target.
+     * <p>
+     * The target of this edge can be all elements except a Documentation or a Comment.
+     * </p>
+     *
+     * @param self
+     *            the current annotating element
+     * @param newTarget
+     *            the new Annotated element
+     * @return the annotating element
+     */
+    public Element reconnnectTargetAnnotatedEdge(Element self, Element newTarget) {
+        if (!(newTarget instanceof Comment) && !(newTarget instanceof Documentation)) {
+            this.moveService.moveSemanticElement(self, newTarget);
+        }
+        return self;
+    }
+
+    /**
+     * Moves the provided {@code usage} in the closest containing package.
+     *
+     * @param usage
+     *            the usage to move
+     * @return the moved element
+     */
+    public Element moveToClosestContainingPackage(Usage usage) {
+        var pack = this.getClosestContainingPackageFrom(usage);
+        if (pack != null) {
+            var oldMembership = usage.eContainer();
+            var owningMembership = SysmlFactory.eINSTANCE.createOwningMembership();
+            pack.getOwnedRelationship().add(owningMembership);
+            owningMembership.getOwnedRelatedElement().add(usage);
+            if (oldMembership instanceof OwningMembership oldOwningMembership) {
+                this.deleteService.deleteFromModel(oldOwningMembership);
+            }
+        }
+        return usage;
+    }
+
+    /**
+     * Service to retrieve the root elements of the selection dialog of the NamespaceImport creation tool.
+     *
+     * @param editingContext
+     *            the editing context
+     * @return the list of resources that contain at least one {@link Package}
+     */
+    public List<Object> getNamespaceImportSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getPackage()));
+    }
+
+    /**
+     * Service to retrieve the children of a given element in the selection dialog of the NamespaceImport creation tool.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param expandedIds
+     *            the list of already expanded treeItems, by their Ids.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) or are
+     *         {@link Package}.
+     */
+    public List<? extends Object> getNamespaceImportSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        // List<Package> result = new ArrayList<>();
+        // if (self instanceof Resource resource) {
+        // resource.getContents().stream()
+        // .filter(Element.class::isInstance)
+        // .map(Element.class::cast)
+        // .forEach(element -> result.addAll(this.findClosestPackageInChildren(element)));
+        // } else if (self instanceof Package packageElement) {
+        // packageElement.getOwnedRelationship().stream()
+        // .filter(Membership.class::isInstance)
+        // .map(Membership.class::cast)
+        // .forEach(membership -> result.addAll(this.findClosestPackageInChildren(membership)));
+        // }
+        // return result;
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, List.of(SysmlPackage.eINSTANCE.getPackage()));
+
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for the StakeholderParameter creation tool.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} and {@link ISysONExplorerFragment} that
+     *         contain at least one {@link PartUsage}.
+     */
+    public List<Object> getStakeholderSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getPartUsage()));
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for the StakeholderParameter creation tool.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param expandedIds
+     *            the list of already expanded treeItems, by their Ids.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) or are
+     *         {@link PartUsage}.
+     */
+    public List<? extends Object> getStakeholderSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, List.of(SysmlPackage.eINSTANCE.getPartUsage()));
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for the SubjectParameter creation tool.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} and {@link ISysONExplorerFragment} that
+     *         contain at least one {@link Type}.
+     */
+    public List<Object> getSubjectSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getType()));
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for the SubjectParameter creation tool.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param expandedIds
+     *            the list of already expanded treeItems, by their Ids.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) or are
+     *         {@link Usage}.
+     */
+    public List<? extends Object> getSubjectSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, List.of(SysmlPackage.eINSTANCE.getType()));
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for the ActorParameter creation tool.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} and {@link ISysONExplorerFragment} that
+     *         contain at least one {@link PartUsage} or {@link PartDefinition}.
+     */
+    public List<Object> getActorSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getPartUsage(), SysmlPackage.eINSTANCE.getPartDefinition()));
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for the Objective Requirement creation tool.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) or are
+     *         {@link RequirementUsage} or {@link RequirementDefinition}.
+     */
+    public List<? extends Object> getObjectiveRequirementSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds,
+                List.of(SysmlPackage.eINSTANCE.getRequirementUsage(), SysmlPackage.eINSTANCE.getRequirementDefinition()));
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for the Objective Requirement creation tool.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} and {@link ISysONExplorerFragment} that
+     *         contain at least one {@link RequirementUsage} or {@link RequirementDefinition}.
+     */
+    public List<Object> getObjectiveRequirementSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getRequirementUsage(), SysmlPackage.eINSTANCE.getRequirementDefinition()));
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for the ActorParameter creation tool.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) or are
+     *         {@link PartUsage} or {@link PartDefinition}.
+     */
+    public List<? extends Object> getActorSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, List.of(SysmlPackage.eINSTANCE.getPartUsage(), SysmlPackage.eINSTANCE.getPartDefinition()));
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for presenting all existing ActionUsage.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} and {@link ISysONExplorerFragment} that
+     *         contain at least one {@link ActionUsage}.
+     */
+    public List<Object> getActionReferenceSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getActionUsage()));
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for presenting all existing ActionUsage.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param expandedIds
+     *            the list of already expanded treeItems, by their Ids.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) an
+     *         {@link ActionUsage}.
+     */
+    public List<? extends Object> getActionReferenceSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, List.of(SysmlPackage.eINSTANCE.getActionUsage()));
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for presenting all existing StateUsage.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} and {@link ISysONExplorerFragment} that
+     *         contain at least one {@link StateUsage}.
+     */
+    public List<Object> getExhibitStateSelectionDialogElements(IEditingContext editingContext) {
+        return this.getAllResourcesWithInstancesOf(editingContext, List.of(SysmlPackage.eINSTANCE.getStateUsage()));
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for presenting all existing StateUsage.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param expandedIds
+     *            the list of already expanded treeItems, by their Ids.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) an
+     *         {@link StateUsage}.
+     */
+    public List<? extends Object> getExhibitStateSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, List.of(SysmlPackage.eINSTANCE.getStateUsage()));
+    }
+
+    /**
+     * Provides the root elements in the tree of the selection dialog for the any creation tool.
+     *
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param candidates
+     *            the EClassifier candidates.
+     * @return the (non-{@code null}) {@link List} of all {@link Resource} that contain at least one candidates.
+     */
+    public List<Object> getSelectionDialogElements(IEditingContext editingContext, List<EClassifier> candidates) {
+        return this.getAllResourcesWithInstancesOf(editingContext, candidates);
+    }
+
+    /**
+     * Provides the children of element in the tree of the selection dialog for the ActorParameter creation tool.
+     *
+     * @param selectionDialogTreeElement
+     *            a (non-{@code null}) selection dialog tree element.
+     * @param editingContext
+     *            the (non-{@code null}) {@link IEditingContext}.
+     * @param expandedIds
+     *            the list of already expanded treeItems, by their Ids.
+     * @param candidates
+     *            the EClassifier candidates.
+     * @return the (non-{@code null}) {@link List} of all children that contain (possibly indirectly) or are candidates.
+     */
+    public List<? extends Object> getSelectionDialogChildren(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds, List<EClassifier> candidates) {
+        return this.getChildrenWithInstancesOf(selectionDialogTreeElement, editingContext, expandedIds, candidates);
+    }
+
+    protected List<Object> getAllResourcesWithInstancesOf(IEditingContext editingContext, List<EClassifier> eClassifiers) {
+        var elementsContainingClassifiers = new ArrayList<>();
+        List<Object> elements = this.sysONExplorerService.getElements(editingContext, List.of());
+        for (Object rootElement : elements) {
+            if (rootElement instanceof Resource resource && this.containsDirectlyOrIndirectlyInstancesOf(resource, eClassifiers)) {
+                elementsContainingClassifiers.add(resource);
+            } else if (rootElement instanceof ISysONExplorerFragment fragment) {
+                elementsContainingClassifiers.add(fragment);
+            }
+        }
+
+        return elementsContainingClassifiers.stream()
+                .sorted(Comparator.comparingInt(this::getSelectionDialogRootSortRank)
+                        .thenComparing(this::getElementName, String.CASE_INSENSITIVE_ORDER))
+                .toList();
+    }
+
+    protected List<? extends Object> getChildrenWithInstancesOf(Object selectionDialogTreeElement, IEditingContext editingContext, List<String> expandedIds, List<EClassifier> eClassifiers) {
+        final List<? extends Object> result;
+
+        if (selectionDialogTreeElement instanceof Resource resource) {
+            result = resource.getContents().stream()
+                    .filter(content -> eClassifiers.stream().anyMatch(eClassifier -> eClassifier.isInstance(content)) || this.containsDirectlyOrIndirectlyInstancesOf(content, eClassifiers))
+                    .toList();
+        } else if (selectionDialogTreeElement instanceof Element sysmlElement) {
+            result = sysmlElement.getOwnedRelationship().stream()
+                    .filter(Membership.class::isInstance)
+                    .map(Membership.class::cast)
+                    .map(Membership::getOwnedRelatedElement).flatMap(List::stream)
+                    .filter(content -> eClassifiers.stream().anyMatch(eClassifier -> eClassifier.isInstance(content)) || this.containsDirectlyOrIndirectlyInstancesOf(content, eClassifiers))
+                    .toList();
+        } else if (selectionDialogTreeElement instanceof ISysONExplorerFragment fragment) {
+            result = fragment.getChildren(editingContext, List.of(), expandedIds, List.of()).stream().filter(child -> {
+                if (child instanceof Resource childResource && !this.containsDirectlyOrIndirectlyInstancesOf(childResource, eClassifiers)) {
+                    return false;
+                }
+                return true;
+            }).toList();
+        } else {
+            result = new ArrayList<>();
+        }
+
+        return result;
+    }
+
+    protected boolean containsDirectlyOrIndirectlyInstancesOf(Resource resource, List<EClassifier> eClassifiers) {
+        boolean found = false;
+        final Iterator<EObject> allContents = resource.getAllContents();
+        while (!found && allContents.hasNext()) {
+            var eObject = allContents.next();
+            for (EClassifier it : eClassifiers) {
+                found = it.isInstance(eObject);
+                if (found) {
+                    break;
+                }
+            }
+        }
+        return found;
+    }
+
+    protected boolean containsDirectlyOrIndirectlyInstancesOf(EObject eObject, List<EClassifier> eClassifiers) {
+        boolean found = false;
+        final Iterator<EObject> allContents = eObject.eAllContents();
+        while (!found && allContents.hasNext()) {
+            var content = allContents.next();
+            for (EClassifier it : eClassifiers) {
+                found = it.isInstance(content);
+                if (found) {
+                    break;
+                }
+            }
+        }
+        return found;
+    }
+
+    protected String getResourceName(Resource resource) {
+        return resource.eAdapters().stream()
+                .filter(ResourceMetadataAdapter.class::isInstance)
+                .map(ResourceMetadataAdapter.class::cast)
+                .findFirst()
+                .map(ResourceMetadataAdapter::getName)
+                .orElse(resource.getURI().lastSegment());
+    }
+
+    protected String getElementName(Object element) {
+        String elementName = "";
+        if (element instanceof Resource resource) {
+            elementName = this.getResourceName(resource);
+        } else if (element instanceof ISysONExplorerFragment fragment) {
+            elementName = fragment.getLabel();
+        }
+        return elementName;
+    }
+
+    protected int getSelectionDialogRootSortRank(Object element) {
+        int rank = Integer.MAX_VALUE;
+        if (element instanceof Resource) {
+            rank = 0;
+        } else if (element instanceof ISysONExplorerFragment) {
+            rank = 1;
+        }
+        return rank;
+    }
+
+    protected List<Package> findClosestPackageInChildren(Element element) {
+        var result = new ArrayList<Package>();
+        if (element instanceof Package packageElement) {
+            result.add(packageElement);
+        } else if (element instanceof Membership membership) {
+            membership.getOwnedRelatedElement()
+                    .forEach(child -> result.addAll(this.findClosestPackageInChildren(child)));
+        } else {
+            element.getOwnedRelationship().stream()
+                    .filter(Membership.class::isInstance)
+                    .map(Membership.class::cast)
+                    .forEach(membership -> result.addAll(this.findClosestPackageInChildren(membership)));
+        }
+        return result;
+    }
+
+    protected Package getClosestContainingPackageFrom(Element element) {
+        var owner = element.eContainer();
+        while (!(owner instanceof Package) && owner != null) {
+            owner = owner.eContainer();
+        }
+        return (Package) owner;
+    }
+
+    protected List<Element> getOwnerHierarchy(Element element) {
+        List<Element> ownerHierarchy = new ArrayList<>();
+        Element currentElement = element;
+        while (currentElement.getOwner() != null) {
+            ownerHierarchy.add(currentElement.getOwner());
+            currentElement = currentElement.getOwner();
+        }
+        return ownerHierarchy;
+    }
+}

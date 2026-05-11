@@ -55,6 +55,18 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
         }
+        if (nacreLibElementType == NacreLibElementType.COMMUNICATIONMEDIA) {
+            Definition communicationMediaDefinition = NacreDefinitionsUtil.getCommunicationMediaDefinition(editingContext);
+            utilService.setFeatureTyping(usage, communicationMediaDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.COMPUTINGRESOURCE) {
+            Definition computingResourceDefinition = NacreDefinitionsUtil.getComputingResourceDefinition(editingContext);
+            utilService.setFeatureTyping(usage, computingResourceDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.SOFTWARERESOURCE) {
+            Definition softwareResourceDefinition = NacreDefinitionsUtil.getSoftwareResourceDefinition(editingContext);
+            utilService.setFeatureTyping(usage, softwareResourceDefinition);
+        }
         caseUsage(usage);
         return usage;
     }

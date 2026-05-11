@@ -12,6 +12,10 @@ public class NacreDescriptionNameGenerator extends DescriptionNameGenerator {
         super(DIAGRAM_PREFIX);
     }
 
+    public NacreDescriptionNameGenerator(String diagramPrefix) {
+        super(diagramPrefix);
+    }
+
     public String getCreationToolName(NacreLibElementType nacreElementType) {
         return nacreElementType.getName();
     }

@@ -41,8 +41,23 @@ public class NacreDefinitionsUtil {
     }
 
 
+    public static Definition getCommunicationMediaDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.COMMUNICATIONMEDIA, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
 
+    public static Definition getComputingResourceDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.COMPUTINGRESOURCE, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
 
+    public static Definition getSoftwareResourceDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.SOFTWARERESOURCE, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
 
     public static Optional<Definition> getNacreDefinition(Resource resource, NacreLibElementType nacreLibElementType, boolean isSubclassifier) {
         if (resource == null || nacreLibElementType == null) {

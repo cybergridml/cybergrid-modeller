@@ -1,6 +1,7 @@
 package cea.fr.NacreRTE;
 
 
+import cea.fr.NacreRTE.View.representations.CfaRepresentationDescriptionProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.View;
@@ -27,7 +28,7 @@ public class NacreViewJavaServiceProviderT implements IJavaServiceProvider {
     public List<Class<?>> getServiceClasses(View view) {
         EList<RepresentationDescription> descriptions = view.getDescriptions();
         Optional<RepresentationDescription> optDescription = descriptions.stream()
-                .filter(desc -> NacreRepresentationDescriptionProviderT.DESCRIPTION_NAME.equals(desc.getName())).findFirst();
+                .filter(desc -> CfaRepresentationDescriptionProvider.DESCRIPTION_NAME.equals(desc.getName())).findFirst();
         if (optDescription.isPresent()) {
             return List.of(
                     UtilService.class,
