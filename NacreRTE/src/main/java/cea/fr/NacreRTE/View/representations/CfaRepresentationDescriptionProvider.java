@@ -1,8 +1,6 @@
+package cea.fr.NacreRTE.View.representations;
 
-package cea.fr.NacreRTE;
-
-
-
+import cea.fr.NacreRTE.NacreToolDescriptionService;
 import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.*;
 import cea.fr.NacreRTE.library.NacreLibElementType;
@@ -24,25 +22,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-
-public class NacreRepresentationDescriptionProviderT implements IRepresentationDescriptionProvider {
+public class CfaRepresentationDescriptionProvider implements IRepresentationDescriptionProvider {
 
     public static final String DESCRIPTION_NAME = "CFA view";
-    
-
 
     public static final List<NacreLibElementType> ELEMENTS = List.of(
             NacreLibElementType.MAINGRID,
-            NacreLibElementType.ZONE,
-            NacreLibElementType.SUBSTATION,
-            NacreLibElementType.CENTRALCONTROLLER,
-            NacreLibElementType.ZONALCONTROlLER
+            //NacreLibElementType.ZONE,
+            //NacreLibElementType.SUBSTATION,
+            NacreLibElementType.CENTRALCONTROLLER
+           // NacreLibElementType.ZONALCONTROlLER
     );
 
-
-
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final NacreDescriptionNameGenerator descriptionNameGenerator = new NacreDescriptionNameGenerator();
+    private final NacreDescriptionNameGenerator descriptionNameGenerator = new NacreDescriptionNameGenerator("NACRE_CFA");
     private final NacreToolDescriptionService nacreToolDescriptionService = new NacreToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
@@ -57,69 +50,53 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
         var diagramDescription = diagramDescriptionBuilder.build();
 
         var cache = new ViewDiagramElementFinder();
-       var diagramElementDescriptionProviders = this.createDiagramElementDescriptionProviders(colorProvider, descriptionNameGenerator);
+        var diagramElementDescriptionProviders = this.createDiagramElementDescriptionProviders(colorProvider, descriptionNameGenerator);
 
         diagramElementDescriptionProviders.stream()
                 .map(IDiagramElementDescriptionProvider::create)
                 .forEach(cache::put);
 
         diagramElementDescriptionProviders.forEach(d -> d.link(diagramDescription, cache));
-        //this.linkAllocationDefinitionEndsCompartment(cache);
         var palette = this.createDiagramPalette(cache);
         diagramDescription.setPalette(palette);
         return diagramDescription;
     }
 
-  protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
-       IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
-       List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-
-       providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ZonalcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
-       providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
-       return providers;
-   }
-    private void linkAllocationDefinitionEndsCompartment(IViewDiagramElementFinder cache) {
-        NodeDescription allocationDefinitionNodeDescription = cache.getNodeDescription(this.getDescriptionNameGenerator().getNodeName(SysmlPackage.eINSTANCE.getAllocationDefinition())).get();
-        cache.getNodeDescription(
-                        this.getDescriptionNameGenerator().getCompartmentName(SysmlPackage.eINSTANCE.getAllocationDefinition(), SysmlPackage.eINSTANCE.getConnectionDefinition_ConnectionEnd()))
-                .ifPresent(allocationDefinitionNodeDescription.getReusedChildNodeDescriptions()::add);
+    protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
+            IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
+        List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
+        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+       // providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+       // providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+       // providers.add(new ZonalcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
+        return providers;
     }
+
     protected IDescriptionNameGenerator getDescriptionNameGenerator() {
         return this.descriptionNameGenerator;
     }
+
     protected String getName() {
         return DESCRIPTION_NAME;
     }
 
     protected DiagramPalette createDiagramPalette(IViewDiagramElementFinder cache) {
         return this.diagramBuilderHelper.newDiagramPalette()
-                //.dropNodeTool(this.createDropFromDiagramTool(cache))
                 .dropTool(this.nacreToolDescriptionService.createDropFromExplorerTool())
                 .nodeTools(this.createNodeTools(cache))
                 .build();
     }
 
-
-    /**
-     * Create the tools shown in the main tools section when clicking on the diagram background
-     */
     private NodeTool[] createNodeTools(IViewDiagramElementFinder cache) {
         var nodeTools = new ArrayList<NodeTool>();
-
         ELEMENTS.forEach(element -> nodeTools.addAll(this.getCreationToolsForElement(element, cache)));
         nodeTools.sort(Comparator.comparing(NodeTool::getName));
-
         return nodeTools.toArray(NodeTool[]::new);
     }
 
-    /**
-     * Create the creation tool for the given element (Activity, Container, ..)
-     */
     private List<NodeTool> getCreationToolsForElement(NacreLibElementType nacreElementType, IViewDiagramElementFinder cache) {
         List<NodeTool> elementCreationTools = new ArrayList<>();
         NodeDescription nodeDescription = cache.getNodeDescription(
@@ -132,39 +109,8 @@ public class NacreRepresentationDescriptionProviderT implements IRepresentationD
     }
 
     private List<IDiagramElementDescriptionProvider<?>> createAllEdgeDescriptionProviders(IColorProvider colorProvider) {
-        final var edgeDescriptionProviders = new ArrayList<IDiagramElementDescriptionProvider<?>>();
-
-
+        var edgeDescriptionProviders = new ArrayList<IDiagramElementDescriptionProvider<?>>();
         edgeDescriptionProviders.add(new AllocateEdgeDescriptionProvider(colorProvider));
-
         return edgeDescriptionProviders;
     }
-//    private DropNodeTool createDropFromDiagramTool(IViewDiagramElementFinder cache) {
-//        var dropElementFromDiagram = this.viewBuilderHelper.newChangeContext().expression(
-//                AQLUtils.getServiceCallExpression("droppedElement", "dropElementFromDiagram", List.of("droppedNode",
-//                        "targetElement", "targetNode", "editingContext", "diagramContext", "convertedNodes")));
-//
-//        var activityNodeDescription = cache.getNodeDescription(descriptionNameGenerator.getNodeName(LcaElementType.ACTIVITY.getServiceSuffix()));
-//        var containerNodeDescription = cache.getNodeDescription(descriptionNameGenerator.getNodeName(LcaElementType.CONTAINER.getServiceSuffix()));
-//        if (activityNodeDescription.isPresent() && containerNodeDescription.isPresent()) {
-//            return this.diagramBuilderHelper.newDropNodeTool().name("Drop from Diagram")
-//                    .acceptedNodeTypes(activityNodeDescription.get())
-//                    .acceptedNodeTypes(containerNodeDescription.get())
-//                    .body(dropElementFromDiagram.build()).build();
-//        }
-//
-//        return null;
-//    }
-
-    private void addPropertiesCompartmentItemNodes(List<IDiagramElementDescriptionProvider<?>> providers, NacreLibElementType lcaElementType, IColorProvider lcaColorProvider, NacreDescriptionNameGenerator nameGenerator) {
-//
-    }
-
-    private void addPropertiesCompartmentNode(List<IDiagramElementDescriptionProvider<?>> providers, NacreLibElementType nacreElementType, IColorProvider lcaColorProvider, NacreDescriptionNameGenerator nameGenerator) {
-//
-   }
-
-
-
-
 }

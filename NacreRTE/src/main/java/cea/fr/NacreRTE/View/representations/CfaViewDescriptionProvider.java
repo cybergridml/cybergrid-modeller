@@ -1,12 +1,12 @@
 
-package cea.fr.NacreRTE;
+package cea.fr.NacreRTE.View.representations;
 
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.syson.common.view.api.IViewDescriptionProvider;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NacreViewDescriptionProviderT implements IViewDescriptionProvider {
+public class CfaViewDescriptionProvider implements IViewDescriptionProvider {
 
 	@Override
 	public String getViewId() {
@@ -15,7 +15,7 @@ public class NacreViewDescriptionProviderT implements IViewDescriptionProvider {
 
 	@Override
 	public IRepresentationDescriptionProvider getRepresentationDescriptionProvider() {
-		return new NacreRepresentationDescriptionProviderT();
+		return new CfaRepresentationDescriptionProvider();
 	}
 
 }
