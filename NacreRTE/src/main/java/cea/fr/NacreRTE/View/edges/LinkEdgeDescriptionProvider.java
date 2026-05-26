@@ -33,7 +33,7 @@ public class LinkEdgeDescriptionProvider extends AbstractAllocateEdgeDescription
     @Override
     public EdgeDescription create() {
         EdgeDescription description = super.create();
-        description.setCenterLabelExpression("");
+        description.setCenterLabelExpression("'Link'");
         description.setStyle(generateEdgeStyle());
         return description;
     }

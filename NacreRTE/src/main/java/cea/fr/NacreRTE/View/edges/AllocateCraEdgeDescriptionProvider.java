@@ -33,7 +33,7 @@ public class AllocateCraEdgeDescriptionProvider extends AbstractAllocateEdgeDesc
     @Override
     public EdgeDescription create() {
         EdgeDescription description = super.create();
-        description.setCenterLabelExpression("");
+        description.setCenterLabelExpression("'Allocate'");
         description.setStyle(generateEdgeStyle());
         return description;
     }

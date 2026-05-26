@@ -55,6 +55,7 @@ public abstract class AbstractNacreUsageNodeDescriptionProvider extends Abstract
                 .build();
     }
 
+
     @Override
     protected InsideLabelDescription createInsideLabelDescription() {
         InsideLabelDescription label = super.createInsideLabelDescription();
