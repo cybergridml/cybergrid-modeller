@@ -86,7 +86,7 @@ public class LinkEdgeDescriptionProvider extends AbstractAllocateEdgeDescription
                 .newEdgeStyle()
                 .edgeWidth(1)
                 .borderSize(0)
-                .lineStyle(LineStyle.SOLID)
+                .lineStyle(LineStyle.DASH)
                 .color(colorProvider.getColor(NacreViewConstants.LINK_EDGE_COLOR))
                 .sourceArrowStyle(ArrowStyle.NONE)
                 .targetArrowStyle(ArrowStyle.NONE)

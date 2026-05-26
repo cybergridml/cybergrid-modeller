@@ -84,7 +84,7 @@ public class AllocateCraEdgeDescriptionProvider extends AbstractAllocateEdgeDesc
                 .newEdgeStyle()
                 .edgeWidth(1)
                 .borderSize(0)
-                .lineStyle(LineStyle.SOLID)
+                .lineStyle(LineStyle.DASH)
                 .color(colorProvider.getColor(NacreViewConstants.ALLOCATE_EDGE_COLOR))
                 .sourceArrowStyle(ArrowStyle.NONE)
                 .targetArrowStyle(ArrowStyle.INPUT_ARROW)
