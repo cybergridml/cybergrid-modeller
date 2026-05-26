@@ -29,7 +29,7 @@ public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescription
     @Override
     public EdgeDescription create() {
         EdgeDescription description = super.create();
-        description.setCenterLabelExpression("");
+        description.setCenterLabelExpression("'Control'");
         description.setStyle(generateEdgeStyle());
         return description;
     }
@@ -41,12 +41,16 @@ public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescription
 
     @Override
     protected List<NodeDescription> getSourceNodes(IViewDiagramElementFinder cache) {
-        return buildControlNodes(cache);
+        List<NodeDescription> nodes = new ArrayList<>();
+        cache.getNodeDescription(nacreNameGenerator.getNodeName(NacreLibElementType.CENTRALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
+        return nodes;
     }
 
     @Override
     protected List<NodeDescription> getTargetNodes(IViewDiagramElementFinder cache) {
-        return buildControlNodes(cache);
+        List<NodeDescription> nodes = new ArrayList<>();
+        cache.getNodeDescription(nacreNameGenerator.getNodeName(NacreLibElementType.MAINGRID.getServiceSuffix())).ifPresent(nodes::add);
+        return nodes;
     }
 
     @Override
@@ -83,10 +87,10 @@ public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescription
                 .newEdgeStyle()
                 .edgeWidth(1)
                 .borderSize(0)
-                .lineStyle(LineStyle.SOLID)
+                .lineStyle(LineStyle.DASH)
                 .color(colorProvider.getColor(NacreViewConstants.CONTROLLER_EDGE_COLOR))
                 .sourceArrowStyle(ArrowStyle.NONE)
-                .targetArrowStyle(ArrowStyle.NONE)
+                .targetArrowStyle(ArrowStyle.INPUT_ARROW)
                 .build();
     }
 }

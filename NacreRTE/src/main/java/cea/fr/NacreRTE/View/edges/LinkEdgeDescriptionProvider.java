@@ -32,7 +32,7 @@ public class LinkEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionPro
     @Override
     public EdgeDescription create() {
         EdgeDescription description = super.create();
-        description.setCenterLabelExpression("");
+        description.setCenterLabelExpression("'Link'");
         description.setStyle(generateEdgeStyle());
         return description;
     }
@@ -85,7 +85,7 @@ public class LinkEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionPro
                 .newEdgeStyle()
                 .edgeWidth(1)
                 .borderSize(0)
-                .lineStyle(LineStyle.SOLID)
+                .lineStyle(LineStyle.DASH)
                 .color(colorProvider.getColor(NacreViewConstants.LINK_EDGE_COLOR))
                 .sourceArrowStyle(ArrowStyle.NONE)
                 .targetArrowStyle(ArrowStyle.NONE)

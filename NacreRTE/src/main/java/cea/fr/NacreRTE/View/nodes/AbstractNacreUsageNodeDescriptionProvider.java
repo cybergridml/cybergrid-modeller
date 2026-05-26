@@ -7,7 +7,6 @@ import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.nodes.AbstractUsageNodeDescriptionProvider;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,31 +51,10 @@ public abstract class AbstractNacreUsageNodeDescriptionProvider extends Abstract
                 .userResizable(UserResizableDirection.BOTH)
                 .keepAspectRatio(false)
                 .style(this.createNodeStyle())
-                .conditionalStyles(this.createHazardConditionalNodeStyle())
                 .synchronizationPolicy(SynchronizationPolicy.SYNCHRONIZED)
                 .build();
     }
 
-    private ConditionalNodeStyle createHazardConditionalNodeStyle() {
-        var layoutStrategy = this.diagramBuilderHelper.newListLayoutStrategyDescription()
-                .areChildNodesDraggableExpression("false")
-                .bottomGapExpression("10")
-                .growableNodes(new ArrayList<NodeDescription>().toArray(NodeDescription[]::new))
-                .build();
-
-        var hazardStyle = this.diagramBuilderHelper.newRectangularNodeStyleDescription()
-                .borderColor(this.colorProvider.getColor(NacreViewConstants.HAZARD_NODE_BORDER_COLOR))
-                .borderSize(3)
-                .borderLineStyle(LineStyle.DASH)
-                .background(this.colorProvider.getColor(NacreViewConstants.HAZARD_NODE_BACKGROUND_COLOR))
-                .childrenLayoutStrategy(layoutStrategy)
-                .build();
-
-        return this.diagramBuilderHelper.newConditionalNodeStyle()
-                .condition("aql:self.hasHazard()")
-                .style(hazardStyle)
-                .build();
-    }
 
     @Override
     protected InsideLabelDescription createInsideLabelDescription() {
@@ -88,37 +66,8 @@ public abstract class AbstractNacreUsageNodeDescriptionProvider extends Abstract
 protected abstract NodeStyleDescription createNodeStyle();
 
     @Override
-    public void link(DiagramDescription diagramDescription, IViewDiagramElementFinder cache) {
-        super.link(diagramDescription, cache);
-        cache.getNodeDescription(this.getNodeDescriptionName()).ifPresent(nodeDescription -> {
-            var palette = nodeDescription.getPalette();
-            if (palette != null) {
-                palette.getQuickAccessTools().removeIf(t -> "Delete from Diagram".equals(t.getName()));
-                palette.getQuickAccessTools().add(this.createHazardNodeTool());
-            }
-        });
-    }
-
-    @Override
     protected List<NodeToolSection> getToolSections(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
         return List.of();
-    }
-
-    @Override
-    protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
-        return List.of();
-    }
-
-    private NodeTool createHazardNodeTool() {
-        var toggleBody = this.viewBuilderHelper.newChangeContext()
-                .expression("aql:self.toggleHazard()")
-                .build();
-
-        return this.diagramBuilderHelper.newNodeTool()
-                .name("Toggle Hazard")
-                .iconURLsExpression("/images/hazard.svg")
-                .body(toggleBody)
-                .build();
     }
 
     @Override

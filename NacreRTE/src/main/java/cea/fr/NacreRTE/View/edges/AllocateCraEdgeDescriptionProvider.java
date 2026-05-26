@@ -32,7 +32,7 @@ public class AllocateCraEdgeDescriptionProvider extends AbstractNacreEdgeDescrip
     @Override
     public EdgeDescription create() {
         EdgeDescription description = super.create();
-        description.setCenterLabelExpression("");
+        description.setCenterLabelExpression("'Allocate'");
         description.setStyle(generateEdgeStyle());
         return description;
     }
@@ -88,7 +88,7 @@ public class AllocateCraEdgeDescriptionProvider extends AbstractNacreEdgeDescrip
                 .newEdgeStyle()
                 .edgeWidth(1)
                 .borderSize(0)
-                .lineStyle(LineStyle.SOLID)
+                .lineStyle(LineStyle.DASH)
                 .color(colorProvider.getColor(NacreViewConstants.ALLOCATE_EDGE_COLOR))
                 .sourceArrowStyle(ArrowStyle.NONE)
                 .targetArrowStyle(ArrowStyle.INPUT_ARROW)

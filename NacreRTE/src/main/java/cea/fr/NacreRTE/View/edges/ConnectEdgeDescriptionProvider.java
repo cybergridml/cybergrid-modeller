@@ -32,7 +32,7 @@ public class ConnectEdgeDescriptionProvider extends AbstractNacreEdgeDescription
     @Override
     public EdgeDescription create() {
         EdgeDescription description = super.create();
-        description.setCenterLabelExpression("");
+        description.setCenterLabelExpression("'Connect'");
         description.setStyle(generateEdgeStyle());
         return description;
     }
@@ -86,7 +86,8 @@ public class ConnectEdgeDescriptionProvider extends AbstractNacreEdgeDescription
                 .lineStyle(LineStyle.DASH)
                 .color(colorProvider.getColor(NacreViewConstants.CONNECT_EDGE_COLOR))
                 .sourceArrowStyle(ArrowStyle.NONE)
-                .targetArrowStyle(ArrowStyle.NONE)
+                .targetArrowStyle(ArrowStyle.INPUT_ARROW)
                 .build();
     }
+
 }
