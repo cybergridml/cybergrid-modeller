@@ -30,7 +30,7 @@ public class SubstationNodeDescriptionProvider extends AbstractNacreUsageNodeDes
         return this.diagramBuilderHelper.newRectangularNodeStyleDescription()
                 .borderColor(this.colorProvider.getColor(NacreViewConstants.SUBSTATION_NODE_BORDER_COLOR))
                 .borderSize(3)
-                .borderLineStyle(LineStyle.DASH)
+                .borderRadius(10)
                 .background(this.colorProvider.getColor(NacreViewConstants.SUBSTATION_NODE_BACKGROUND_COLOR))
                 .childrenLayoutStrategy(layoutStrategy)
                 .build();

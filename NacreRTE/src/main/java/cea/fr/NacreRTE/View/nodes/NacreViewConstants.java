@@ -51,9 +51,9 @@ public class NacreViewConstants {
 
 	public static final String COMPUTINGRESOURCE_NODE_BORDER_COLOR = "teal 800";
 
-	public static final String SOFTWARERESOURCE_NODE_BACKGROUND_COLOR = "purple 100";
+	public static final String SOFTWARERESOURCE_NODE_BACKGROUND_COLOR = "orange 100";
 
-	public static final String SOFTWARERESOURCE_NODE_BORDER_COLOR = "purple 800";
+	public static final String SOFTWARERESOURCE_NODE_BORDER_COLOR = "orange 800";
 
 	public static final String ALLOCATE_EDGE_COLOR = "blue 600";
 

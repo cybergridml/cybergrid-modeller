@@ -30,7 +30,7 @@ public class ZoneNodeDescriptionProvider extends AbstractNacreUsageNodeDescripti
         return this.diagramBuilderHelper.newRectangularNodeStyleDescription()
                 .borderColor(this.colorProvider.getColor(NacreViewConstants.ZONE_NODE_BORDER_COLOR))
                 .borderSize(3)
-                .borderLineStyle(LineStyle.DASH)
+                .borderRadius(10)
                 .background(this.colorProvider.getColor(NacreViewConstants.ZONE_NODE_BACKGROUND_COLOR))
                 .childrenLayoutStrategy(layoutStrategy)
                 .build();
