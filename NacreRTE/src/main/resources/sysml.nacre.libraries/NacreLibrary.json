@@ -5408,6 +5408,158 @@
                             }
                           ]
                         }
+                      },
+                      {
+                        "id": "bc0dc458-4d96-411c-bb7a-10e104cd2877",
+                        "eClass": "sysml:OwningMembership",
+                        "data": {
+                          "elementId": "d9b3e5dd-bf46-4cd1-9447-66942364bf2b",
+                          "ownedRelatedElement": [
+                            {
+                              "id": "3fd14f28-262e-4938-924f-20670cd85e74",
+                              "eClass": "sysml:MetadataDefinition",
+                              "data": {
+                                "declaredName": "Hazard",
+                                "elementId": "36729858-df63-433f-bea7-c9576db4b253",
+                                "ownedRelationship": [
+                                  {
+                                    "id": "562b15d3-1c88-424c-a724-11f02e3a4e54",
+                                    "eClass": "sysml:FeatureMembership",
+                                    "data": {
+                                      "elementId": "e2cb5782-13ba-4091-a1e3-93e093f524f2",
+                                      "ownedRelatedElement": [
+                                        {
+                                          "id": "49bc829d-158c-480e-a2eb-61ef2bc8dcbc",
+                                          "eClass": "sysml:AttributeUsage",
+                                          "data": {
+                                            "declaredName": "description",
+                                            "elementId": "b76f2bbc-70a1-41a1-b354-69fd30021319",
+                                            "ownedRelationship": [
+                                              {
+                                                "id": "3776bb8d-301a-4227-b767-fc10d65973e0",
+                                                "eClass": "sysml:FeatureTyping",
+                                                "data": {
+                                                  "elementId": "35677df7-6ce0-4f46-9045-4bc00b0f71fc",
+                                                  "type": "sysml:DataType kermllibrary:///b2c6dd37-2084-3ce4-9ce2-580fdf30629c#76028d3d-69a4-5e12-9002-ce403e0244bd",
+                                                  "typedFeature": "49bc829d-158c-480e-a2eb-61ef2bc8dcbc"
+                                                }
+                                              }
+                                            ],
+                                            "isComposite": true
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "id": "611459d3-a17f-4014-ac1b-f6d90f1cde38",
+                                    "eClass": "sysml:FeatureMembership",
+                                    "data": {
+                                      "elementId": "86d9fee8-7164-4df9-880e-c480d4d490ba",
+                                      "ownedRelatedElement": [
+                                        {
+                                          "id": "9941111c-71be-4001-94e0-bfc7639b84b4",
+                                          "eClass": "sysml:AttributeUsage",
+                                          "data": {
+                                            "declaredName": "justification",
+                                            "elementId": "57ebbfd5-b2e8-4e46-9950-f376dbcaaa91",
+                                            "ownedRelationship": [
+                                              {
+                                                "id": "77025058-698b-44fd-b98c-1f57fc32281f",
+                                                "eClass": "sysml:FeatureTyping",
+                                                "data": {
+                                                  "elementId": "a8935024-c0c5-4552-a63e-17ae28fcb696",
+                                                  "type": "sysml:DataType kermllibrary:///b2c6dd37-2084-3ce4-9ce2-580fdf30629c#76028d3d-69a4-5e12-9002-ce403e0244bd",
+                                                  "typedFeature": "9941111c-71be-4001-94e0-bfc7639b84b4"
+                                                }
+                                              }
+                                            ],
+                                            "isComposite": true
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "id": "3fe02bab-d763-433a-a96a-1e769554e814",
+                                    "eClass": "sysml:FeatureMembership",
+                                    "data": {
+                                      "elementId": "785bd20c-02c9-4b43-8477-a4d780e9dc5b",
+                                      "ownedRelatedElement": [
+                                        {
+                                          "id": "ed0fa9b4-c990-4416-8799-3a42a997b413",
+                                          "eClass": "sysml:AttributeUsage",
+                                          "data": {
+                                            "declaredName": "start",
+                                            "elementId": "1015d5e0-f2c0-4925-a2d2-9ab9a6276756",
+                                            "ownedRelationship": [
+                                              {
+                                                "id": "0fead8e8-1529-4cbc-b494-911647b4bbb2",
+                                                "eClass": "sysml:FeatureTyping",
+                                                "data": {
+                                                  "elementId": "bcaca17e-2d64-4c0e-9742-a708ecbccd50",
+                                                  "type": "sysml:DataType kermllibrary:///b2c6dd37-2084-3ce4-9ce2-580fdf30629c#f2350199-2ab1-5258-8514-58812ef25dc6",
+                                                  "typedFeature": "ed0fa9b4-c990-4416-8799-3a42a997b413"
+                                                }
+                                              },
+                                              {
+                                                "id": "19212d94-cae6-45c3-8df7-6b7ce694d5cc",
+                                                "eClass": "sysml:FeatureValue",
+                                                "data": {
+                                                  "elementId": "a3dcf728-c4b3-435f-b777-25b240cf78ca",
+                                                  "ownedRelatedElement": [
+                                                    {
+                                                      "id": "2fb1c887-11b2-48d1-b4ea-7ad03b23f86a",
+                                                      "eClass": "sysml:LiteralInteger",
+                                                      "data": {
+                                                        "elementId": "763f047d-074f-419d-be3a-5c30b581936e",
+                                                        "value": 0
+                                                      }
+                                                    }
+                                                  ]
+                                                }
+                                              }
+                                            ],
+                                            "isComposite": true
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "id": "9fd1f99c-e479-4605-b816-35a9e320bd07",
+                                    "eClass": "sysml:FeatureMembership",
+                                    "data": {
+                                      "elementId": "d483bebe-3feb-42d1-ba43-2abcd43606c9",
+                                      "ownedRelatedElement": [
+                                        {
+                                          "id": "a2e35df7-f883-4d4d-955f-94f4e821b11d",
+                                          "eClass": "sysml:AttributeUsage",
+                                          "data": {
+                                            "declaredName": "end",
+                                            "elementId": "cdbc1e65-351f-4c47-b672-fe45e51e6dd9",
+                                            "ownedRelationship": [
+                                              {
+                                                "id": "f233d882-9dcc-43f6-89eb-4624d4a68dc8",
+                                                "eClass": "sysml:FeatureTyping",
+                                                "data": {
+                                                  "elementId": "377a2c9e-dfad-40a9-99f6-b039845fc1c5",
+                                                  "type": "sysml:DataType kermllibrary:///b2c6dd37-2084-3ce4-9ce2-580fdf30629c#f2350199-2ab1-5258-8514-58812ef25dc6",
+                                                  "typedFeature": "a2e35df7-f883-4d4d-955f-94f4e821b11d"
+                                                }
+                                              }
+                                            ],
+                                            "isComposite": true
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
                       }
                     ]
                   }

@@ -43,7 +43,7 @@ public abstract class AbstractNacreEdgeDescriptionProvider extends AbstractAlloc
 
     private NodeTool createHazardEdgeTool() {
         var toggleBody = this.viewBuilderHelper.newChangeContext()
-                .expression("aql:self.toggleHazard()")
+                .expression("aql:self.toggleHazard(editingContext)")
                 .build();
 
         return this.diagramBuilderHelper.newNodeTool()
