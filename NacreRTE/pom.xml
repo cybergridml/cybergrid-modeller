@@ -51,6 +51,11 @@
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.syson</groupId>
+			<artifactId>org.eclipse.syson.services</artifactId>
+			<version>${syson.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
