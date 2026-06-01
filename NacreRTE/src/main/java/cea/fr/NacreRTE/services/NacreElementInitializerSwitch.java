@@ -38,22 +38,28 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         if (nacreLibElementType == NacreLibElementType.MAINGRID) {
             Definition maingridDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, maingridDefinition);
+            addDefinitionAttributes(usage, maingridDefinition);
+
         }
         if (nacreLibElementType == NacreLibElementType.ZONE) {
             Definition zoneDefinition = NacreDefinitionsUtil.getZoneDefinition(editingContext);
             utilService.setFeatureTyping(usage, zoneDefinition);
+            addDefinitionAttributes(usage, zoneDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONALCONTROlLER) {
             Definition zonalcontollerDefinition = NacreDefinitionsUtil.getZONALCONTROlLERDefinition(editingContext);
             utilService.setFeatureTyping(usage, zonalcontollerDefinition);
+            addDefinitionAttributes(usage, zonalcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
             Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
+            addDefinitionAttributes(usage, centralcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.SUBSTATION) {
             Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
+            addDefinitionAttributes(usage, substationDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.COMMUNICATIONMEDIA) {
             Definition communicationMediaDefinition = NacreDefinitionsUtil.getCommunicationMediaDefinition(editingContext);
@@ -63,10 +69,14 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         if (nacreLibElementType == NacreLibElementType.COMPUTINGRESOURCE) {
             Definition computingResourceDefinition = NacreDefinitionsUtil.getComputingResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, computingResourceDefinition);
+            addDefinitionAttributes(usage, computingResourceDefinition);
+
         }
         if (nacreLibElementType == NacreLibElementType.SOFTWARERESOURCE) {
             Definition softwareResourceDefinition = NacreDefinitionsUtil.getSoftwareResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, softwareResourceDefinition);
+            addDefinitionAttributes(usage, softwareResourceDefinition);
+
         }
         caseUsage(usage);
         return usage;
