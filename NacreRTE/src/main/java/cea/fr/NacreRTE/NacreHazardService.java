@@ -1,20 +1,14 @@
 package cea.fr.NacreRTE;
 
 import cea.fr.NacreRTE.library.util.NacreDefinitionsUtil;
+import cea.fr.NacreRTE.library.util.NacrePropertyUtil;
 import org.eclipse.sirius.components.core.api.IEditingContext;
-import org.eclipse.syson.sysml.AttributeUsage;
 import org.eclipse.syson.sysml.Element;
-import org.eclipse.syson.sysml.FeatureMembership;
-import org.eclipse.syson.sysml.FeatureValue;
-import org.eclipse.syson.sysml.LiteralInteger;
-import org.eclipse.syson.sysml.LiteralString;
-import org.eclipse.syson.sysml.MetadataDefinition;
 import org.eclipse.syson.sysml.MetadataUsage;
 import org.eclipse.syson.sysml.OwningMembership;
 import org.eclipse.syson.sysml.SysmlFactory;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class NacreHazardService {
 
@@ -56,52 +50,11 @@ public class NacreHazardService {
             featureTyping.setTypedFeature(metadataUsage);
             metadataUsage.getOwnedRelationship().add(featureTyping);
 
-            getDefinitionAttributes(hazardDef)
-                    .forEach(defAttr -> addAttributeUsage(metadataUsage, defAttr));
+            NacrePropertyUtil.addAttributesFromDefinition(metadataUsage, hazardDef);
         });
 
         var owningMembership = SysmlFactory.eINSTANCE.createOwningMembership();
         owningMembership.getOwnedRelatedElement().add(metadataUsage);
         return owningMembership;
-    }
-
-    private Stream<AttributeUsage> getDefinitionAttributes(MetadataDefinition hazardDef) {
-        return hazardDef.getOwnedRelationship().stream()
-                .filter(FeatureMembership.class::isInstance)
-                .map(FeatureMembership.class::cast)
-                .flatMap(fm -> fm.getOwnedRelatedElement().stream())
-                .filter(AttributeUsage.class::isInstance)
-                .map(AttributeUsage.class::cast);
-    }
-
-    private void addAttributeUsage(MetadataUsage parent, AttributeUsage defAttr) {
-        AttributeUsage attr = SysmlFactory.eINSTANCE.createAttributeUsage();
-        attr.setDeclaredName(defAttr.getDeclaredName());
-        attr.setIsComposite(true);
-
-        // Copy FeatureValue from library definition if present (e.g. start = 0)
-        defAttr.getOwnedRelationship().stream()
-                .filter(FeatureValue.class::isInstance)
-                .map(FeatureValue.class::cast)
-                .findFirst()
-                .ifPresent(defFv -> {
-                    var fv = SysmlFactory.eINSTANCE.createFeatureValue();
-                    defFv.getOwnedRelatedElement().stream().findFirst().ifPresent(expr -> {
-                        if (expr instanceof LiteralInteger li) {
-                            var copy = SysmlFactory.eINSTANCE.createLiteralInteger();
-                            copy.setValue(li.getValue());
-                            fv.getOwnedRelatedElement().add(copy);
-                        } else if (expr instanceof LiteralString ls) {
-                            var copy = SysmlFactory.eINSTANCE.createLiteralString();
-                            copy.setValue(ls.getValue());
-                            fv.getOwnedRelatedElement().add(copy);
-                        }
-                    });
-                    attr.getOwnedRelationship().add(fv);
-                });
-
-        FeatureMembership fm = SysmlFactory.eINSTANCE.createFeatureMembership();
-        fm.getOwnedRelatedElement().add(attr);
-        parent.getOwnedRelationship().add(fm);
     }
 }
