@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service
 public class NacreProjectTemplatesInitializer implements IProjectTemplateInitializer {
 
-    private static final String Nacre_DOCUMENT_NAME = "CyberGridML Study";
+    private static final String Nacre_DOCUMENT_NAME = "CyberGridML.sysml";
 
 
     private final IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider;

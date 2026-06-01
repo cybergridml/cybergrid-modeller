@@ -1,8 +1,7 @@
-package cea.fr.NacreRTE;
+package cea.fr.NacreRTE.View.representations;
 
 
-import cea.fr.NacreRTE.View.representations.CfraRepresentationDescriptionProvider;
-import cea.fr.NacreRTE.View.representations.CraRepresentationDescriptionProvider;
+import cea.fr.NacreRTE.*;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.View;
@@ -23,13 +22,13 @@ import java.util.Optional;
 
 
 @Configuration
-public class NacreViewJavaServiceProviderCFRA implements IJavaServiceProvider {
+public class CraViewJavaServiceProvider implements IJavaServiceProvider {
 
     @Override
     public List<Class<?>> getServiceClasses(View view) {
         EList<RepresentationDescription> descriptions = view.getDescriptions();
         Optional<RepresentationDescription> optDescription = descriptions.stream()
-                .filter(desc -> CfraRepresentationDescriptionProvider.DESCRIPTION_NAME.equals(desc.getName())).findFirst();
+                .filter(desc -> CraRepresentationDescriptionProvider.DESCRIPTION_NAME.equals(desc.getName())).findFirst();
         if (optDescription.isPresent()) {
             return List.of(
                     UtilService.class,
@@ -44,7 +43,8 @@ public class NacreViewJavaServiceProviderCFRA implements IJavaServiceProvider {
                     NacreViewToolService.class,
                     NacreViewCreateService.class,
                     NacreViewNodeService.class,
-                    NacreDiagramAQLService.class
+                    NacreDiagramAQLService.class,
+                    NacreHazardService.class
                    );
         }
         return List.of();
