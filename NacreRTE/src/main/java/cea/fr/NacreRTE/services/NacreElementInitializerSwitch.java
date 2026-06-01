@@ -38,34 +38,45 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         if (nacreLibElementType == NacreLibElementType.MAINGRID) {
             Definition maingridDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, maingridDefinition);
+            addDefinitionAttributes(usage, maingridDefinition);
+
         }
         if (nacreLibElementType == NacreLibElementType.ZONE) {
             Definition zoneDefinition = NacreDefinitionsUtil.getZoneDefinition(editingContext);
             utilService.setFeatureTyping(usage, zoneDefinition);
+            addDefinitionAttributes(usage, zoneDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONALCONTROlLER) {
             Definition zonalcontollerDefinition = NacreDefinitionsUtil.getZONALCONTROlLERDefinition(editingContext);
             utilService.setFeatureTyping(usage, zonalcontollerDefinition);
+            addDefinitionAttributes(usage, zonalcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
             Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
+            addDefinitionAttributes(usage, centralcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.SUBSTATION) {
             Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
+            addDefinitionAttributes(usage, substationDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.COMMUNICATIONMEDIA) {
             Definition communicationMediaDefinition = NacreDefinitionsUtil.getCommunicationMediaDefinition(editingContext);
             utilService.setFeatureTyping(usage, communicationMediaDefinition);
+            addDefinitionAttributes(usage, communicationMediaDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.COMPUTINGRESOURCE) {
             Definition computingResourceDefinition = NacreDefinitionsUtil.getComputingResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, computingResourceDefinition);
+            addDefinitionAttributes(usage, computingResourceDefinition);
+
         }
         if (nacreLibElementType == NacreLibElementType.SOFTWARERESOURCE) {
             Definition softwareResourceDefinition = NacreDefinitionsUtil.getSoftwareResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, softwareResourceDefinition);
+            addDefinitionAttributes(usage, softwareResourceDefinition);
+
         }
         caseUsage(usage);
         return usage;
@@ -95,6 +106,48 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
                     .count();
         }
         return 0;
+    }
+
+    private void addDefinitionAttributes(Usage usage, Definition definition) {
+        definition.getOwnedRelationship().stream()
+                .filter(FeatureMembership.class::isInstance)
+                .map(FeatureMembership.class::cast)
+                .flatMap(fm -> fm.getOwnedRelatedElement().stream())
+                .filter(AttributeUsage.class::isInstance)
+                .map(AttributeUsage.class::cast)
+                .forEach(defAttr -> {
+                    AttributeUsage attr = SysmlFactory.eINSTANCE.createAttributeUsage();
+                    attr.setDeclaredName(defAttr.getDeclaredName());
+                    attr.setIsComposite(false);
+
+                    defAttr.getOwnedRelationship().stream()
+                            .filter(FeatureValue.class::isInstance)
+                            .map(FeatureValue.class::cast)
+                            .findFirst()
+                            .ifPresent(defFv -> {
+                                var fv = SysmlFactory.eINSTANCE.createFeatureValue();
+                                defFv.getOwnedRelatedElement().stream().findFirst().ifPresent(expr -> {
+                                    if (expr instanceof LiteralInteger li) {
+                                        var copy = SysmlFactory.eINSTANCE.createLiteralInteger();
+                                        copy.setValue(li.getValue());
+                                        fv.getOwnedRelatedElement().add(copy);
+                                    } else if (expr instanceof LiteralRational lr) {
+                                        var copy = SysmlFactory.eINSTANCE.createLiteralRational();
+                                        copy.setValue(lr.getValue());
+                                        fv.getOwnedRelatedElement().add(copy);
+                                    } else if (expr instanceof LiteralString ls) {
+                                        var copy = SysmlFactory.eINSTANCE.createLiteralString();
+                                        copy.setValue(ls.getValue());
+                                        fv.getOwnedRelatedElement().add(copy);
+                                    }
+                                });
+                                attr.getOwnedRelationship().add(fv);
+                            });
+
+                    FeatureMembership fm = SysmlFactory.eINSTANCE.createFeatureMembership();
+                    fm.getOwnedRelatedElement().add(attr);
+                    usage.getOwnedRelationship().add(fm);
+                });
     }
 
     private void addRationalValueToAttribute(AttributeUsage attribute, double defaultValue) {
