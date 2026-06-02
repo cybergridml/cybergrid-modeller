@@ -8,7 +8,6 @@ import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
-import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescriptionProvider;
 import org.eclipse.syson.util.AQLUtils;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.Objects;
  * Edge for the Link relationship (NACREProfile::CRA::Link).
  * Bidirectional between CommunicationMedia and ComputingResource.
  */
-public class LinkEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
+public class LinkEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Link";
     private final NacreDescriptionNameGenerator nacreNameGenerator;

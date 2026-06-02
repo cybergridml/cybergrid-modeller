@@ -46,18 +46,6 @@ public class NacreViewNodeToolsWithoutSectionSwitch extends AbstractViewNodeTool
         return super.doSwitch(eClass);
     }
 
-//    @Override
-//    public List<NodeTool> caseActionUsage(ActionUsage object) {
-//        List<NodeTool> nodeTools = new ArrayList<>();
-//
-//        if (NacreLibElementType.ACTIVITY.equals(NacreLibElementType)) {
-//            addActivityTools(nodeTools, LcaNestedElements.PROPERTY.getUsageNestedEReference());
-//        }
-//       else if (NacreLibElementType.BACKGROUND_ACTIVITY.equals(NacreLibElementType)) {
-//            addBackgroundActivityTools(nodeTools, LcaNestedElements.PROPERTY.getUsageNestedEReference());
-//        }
-//        return nodeTools;
-//    }
 
     @Override
     public List<NodeTool> casePartUsage(PartUsage object) {
@@ -69,23 +57,7 @@ public class NacreViewNodeToolsWithoutSectionSwitch extends AbstractViewNodeTool
         return nodeTools;
     }
 
-//    @Override
-//    public List<NodeTool> casePortUsage(PortUsage object) {
-//        return Collections.emptyList();
-//    }
 
-//    @Override
-//    public List<NodeTool> caseActionDefinition(ActionDefinition object) {
-//        List<NodeTool> nodeTools = new ArrayList<>();
-//
-//        if (NacreLibElementType.ACTIVITY_TEMPLATE.equals(NacreLibElementType)) {
-//            addActivityTools(nodeTools, LcaNestedElements.PROPERTY.getDefinitionNestedEReference());
-//        } else if (NacreLibElementType.BACKGROUND_ACTIVITY_TEMPLATE.equals(NacreLibElementType)) {
-//            addBackgroundActivityTools(nodeTools, LcaNestedElements.PROPERTY.getDefinitionNestedEReference());
-//        }
-//        return nodeTools;
-//    }
-//
 
 
     @Override
@@ -104,29 +76,4 @@ public class NacreViewNodeToolsWithoutSectionSwitch extends AbstractViewNodeTool
                 });
     }
 
-    private void addContainerTools(List<NodeTool> nodeTools, EReference nestedEReference) {
-       // createPortTools(nodeTools);
-        //nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.BACKGROUND_ACTIVITY, LcaNestedElements.PROCESS.getLabel(), descriptionNameGenerator).create(this.cache));
-       // nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.ACTIVITY, LcaNestedElements.PROCESS.getLabel(), descriptionNameGenerator).create(this.cache));
-        //nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.CONTAINER, LcaNestedElements.PROCESS.getLabel(), descriptionNameGenerator).create(this.cache));
-        //nodeTools.add(new LcaListCompartmentNodeToolProvider(NacreLibElementType.PROPERTY, nestedEReference, lcaNameGenerator).create(this.cache));
-    }
-
-//    private void addActivityTools(List<NodeTool> nodeTools, EReference nestedEReference) {
-//        createPortTools(nodeTools);
-//        nodeTools.add(new LcaListCompartmentNodeToolProvider(NacreLibElementType.PROPERTY, nestedEReference, lcaNameGenerator).create(this.cache));
-//    }
-
-//    private void addBackgroundActivityTools(List<NodeTool> nodeTools, EReference nestedEReference) {
-//        nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.BIO_PORT, LcaNestedElements.PORTS.getLabel(), FeatureDirectionKind.OUT, descriptionNameGenerator).create(this.cache));
-//        nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.TECHNO_PORT, LcaNestedElements.PORTS.getLabel(), FeatureDirectionKind.OUT, descriptionNameGenerator).create(this.cache));
-//        nodeTools.add(new LcaListCompartmentNodeToolProvider(NacreLibElementType.PROPERTY, nestedEReference, lcaNameGenerator).create(this.cache));
-//    }
-
-//    private void createPortTools(List<NodeTool> nodeTools) {
-//        nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.BIO_PORT, LcaNestedElements.PORTS.getLabel(), FeatureDirectionKind.IN, descriptionNameGenerator).create(this.cache));
-//        nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.BIO_PORT, LcaNestedElements.PORTS.getLabel(), FeatureDirectionKind.OUT, descriptionNameGenerator).create(this.cache));
-//        nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.TECHNO_PORT, LcaNestedElements.PORTS.getLabel(), FeatureDirectionKind.IN, descriptionNameGenerator).create(this.cache));
-//        nodeTools.add(new LcaFreeFormCompartmentNodeToolProvider(NacreLibElementType.TECHNO_PORT, LcaNestedElements.PORTS.getLabel(), FeatureDirectionKind.OUT, descriptionNameGenerator).create(this.cache));
-//    }
-}
+    private void addContainerTools(List<NodeTool> nodeTools, EReference nestedEReference) {}}

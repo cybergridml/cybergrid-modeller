@@ -8,7 +8,6 @@ import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
-import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescriptionProvider;
 import org.eclipse.syson.util.AQLUtils;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.Objects;
  * Edge for the Allocate relationship (NACREProfile::CRA::Allocate).
  * Source: SoftwareResource → Target: ComputingResource
  */
-public class AllocateCraEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
+public class AllocateCraEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Allocate";
     private final NacreDescriptionNameGenerator nacreNameGenerator;
@@ -77,6 +76,11 @@ public class AllocateCraEdgeDescriptionProvider extends AbstractAllocateEdgeDesc
 
             sourceNode.getPalette().getEdgeTools().add(edgeTool);
         });
+    }
+
+    @Override
+    protected ArrowStyle getHazardTargetArrowStyle() {
+        return ArrowStyle.INPUT_ARROW;
     }
 
     private EdgeStyle generateEdgeStyle() {

@@ -6,7 +6,6 @@ import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.LineStyle;
 import org.eclipse.sirius.components.view.diagram.NodeDescription;
 import org.eclipse.sirius.components.view.diagram.NodeStyleDescription;
-import org.eclipse.sirius.components.view.diagram.NodeTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +49,4 @@ public class SoftwareResourceNodeDescriptionProvider extends AbstractNacreUsageN
         return List.of();
     }
 
-    @Override
-    protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
-        return List.of();
-    }
 }

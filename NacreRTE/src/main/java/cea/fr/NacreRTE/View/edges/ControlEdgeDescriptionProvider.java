@@ -13,10 +13,9 @@ import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
-import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescriptionProvider;
 import org.eclipse.syson.util.AQLUtils;
 
-public class ControlEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
+public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Control";
     private final NacreDescriptionNameGenerator nacreNameGenerator;

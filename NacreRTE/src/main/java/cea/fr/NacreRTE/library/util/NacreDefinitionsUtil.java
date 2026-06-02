@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.syson.sysml.Definition;
+import org.eclipse.syson.sysml.MetadataDefinition;
 import org.eclipse.syson.sysml.SysmlFactory;
 
 import java.util.Optional;
@@ -77,5 +78,20 @@ public class NacreDefinitionsUtil {
     public static Optional<Definition> getNacreDefinition(IEditingContext editingContext, NacreLibElementType nacreLibElementType, boolean isSubclassifier) {
         Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
         return getNacreDefinition(nResource, nacreLibElementType, isSubclassifier);
+    }
+
+    public static Optional<MetadataDefinition> getHazardDefinition(IEditingContext editingContext) {
+        Resource resource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        if (resource == null) {
+            return Optional.empty();
+        }
+        TreeIterator<EObject> it = resource.getAllContents();
+        while (it.hasNext()) {
+            EObject obj = it.next();
+            if (obj instanceof MetadataDefinition md && "NACREDatatypes::Hazard".equals(md.getQualifiedName())) {
+                return Optional.of(md);
+            }
+        }
+        return Optional.empty();
     }
 }

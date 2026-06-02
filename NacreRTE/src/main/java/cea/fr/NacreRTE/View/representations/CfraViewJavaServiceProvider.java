@@ -25,7 +25,7 @@ import java.util.Optional;
 
 
 @Configuration
-public class NacreViewJavaServiceProviderCFRA implements IJavaServiceProvider {
+public class CfraViewJavaServiceProvider implements IJavaServiceProvider {
 
     @Override
     public List<Class<?>> getServiceClasses(View view) {

@@ -25,13 +25,13 @@ import java.util.Optional;
 
 
 @Configuration
-public class NacreViewJavaServiceProviderCRA implements IJavaServiceProvider {
+public class CfaViewJavaServiceProvider implements IJavaServiceProvider {
 
     @Override
     public List<Class<?>> getServiceClasses(View view) {
         EList<RepresentationDescription> descriptions = view.getDescriptions();
         Optional<RepresentationDescription> optDescription = descriptions.stream()
-                .filter(desc -> CraRepresentationDescriptionProvider.DESCRIPTION_NAME.equals(desc.getName())).findFirst();
+                .filter(desc -> CfaRepresentationDescriptionProvider.DESCRIPTION_NAME.equals(desc.getName())).findFirst();
         if (optDescription.isPresent()) {
             return List.of(
                     UtilService.class,
