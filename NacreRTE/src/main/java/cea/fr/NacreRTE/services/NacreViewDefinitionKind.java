@@ -1,4 +1,4 @@
-package cea.fr.NacreRTE.services.api;
+package cea.fr.NacreRTE.services;
 
 
 public enum NacreViewDefinitionKind {
@@ -12,7 +12,7 @@ public enum NacreViewDefinitionKind {
         if ("Nacre::CRA".equals(viewDefinitionName)) {
             kind = CRA_VIEW;
         }
-        if ("Nacre::CFRA".equals(viewDefinitionName)) {
+        if ("Nacre::CFA".equals(viewDefinitionName)) {
             kind = CFA_VIEW;
         }
         if ("Nacre::CFRA".equals(viewDefinitionName)) {

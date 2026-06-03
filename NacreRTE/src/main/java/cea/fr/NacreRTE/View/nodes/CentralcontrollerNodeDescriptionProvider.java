@@ -12,7 +12,11 @@ import java.util.Set;
 public class CentralcontrollerNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
 
     public CentralcontrollerNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(NacreLibElementType.CENTRALCONTROLLER, colorProvider, nameGenerator);
+        this(colorProvider, nameGenerator, true);
+    }
+
+    public CentralcontrollerNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(NacreLibElementType.CENTRALCONTROLLER, colorProvider, nameGenerator, withHazardTool);
     }
 
     @Override

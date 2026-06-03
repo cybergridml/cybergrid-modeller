@@ -1,8 +1,7 @@
-package cea.fr.NacreRTE;
+package cea.fr.NacreRTE.services;
 
-import cea.fr.NacreRTE.services.NacreUtilService;
-import cea.fr.NacreRTE.services.api.NacreViewDefinitionKind;
 import org.eclipse.emf.ecore.EClass;
+import org.springframework.stereotype.Service;
 import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
@@ -18,6 +17,7 @@ import java.util.List;
 /**
  * Tool-related Java services used by LCA diagrams.
  */
+@Service
 public class NacreViewToolService extends ViewToolService {
 
     private final NacreUtilService nacreUtilService;
@@ -44,8 +44,7 @@ public class NacreViewToolService extends ViewToolService {
     }
 
     private boolean toolShouldBeAvailableOnCFAView(EClass newElementType) {
-        return SysmlPackage.eINSTANCE.getActionDefinition().equals(newElementType) ||
-                SysmlPackage.eINSTANCE.getPartDefinition().equals(newElementType);
+        return SysmlPackage.eINSTANCE.getPartUsage().equals(newElementType);
     }
 
     private boolean toolShouldBeAvailableOnCFRAView(EClass newElementType) {

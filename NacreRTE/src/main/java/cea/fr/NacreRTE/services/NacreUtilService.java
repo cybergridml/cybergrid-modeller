@@ -1,5 +1,4 @@
 package cea.fr.NacreRTE.services;
-import cea.fr.NacreRTE.services.api.NacreViewDefinitionKind;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.syson.sysml.Element;
 import org.eclipse.syson.sysml.Type;
@@ -16,7 +15,12 @@ public class NacreUtilService {
             var types = viewUsage.getType();
             if (types != null && !types.isEmpty()) {
                 Type type = types.get(0);
-                kind = NacreViewDefinitionKind.getKind(type.getQualifiedName());
+                if (type != null) {
+                    NacreViewDefinitionKind resolved = NacreViewDefinitionKind.getKind(type.getQualifiedName());
+                    if (resolved != null) {
+                        kind = resolved;
+                    }
+                }
             }
         } else {
             // Retrieve ViewUsage exposing the given element

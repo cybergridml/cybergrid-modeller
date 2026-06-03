@@ -12,7 +12,11 @@ import java.util.Set;
 public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
 
     public MaingridNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(NacreLibElementType.MAINGRID, colorProvider, nameGenerator);
+        this(colorProvider, nameGenerator, true);
+    }
+
+    public MaingridNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(NacreLibElementType.MAINGRID, colorProvider, nameGenerator, withHazardTool);
     }
 
     @Override

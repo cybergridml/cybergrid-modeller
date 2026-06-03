@@ -44,6 +44,5 @@ public class NacreModelMutationElementService {
         var generalViewViewDef = this.elementUtil.findByNameAndType(ownerElement, nacreViewType.getNacreLibDefinitionName(), ViewDefinition.class);
         featureTyping.setType(generalViewViewDef);
         featureTyping.setTypedFeature(viewUsage);
-        System.out.println("Hello, World!");
     }
 }

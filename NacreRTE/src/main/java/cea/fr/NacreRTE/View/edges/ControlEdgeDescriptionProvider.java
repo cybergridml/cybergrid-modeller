@@ -22,7 +22,11 @@ public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescription
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
     public ControlEdgeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(Objects.requireNonNull(colorProvider));
+        this(colorProvider, nameGenerator, true);
+    }
+
+    public ControlEdgeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(Objects.requireNonNull(colorProvider), withHazardTool);
         this.nacreNameGenerator = Objects.requireNonNull(nameGenerator);
     }
 

@@ -1,6 +1,6 @@
 package cea.fr.NacreRTE.View.representations;
 
-import cea.fr.NacreRTE.NacreToolDescriptionService;
+import cea.fr.NacreRTE.services.NacreToolDescriptionService;
 import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.*;
 import cea.fr.NacreRTE.library.NacreLibElementType;
@@ -65,12 +65,12 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
             IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
        // providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
        // providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
        // providers.add(new ZonalcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
+        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator, false));
         providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
         return providers;
     }

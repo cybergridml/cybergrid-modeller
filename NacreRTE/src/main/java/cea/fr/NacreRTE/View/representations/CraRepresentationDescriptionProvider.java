@@ -1,6 +1,6 @@
 package cea.fr.NacreRTE.View.representations;
 
-import cea.fr.NacreRTE.NacreToolDescriptionService;
+import cea.fr.NacreRTE.services.NacreToolDescriptionService;
 import cea.fr.NacreRTE.View.edges.AllocateCraEdgeDescriptionProvider;
 import cea.fr.NacreRTE.View.edges.ConnectEdgeDescriptionProvider;
 import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;

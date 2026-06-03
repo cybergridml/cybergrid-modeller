@@ -1,4 +1,4 @@
-package cea.fr.NacreRTE;
+package cea.fr.NacreRTE.services;
 
 import cea.fr.NacreRTE.library.NacreLibElementType;
 import org.eclipse.emf.common.util.EList;

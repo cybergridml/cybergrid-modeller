@@ -2,9 +2,9 @@ package cea.fr.NacreRTE.Template;
 
 public final class NacreRepresentationDescriptionIdentifiers {
 
-    public static final String CRA_VIEW_DIAGRAM_DESCRIPTION_ID = "siriusComponents://representationDescription?kind=diagramDescription&sourceKind=view&sourceId=f0c706a2-283c-3485-ae53-184cb182d969&sourceElementId=e0ad0deb-843e-3fa0-a41b-8d920f62b250";
-    public static final String CFA_VIEW_DIAGRAM_DESCRIPTION_ID = "siriusComponents://representationDescription?kind=diagramDescription&sourceKind=view&sourceId=f0c706a2-283c-3485-ae53-184cb182d969&sourceElementId=e0ad0deb-843e-3fa0-a41b-8d920f62b250";
-    public static final String CFRA_VIEW_DIAGRAM_DESCRIPTION_ID = "siriusComponents://representationDescription?kind=diagramDescription&sourceKind=view&sourceId=f0c706a2-283c-3485-ae53-184cb182d969&sourceElementId=e0ad0deb-843e-3fa0-a41b-8d920f62b250";
+    public static final String CRA_VIEW_DIAGRAM_DESCRIPTION_ID = "siriusComponents://representationDescription?kind=diagramDescription&sourceKind=view&sourceId=862e39fd-7d88-352b-8fe4-e59d52a39bce&sourceElementId=782ca155-d52c-322e-ad36-7bdec9e2b8cb";
+    public static final String CFA_VIEW_DIAGRAM_DESCRIPTION_ID = "siriusComponents://representationDescription?kind=diagramDescription&sourceKind=view&sourceId=862e39fd-7d88-352b-8fe4-e59d52a39bce&sourceElementId=dd2c45ab-0f39-3630-ab45-8e0454d73636";
+    public static final String CFRA_VIEW_DIAGRAM_DESCRIPTION_ID = "siriusComponents://representationDescription?kind=diagramDescription&sourceKind=view&sourceId=862e39fd-7d88-352b-8fe4-e59d52a39bce&sourceElementId=232ed33f-cc04-3ea8-9d8c-dc38a76eb593";
 
 
     private NacreRepresentationDescriptionIdentifiers() {

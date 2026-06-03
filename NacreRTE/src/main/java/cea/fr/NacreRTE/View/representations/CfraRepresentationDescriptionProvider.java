@@ -1,10 +1,8 @@
 package cea.fr.NacreRTE.View.representations;
 
-import cea.fr.NacreRTE.NacreToolDescriptionService;
+import cea.fr.NacreRTE.services.NacreToolDescriptionService;
 import cea.fr.NacreRTE.View.edges.AbstractEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.CentralcontrollerNodeDescriptionProvider;
-import cea.fr.NacreRTE.View.nodes.MaingridNodeDescriptionProvider;
 import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
 import cea.fr.NacreRTE.View.nodes.SoftwareResourceNodeDescriptionProvider;
 import cea.fr.NacreRTE.library.NacreLibElementType;
@@ -66,8 +64,8 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
             IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new SoftwareResourceNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
+        providers.add(new SoftwareResourceNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
         providers.add(new AbstractEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
 
         return providers;

@@ -17,9 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * This switch creates node tools for a given element type
- */
 public class NacreViewNodeToolsWithoutSectionSwitch extends AbstractViewNodeToolsWithoutSectionSwitch {
     private static final Logger LOGGER = LoggerFactory.getLogger(NacreViewNodeToolsWithoutSectionSwitch.class);
 

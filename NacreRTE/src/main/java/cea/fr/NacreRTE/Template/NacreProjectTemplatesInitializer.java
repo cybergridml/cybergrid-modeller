@@ -65,16 +65,6 @@ public class NacreProjectTemplatesInitializer implements IProjectTemplateInitial
             if (packageOpt.isPresent()) {
                 Package packageElt = packageOpt.get();
                 packageElt.setDeclaredName("CyberGridML");
-                // 1. Créer le sous-package
-                //Package subPackage = SysmlFactory.eINSTANCE.createPackage();
-                //subPackage.setDeclaredName("MonSousPackage");
-
-                // 2. Créer la relation OwningMembership qui le contient
-               // OwningMembership ownership = SysmlFactory.eINSTANCE.createOwningMembership();
-               // ownership.getOwnedRelatedElement().add(subPackage);
-
-                // 3. Ajouter la relation au package parent
-                //packageElt.getOwnedRelationship().add(ownership);
                 viewUsageOpt = NacreModelMutationElementService.createViewUsage(packageElt, "CRA");
                 viewUsageOpt.ifPresent(viewUsage -> NacreModelMutationElementService.typeViewUsage(packageElt, viewUsage, NacreViewType.CRA_VIEW));
                 viewUsageOpt1 = NacreModelMutationElementService.createViewUsage(packageElt, "CFRA");

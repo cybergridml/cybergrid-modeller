@@ -44,7 +44,7 @@ public class NacreDiagramMutationDiagramService {
                         String label = diagramDescription.getLabelProvider().apply(variableManager);
                         List<String> iconURLs = diagramDescription.getIconURLsProvider().apply(variableManager);
 
-                        Diagram diagram = this.diagramCreationService.create((IEditingContext) viewUsage, diagramDescription, editingContext);
+                        Diagram diagram = this.diagramCreationService.create(viewUsage, diagramDescription, editingContext);
                         var representationMetadata = RepresentationMetadata.newRepresentationMetadata(diagram.getId())
                                 .kind(diagram.getKind())
                                 .label(label)

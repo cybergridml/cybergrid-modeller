@@ -1,7 +1,7 @@
 package cea.fr.NacreRTE.View.representations;
 
 
-import cea.fr.NacreRTE.*;
+import cea.fr.NacreRTE.services.*;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.View;

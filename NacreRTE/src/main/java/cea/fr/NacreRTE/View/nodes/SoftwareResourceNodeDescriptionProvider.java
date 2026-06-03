@@ -14,7 +14,11 @@ import java.util.Set;
 public class SoftwareResourceNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
 
     public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(NacreLibElementType.SOFTWARERESOURCE, colorProvider, nameGenerator);
+        this(colorProvider, nameGenerator, true);
+    }
+
+    public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(NacreLibElementType.SOFTWARERESOURCE, colorProvider, nameGenerator, withHazardTool);
     }
 
     @Override

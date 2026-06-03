@@ -1,8 +1,8 @@
-package cea.fr.NacreRTE;
+package cea.fr.NacreRTE.services;
 
 import cea.fr.NacreRTE.library.NacreLibElementType;
-import cea.fr.NacreRTE.services.NacreElementInitializerSwitch;
 import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.springframework.stereotype.Service;
 import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
 import org.eclipse.sirius.components.core.api.IObjectSearchService;
 import org.eclipse.sirius.components.core.api.IReadOnlyObjectPredicate;
@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+@Service
 public class NacreViewCreateService extends ViewCreateService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NacreViewCreateService.class);
@@ -30,7 +31,7 @@ public class NacreViewCreateService extends ViewCreateService {
 
     @Override
     public boolean canCreateDiagram(Element element) {
-        return element instanceof Package || element instanceof PartUsage;
+        return element instanceof Package || element instanceof ViewUsage;
     }
 
     public Element elementInitializer(Element element, IEditingContext editingContext, String lcaElementTypeName) {

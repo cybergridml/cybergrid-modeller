@@ -5554,6 +5554,35 @@
                                         }
                                       ]
                                     }
+                                  },
+                                  {
+                                    "id": "a3f7d2e1-b4c8-4d91-9e02-f1a2b3c4d5e6",
+                                    "eClass": "sysml:FeatureMembership",
+                                    "data": {
+                                      "elementId": "b4e8f3a2-c5d9-4e02-af13-a2b3c4d5e6f7",
+                                      "ownedRelatedElement": [
+                                        {
+                                          "id": "c5f9a4b3-d6ea-4f13-b024-b3c4d5e6f7a8",
+                                          "eClass": "sysml:AttributeUsage",
+                                          "data": {
+                                            "declaredName": "percent",
+                                            "elementId": "d6a0b5c4-e7fb-4024-c135-c4d5e6f7a8b9",
+                                            "ownedRelationship": [
+                                              {
+                                                "id": "e7b1c6d5-f8ac-4135-d246-d5e6f7a8b9c0",
+                                                "eClass": "sysml:FeatureTyping",
+                                                "data": {
+                                                  "elementId": "f8c2d7e6-a9bd-4246-e357-e6f7a8b9c0d1",
+                                                  "type": "sysml:DataType kermllibrary:///b2c6dd37-2084-3ce4-9ce2-580fdf30629c#14c0aa22-5489-59b5-b438-ded26e83ba31",
+                                                  "typedFeature": "c5f9a4b3-d6ea-4f13-b024-b3c4d5e6f7a8"
+                                                }
+                                              }
+                                            ],
+                                            "isComposite": true
+                                          }
+                                        }
+                                      ]
+                                    }
                                   }
                                 ]
                               }
