@@ -1,11 +1,11 @@
-package cea.fr.NacreRTE.View.representations;
+package cea.fr.NacreRTE.view.representations;
 
-import cea.fr.NacreRTE.services.NacreToolDescriptionService;
-import cea.fr.NacreRTE.View.edges.AbstractEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.nodes.CentralcontrollerNodeDescriptionProvider;
-import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
-import cea.fr.NacreRTE.View.nodes.SoftwareResourceNodeDescriptionProvider;
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.services.NacreToolDescriptionService;
+import cea.fr.NacreRTE.view.edges.AbstractEdgeDescriptionProvider;
+import cea.fr.NacreRTE.view.nodes.CentralcontrollerNodeDescriptionProvider;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.nodes.SoftwareResourceNodeDescriptionProvider;
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
@@ -14,7 +14,6 @@ import org.eclipse.sirius.components.view.builder.providers.IDiagramElementDescr
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.ViewDiagramElementFinder;
-import org.eclipse.syson.standard.diagrams.view.edges.AllocateEdgeDescriptionProvider;
 import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.IDescriptionNameGenerator;
@@ -104,9 +103,4 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
         return elementCreationTools;
     }
 
-    private List<IDiagramElementDescriptionProvider<?>> createAllEdgeDescriptionProviders(IColorProvider colorProvider) {
-        var edgeDescriptionProviders = new ArrayList<IDiagramElementDescriptionProvider<?>>();
-        edgeDescriptionProviders.add(new AllocateEdgeDescriptionProvider(colorProvider));
-        return edgeDescriptionProviders;
-    }
 }

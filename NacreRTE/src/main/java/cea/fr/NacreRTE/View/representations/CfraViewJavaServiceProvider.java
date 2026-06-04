@@ -1,10 +1,10 @@
-package cea.fr.NacreRTE.View.representations;
+package cea.fr.NacreRTE.view.representations;
 
 
-import cea.fr.NacreRTE.services.NacreDiagramAQLService;
-import cea.fr.NacreRTE.services.NacreViewCreateService;
-import cea.fr.NacreRTE.services.NacreViewNodeService;
-import cea.fr.NacreRTE.services.NacreViewToolService;
+import cea.fr.NacreRTE.view.services.NacreDiagramAQLService;
+import cea.fr.NacreRTE.view.services.NacreViewCreateService;
+import cea.fr.NacreRTE.view.services.NacreViewNodeService;
+import cea.fr.NacreRTE.view.services.NacreViewToolService;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.View;

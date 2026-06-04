@@ -1,0 +1,56 @@
+package cea.fr.NacreRTE.view.services;
+
+import org.eclipse.emf.ecore.EClass;
+import org.springframework.stereotype.Service;
+import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
+import org.eclipse.sirius.components.core.api.IIdentityService;
+import org.eclipse.sirius.components.core.api.IObjectSearchService;
+import org.eclipse.sirius.components.view.emf.IViewRepresentationDescriptionSearchService;
+import org.eclipse.syson.diagram.common.view.services.ViewToolService;
+import org.eclipse.syson.services.api.ISysMLMoveElementService;
+import org.eclipse.syson.sysml.*;
+
+import java.util.List;
+
+@Service
+public class NacreViewToolService extends ViewToolService {
+
+    private final NacreUtilService nacreUtilService;
+
+    public NacreViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService, IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService) {
+        super(identityService, objectSearchService, viewRepresentationDescriptionSearchService, feedbackMessageService, moveService);
+        nacreUtilService = new NacreUtilService();
+    }
+
+    @Override
+    public boolean toolShouldBeAvailable(Element element, IEditingContext editingContext, DiagramContext diagramContext, EClass newElementType) {
+        if (!(element instanceof ViewUsage)) {
+            return true;
+        }
+        NacreViewDefinitionKind viewDefinitionKind = this.nacreUtilService.getNacreViewDefinitionKind(element, List.of(), editingContext);
+        if (viewDefinitionKind == null) {
+            return true;
+        }
+        return switch (viewDefinitionKind) {
+            case CFA_VIEW -> this.toolShouldBeAvailableOnCFAView(newElementType);
+            case CRA_VIEW -> this.toolShouldBeAvailableOnCRAView(newElementType);
+            case CFRA_VIEW -> this.toolShouldBeAvailableOnCFRAView(newElementType);
+        };
+    }
+
+    private boolean toolShouldBeAvailableOnCFAView(EClass newElementType) {
+        return SysmlPackage.eINSTANCE.getPartUsage().equals(newElementType);
+    }
+
+    private boolean toolShouldBeAvailableOnCFRAView(EClass newElementType) {
+        return SysmlPackage.eINSTANCE.getActionUsage().equals(newElementType) ||
+                SysmlPackage.eINSTANCE.getPartUsage().equals(newElementType);
+    }
+
+    private boolean toolShouldBeAvailableOnCRAView(EClass newElementType) {
+        return SysmlPackage.eINSTANCE.getActionUsage().equals(newElementType) ||
+                SysmlPackage.eINSTANCE.getPartUsage().equals(newElementType);
+    }
+}

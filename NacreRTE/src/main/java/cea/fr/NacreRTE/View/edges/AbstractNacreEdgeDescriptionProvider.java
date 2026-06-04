@@ -1,6 +1,6 @@
-package cea.fr.NacreRTE.View.edges;
+package cea.fr.NacreRTE.view.edges;
 
-import cea.fr.NacreRTE.View.nodes.NacreViewConstants;
+import cea.fr.NacreRTE.view.NacreViewConstants;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
@@ -9,6 +9,7 @@ import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescripti
 public abstract class AbstractNacreEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
 
     private final boolean withHazardTool;
+
 
     protected AbstractNacreEdgeDescriptionProvider(IColorProvider colorProvider) {
         this(colorProvider, true);

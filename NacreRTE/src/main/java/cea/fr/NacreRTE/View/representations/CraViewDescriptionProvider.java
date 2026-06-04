@@ -1,5 +1,5 @@
 
-package cea.fr.NacreRTE.View.representations;
+package cea.fr.NacreRTE.view.representations;
 
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.syson.common.view.api.IViewDescriptionProvider;

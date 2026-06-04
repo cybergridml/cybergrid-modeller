@@ -1,7 +1,7 @@
 package cea.fr.NacreRTE.services;
 
-import cea.fr.NacreRTE.library.util.NacreDefinitionsUtil;
-import cea.fr.NacreRTE.library.util.NacrePropertyUtil;
+import cea.fr.NacreRTE.domain.util.NacreDefinitionsUtil;
+import cea.fr.NacreRTE.domain.util.NacrePropertyUtil;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.syson.sysml.Element;
 import org.eclipse.syson.sysml.MetadataUsage;
@@ -58,3 +58,4 @@ public class NacreHazardService {
         return owningMembership;
     }
 }
+

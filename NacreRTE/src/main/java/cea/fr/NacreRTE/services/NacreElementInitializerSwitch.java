@@ -1,8 +1,8 @@
 package cea.fr.NacreRTE.services;
 
-import cea.fr.NacreRTE.library.NacreLibElementType;
-import cea.fr.NacreRTE.library.util.NacreDefinitionsUtil;
-import cea.fr.NacreRTE.library.util.NacrePropertyUtil;
+import cea.fr.NacreRTE.domain.NacreLibElementType;
+import cea.fr.NacreRTE.domain.util.NacreDefinitionsUtil;
+import cea.fr.NacreRTE.domain.util.NacrePropertyUtil;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.syson.services.ElementInitializerSwitch;
 import org.eclipse.syson.services.UtilService;
@@ -14,7 +14,6 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
     private final UtilService utilService;
     private final IEditingContext editingContext;
     private final NacreLibElementType nacreLibElementType;
-
 
     public NacreElementInitializerSwitch(IEditingContext editingContext, NacreLibElementType nacreLibElementType) {
         super();
@@ -30,7 +29,6 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             usage.setDeclaredName(nacreLibElementType.getName().toLowerCase() + existingElements);
         }
         usage.setIsComposite(true);
-
         return usage;
     }
 
@@ -39,50 +37,46 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         if (nacreLibElementType == NacreLibElementType.MAINGRID) {
             Definition maingridDefinition = NacreDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, maingridDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,maingridDefinition);
-
+            NacrePropertyUtil.addAttributesFromDefinition(usage, maingridDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONE) {
             Definition zoneDefinition = NacreDefinitionsUtil.getZoneDefinition(editingContext);
             utilService.setFeatureTyping(usage, zoneDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,zoneDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, zoneDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.ZONALCONTROlLER) {
             Definition zonalcontollerDefinition = NacreDefinitionsUtil.getZONALCONTROlLERDefinition(editingContext);
             utilService.setFeatureTyping(usage, zonalcontollerDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,zonalcontollerDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, zonalcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
             Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,centralcontollerDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, centralcontollerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.SUBSTATION) {
             Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,substationDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, substationDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.COMMUNICATIONMEDIA) {
             Definition communicationMediaDefinition = NacreDefinitionsUtil.getCommunicationMediaDefinition(editingContext);
             utilService.setFeatureTyping(usage, communicationMediaDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,communicationMediaDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, communicationMediaDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.COMPUTINGRESOURCE) {
             Definition computingResourceDefinition = NacreDefinitionsUtil.getComputingResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, computingResourceDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,computingResourceDefinition);
-
+            NacrePropertyUtil.addAttributesFromDefinition(usage, computingResourceDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.SOFTWARERESOURCE) {
             Definition softwareResourceDefinition = NacreDefinitionsUtil.getSoftwareResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, softwareResourceDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage,softwareResourceDefinition);
-
+            NacrePropertyUtil.addAttributesFromDefinition(usage, softwareResourceDefinition);
         }
         caseUsage(usage);
         return usage;
     }
-
 
     @Override
     public Element caseDefinition(Definition definition) {
@@ -92,10 +86,6 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         }
         return definition;
     }
-
-
-
-
 
     private long countElements(Element element, NacreLibElementType nacreLibElementType) {
         Namespace owningNamespace = element.getOwningNamespace();
@@ -108,9 +98,5 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
         }
         return 0;
     }
-
-
-
-
-
 }
+

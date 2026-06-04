@@ -1,6 +1,9 @@
-package cea.fr.NacreRTE.View.nodes;
+package cea.fr.NacreRTE.view.nodes;
 
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.NacreViewConstants;
+
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
