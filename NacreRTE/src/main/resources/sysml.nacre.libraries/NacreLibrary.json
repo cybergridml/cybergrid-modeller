@@ -3209,7 +3209,7 @@
                                                       "id": "1339c86c-2ad3-481c-a567-fc72e2519732",
                                                       "eClass": "sysml:ReferenceUsage",
                                                       "data": {
-                                                        "declaredName": "rte_installation",
+                                                        "declaredName": "terminal",
                                                         "elementId": "42766fad-5a77-4c47-bdbd-4da9b39d2332",
                                                         "ownedRelationship": [
                                                           {
@@ -3394,7 +3394,7 @@
                                                       "id": "eb99bd74-f752-4818-9dc4-15314e5e0c8d",
                                                       "eClass": "sysml:AttributeUsage",
                                                       "data": {
-                                                        "declaredName": "ist",
+                                                        "declaredName": "ecr",
                                                         "elementId": "a374ab31-46c3-4939-8edd-0a3401451ce2",
                                                         "ownedRelationship": [
                                                           {
