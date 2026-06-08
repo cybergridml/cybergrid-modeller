@@ -40,9 +40,9 @@ public class NacreDefinitionsUtil {
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
-    public static Definition getZONALCONTROlLERDefinition(IEditingContext editingContext) {
+    public static Definition getZonalControllerDefinition(IEditingContext editingContext) {
         Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, NacreLibElementType.ZONALCONTROlLER, false)
+        return getNacreDefinition(nResource, NacreLibElementType.ZONALCONTROLLER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 

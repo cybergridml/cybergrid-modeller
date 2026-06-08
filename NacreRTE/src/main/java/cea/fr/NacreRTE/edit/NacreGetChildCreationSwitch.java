@@ -23,7 +23,7 @@ public class NacreGetChildCreationSwitch extends SysmlEClassSwitch<List<NacreLib
         List<NacreLibElementType> childrenCandidates = new ArrayList<>();
         childrenCandidates.add(NacreLibElementType.MAINGRID);
         //childrenCandidates.add(NacreLibElementType.ZONE);
-        //childrenCandidates.add(NacreLibElementType.ZONALCONTROlLER);
+        //childrenCandidates.add(NacreLibElementType.ZONALCONTROLLER);
         childrenCandidates.add(NacreLibElementType.CENTRALCONTROLLER);
         return childrenCandidates;
     }
@@ -34,7 +34,7 @@ public class NacreGetChildCreationSwitch extends SysmlEClassSwitch<List<NacreLib
         List<NacreLibElementType> childrenCandidates = new ArrayList<>();
         childrenCandidates.add(NacreLibElementType.MAINGRID);
        // childrenCandidates.add(NacreLibElementType.ZONE);
-       // childrenCandidates.add(NacreLibElementType.ZONALCONTROlLER);
+       // childrenCandidates.add(NacreLibElementType.ZONALCONTROLLER);
         childrenCandidates.add(NacreLibElementType.CENTRALCONTROLLER);
         return childrenCandidates;
     }

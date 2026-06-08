@@ -7,7 +7,7 @@ import org.eclipse.syson.sysml.Package;
 
 import java.util.Optional;
 
-public class ElementUtil {
+public class NacreElementUtil {
 
     public Optional<Package> getRootPackage(Resource resource) {
         Object rootElement = resource.getContents().get(0);
@@ -20,4 +20,3 @@ public class ElementUtil {
         return Optional.empty();
     }
 }
-

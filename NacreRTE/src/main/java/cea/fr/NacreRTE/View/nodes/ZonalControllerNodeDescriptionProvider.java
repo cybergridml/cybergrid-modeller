@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ZonalcontrollerNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class ZonalControllerNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
 
-    public ZonalcontrollerNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(NacreLibElementType.ZONALCONTROlLER, colorProvider, nameGenerator);
+    public ZonalControllerNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
+        super(NacreLibElementType.ZONALCONTROLLER, colorProvider, nameGenerator);
     }
 
     @Override

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 @Service
-public class NacreDiagramMutationDiagramService {
+public class NacreDiagramCreationService {
 
 
     private final IDiagramCreationService diagramCreationService;
@@ -24,7 +24,7 @@ public class NacreDiagramMutationDiagramService {
     private final IRepresentationMetadataPersistenceService representationMetadataPersistenceService;
     private final IRepresentationPersistenceService representationPersistenceService;
 
-    public NacreDiagramMutationDiagramService(IDiagramCreationService diagramCreationService, IRepresentationDescriptionSearchService representationDescriptionSearchService,
+    public NacreDiagramCreationService(IDiagramCreationService diagramCreationService, IRepresentationDescriptionSearchService representationDescriptionSearchService,
                                             IRepresentationMetadataPersistenceService representationMetadataPersistenceService, IRepresentationPersistenceService representationPersistenceService) {
         this.diagramCreationService = Objects.requireNonNull(diagramCreationService);
         this.representationDescriptionSearchService = Objects.requireNonNull(representationDescriptionSearchService);
@@ -58,4 +58,3 @@ public class NacreDiagramMutationDiagramService {
         return element;
     }
 }
-
