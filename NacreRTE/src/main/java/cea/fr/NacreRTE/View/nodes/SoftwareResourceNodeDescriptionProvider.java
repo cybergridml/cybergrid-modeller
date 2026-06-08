@@ -1,9 +1,11 @@
-package cea.fr.NacreRTE.View.nodes;
+package cea.fr.NacreRTE.view.nodes;
 
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.NacreViewConstants;
+
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
-import org.eclipse.sirius.components.view.diagram.LineStyle;
 import org.eclipse.sirius.components.view.diagram.NodeDescription;
 import org.eclipse.sirius.components.view.diagram.NodeStyleDescription;
 
@@ -14,7 +16,11 @@ import java.util.Set;
 public class SoftwareResourceNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
 
     public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(NacreLibElementType.SOFTWARERESOURCE, colorProvider, nameGenerator);
+        this(colorProvider, nameGenerator, true);
+    }
+
+    public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(NacreLibElementType.SOFTWARERESOURCE, colorProvider, nameGenerator, withHazardTool);
     }
 
     @Override

@@ -1,8 +1,8 @@
-package cea.fr.NacreRTE.View.edges;
+package cea.fr.NacreRTE.view.edges;
 
-import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
-import cea.fr.NacreRTE.View.nodes.NacreViewConstants;
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.NacreViewConstants;
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,11 @@ public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescription
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
     public ControlEdgeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
-        super(Objects.requireNonNull(colorProvider));
+        this(colorProvider, nameGenerator, true);
+    }
+
+    public ControlEdgeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(Objects.requireNonNull(colorProvider), withHazardTool);
         this.nacreNameGenerator = Objects.requireNonNull(nameGenerator);
     }
 
@@ -73,13 +77,6 @@ public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescription
 
             sourceNode.getPalette().getEdgeTools().add(edgeTool);
         });
-    }
-
-    private List<NodeDescription> buildControlNodes(IViewDiagramElementFinder cache) {
-        List<NodeDescription> nodes = new ArrayList<>();
-        cache.getNodeDescription(nacreNameGenerator.getNodeName(NacreLibElementType.MAINGRID.getServiceSuffix())).ifPresent(nodes::add);
-        cache.getNodeDescription(nacreNameGenerator.getNodeName(NacreLibElementType.CENTRALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
-        return nodes;
     }
 
     private EdgeStyle generateEdgeStyle() {

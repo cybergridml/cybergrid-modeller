@@ -1,12 +1,13 @@
-package cea.fr.NacreRTE.View.representations;
+package cea.fr.NacreRTE.view.representations;
 
-import cea.fr.NacreRTE.NacreToolDescriptionService;
-import cea.fr.NacreRTE.View.edges.AllocateCraEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.edges.ConnectEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.edges.LinkEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.nodes.*;
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.services.NacreToolDescriptionService;
+import cea.fr.NacreRTE.view.edges.AllocateCraEdgeDescriptionProvider;
+import cea.fr.NacreRTE.view.edges.ConnectEdgeDescriptionProvider;
+import cea.fr.NacreRTE.view.edges.ControlEdgeDescriptionProvider;
+import cea.fr.NacreRTE.view.edges.LinkEdgeDescriptionProvider;
+import cea.fr.NacreRTE.view.nodes.*;
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;

@@ -14,8 +14,10 @@ import org.springframework.context.annotation.FilterType;
 		excludeFilters = {
 				@ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 						".*SysONDefaultLibrariesConfiguration",
-						".*SysMLv2ProjectTemplatesProvider"
-
+						".*SysMLv2ProjectTemplatesProvider",
+						".*StateTransitionViewDiagramDescriptionProvider",
+						".*ActionFlowViewDiagramDescriptionProvider",
+						".*InterconnectionViewDiagramDescriptionProvider"
 				})
 		}
 )

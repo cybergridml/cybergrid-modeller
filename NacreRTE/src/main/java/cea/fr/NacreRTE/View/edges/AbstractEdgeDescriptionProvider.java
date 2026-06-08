@@ -1,8 +1,8 @@
-package cea.fr.NacreRTE.View.edges;
+package cea.fr.NacreRTE.view.edges;
 
-import cea.fr.NacreRTE.View.nodes.NacreDescriptionNameGenerator;
-import cea.fr.NacreRTE.View.nodes.NacreViewConstants;
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.NacreViewConstants;
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 import org.eclipse.sirius.components.view.Operation;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Edge for the Connect relationship (NACREProfile::CRA::Connect).
- * Bidirectional between ComputingResource and CommunicationMedia.
- */
 public class AbstractEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Abstract";

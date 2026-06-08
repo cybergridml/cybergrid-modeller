@@ -1,6 +1,6 @@
-package cea.fr.NacreRTE.View.edges;
+package cea.fr.NacreRTE.view.edges;
 
-import cea.fr.NacreRTE.View.nodes.NacreViewConstants;
+import cea.fr.NacreRTE.view.NacreViewConstants;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
@@ -8,8 +8,16 @@ import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescripti
 
 public abstract class AbstractNacreEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
 
+    private final boolean withHazardTool;
+
+
     protected AbstractNacreEdgeDescriptionProvider(IColorProvider colorProvider) {
+        this(colorProvider, true);
+    }
+
+    protected AbstractNacreEdgeDescriptionProvider(IColorProvider colorProvider, boolean withHazardTool) {
         super(colorProvider);
+        this.withHazardTool = withHazardTool;
     }
 
     @Override
@@ -22,12 +30,14 @@ public abstract class AbstractNacreEdgeDescriptionProvider extends AbstractAlloc
     @Override
     public void link(org.eclipse.sirius.components.view.diagram.DiagramDescription diagramDescription, IViewDiagramElementFinder cache) {
         super.link(diagramDescription, cache);
-        cache.getEdgeDescription(this.getName()).ifPresent(edgeDescription -> {
-            var palette = edgeDescription.getPalette();
-            if (palette != null) {
-                palette.getQuickAccessTools().add(createHazardEdgeTool());
-            }
-        });
+        if (withHazardTool) {
+            cache.getEdgeDescription(this.getName()).ifPresent(edgeDescription -> {
+                var palette = edgeDescription.getPalette();
+                if (palette != null) {
+                    palette.getQuickAccessTools().add(createHazardEdgeTool());
+                }
+            });
+        }
     }
 
     private ConditionalEdgeStyle createHazardConditionalEdgeStyle() {
@@ -36,6 +46,7 @@ public abstract class AbstractNacreEdgeDescriptionProvider extends AbstractAlloc
                 .color(this.colorProvider.getColor(NacreViewConstants.HAZARD_NODE_BORDER_COLOR))
                 .edgeWidth(3)
                 .lineStyle(LineStyle.DASH)
+                .borderSize(0)
                 .sourceArrowStyle(getHazardSourceArrowStyle())
                 .targetArrowStyle(getHazardTargetArrowStyle())
                 .build();

@@ -1,33 +1,47 @@
-package cea.fr.NacreRTE.View.nodes;
+package cea.fr.NacreRTE.view.nodes;
 
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.NacreViewConstants;
+
+import cea.fr.NacreRTE.domain.NacreLibElementType;
+import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
+import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.nodes.AbstractUsageNodeDescriptionProvider;
+import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Imen Azouzi (CEA LIST) <imen.azouzi@cea.fr>
- */
+
 public abstract class AbstractNacreUsageNodeDescriptionProvider extends AbstractUsageNodeDescriptionProvider {
 
     private final NacreLibElementType nacreElementType;
+    private final boolean withHazardTool;
 
     protected AbstractNacreUsageNodeDescriptionProvider(NacreLibElementType nacreElementType, IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
+        this(nacreElementType, colorProvider, nameGenerator, true);
+    }
+
+    protected AbstractNacreUsageNodeDescriptionProvider(NacreLibElementType nacreElementType, IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
         super(nacreElementType.geteClass(), colorProvider, nameGenerator);
         this.nacreElementType = nacreElementType;
+        this.withHazardTool = withHazardTool;
     }
 
 
 
     @Override
     protected String getSemanticCandidatesExpression(String domainType) {
-        String nacreLibDefName = getNacreElementType().getNacreLibDefinitionName();
-        return "aql:self.ownedMember->filter(" + domainType + ")->select(p | p.type->exists(t | t.qualifiedName = '" + nacreLibDefName + "'))";
+        return AQLUtils.getSelfServiceCallExpression("getExposedNacreElements",
+                List.of(AQLUtils.aqlString(getNacreElementType().getNacreLibDefinitionName()),
+                        domainType,
+                        "ancestors",
+                        IEditingContext.EDITING_CONTEXT,
+                        DiagramContext.DIAGRAM_CONTEXT));
     }
 
     @Override
@@ -94,7 +108,9 @@ protected abstract NodeStyleDescription createNodeStyle();
             var palette = nodeDescription.getPalette();
             if (palette != null) {
                 palette.getQuickAccessTools().removeIf(t -> "Delete from Diagram".equals(t.getName()));
-                palette.getQuickAccessTools().add(this.createHazardNodeTool());
+                if (withHazardTool) {
+                    palette.getQuickAccessTools().add(this.createHazardNodeTool());
+                }
             }
         });
     }

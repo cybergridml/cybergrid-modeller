@@ -1,9 +1,10 @@
-package cea.fr.NacreRTE.View.representations;
+package cea.fr.NacreRTE.view.representations;
 
-import cea.fr.NacreRTE.NacreToolDescriptionService;
-import cea.fr.NacreRTE.View.edges.ControlEdgeDescriptionProvider;
-import cea.fr.NacreRTE.View.nodes.*;
-import cea.fr.NacreRTE.library.NacreLibElementType;
+import cea.fr.NacreRTE.view.NacreDescriptionNameGenerator;
+import cea.fr.NacreRTE.view.services.NacreToolDescriptionService;
+import cea.fr.NacreRTE.view.edges.ControlEdgeDescriptionProvider;
+import cea.fr.NacreRTE.view.nodes.*;
+import cea.fr.NacreRTE.domain.NacreLibElementType;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
@@ -28,10 +29,7 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
 
     public static final List<NacreLibElementType> ELEMENTS = List.of(
             NacreLibElementType.MAINGRID,
-            //NacreLibElementType.ZONE,
-            //NacreLibElementType.SUBSTATION,
             NacreLibElementType.CENTRALCONTROLLER
-           // NacreLibElementType.ZONALCONTROlLER
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
@@ -65,12 +63,9 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
             IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       // providers.add(new ZoneNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       // providers.add(new SubstationNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-       // providers.add(new ZonalcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new MainGridNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
+        providers.add(new CentralControllerNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
+        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator, false));
         providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
         return providers;
     }
