@@ -44,10 +44,10 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             utilService.setFeatureTyping(usage, zoneDefinition);
             NacrePropertyUtil.addAttributesFromDefinition(usage, zoneDefinition);
         }
-        if (nacreLibElementType == NacreLibElementType.ZONALCONTROlLER) {
-            Definition zonalcontollerDefinition = NacreDefinitionsUtil.getZONALCONTROlLERDefinition(editingContext);
-            utilService.setFeatureTyping(usage, zonalcontollerDefinition);
-            NacrePropertyUtil.addAttributesFromDefinition(usage, zonalcontollerDefinition);
+        if (nacreLibElementType == NacreLibElementType.ZONALCONTROLLER) {
+            Definition zonalControllerDefinition = NacreDefinitionsUtil.getZonalControllerDefinition(editingContext);
+            utilService.setFeatureTyping(usage, zonalControllerDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, zonalControllerDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
             Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);

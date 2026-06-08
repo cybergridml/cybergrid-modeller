@@ -33,7 +33,7 @@ public class NacreViewCreateService extends ViewCreateService {
         return elementInitializerSwitch.doSwitch(element);
     }
 
-    public PartUsage createMaingrid(Element ownerElement, IEditingContext editingContext) {
+    public PartUsage createMainGrid(Element ownerElement, IEditingContext editingContext) {
         var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
         ownerElement.getOwnedRelationship().add(featureMembership);
         var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
@@ -60,7 +60,7 @@ public class NacreViewCreateService extends ViewCreateService {
         return newPartUsage;
     }
 
-    public PartUsage createCentralcontroller(Element ownerElement, IEditingContext editingContext) {
+    public PartUsage createCentralController(Element ownerElement, IEditingContext editingContext) {
         var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
         ownerElement.getOwnedRelationship().add(featureMembership);
         var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
@@ -69,12 +69,12 @@ public class NacreViewCreateService extends ViewCreateService {
         return newPartUsage;
     }
 
-    public PartUsage createZonalcontroller(Element ownerElement, IEditingContext editingContext) {
+    public PartUsage createZonalController(Element ownerElement, IEditingContext editingContext) {
         var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
         ownerElement.getOwnedRelationship().add(featureMembership);
         var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
         featureMembership.getOwnedRelatedElement().add(newPartUsage);
-        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.ZONALCONTROlLER).doSwitch(newPartUsage);
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.ZONALCONTROLLER).doSwitch(newPartUsage);
         return newPartUsage;
     }
 

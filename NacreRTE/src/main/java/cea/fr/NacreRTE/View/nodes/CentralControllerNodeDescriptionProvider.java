@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class CentralControllerNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
 
-    public MaingridNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
+    public CentralControllerNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator) {
         this(colorProvider, nameGenerator, true);
     }
 
-    public MaingridNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
-        super(NacreLibElementType.MAINGRID, colorProvider, nameGenerator, withHazardTool);
+    public CentralControllerNodeDescriptionProvider(IColorProvider colorProvider, NacreDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(NacreLibElementType.CENTRALCONTROLLER, colorProvider, nameGenerator, withHazardTool);
     }
 
     @Override
@@ -32,10 +32,10 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
                 .build();
 
         return this.diagramBuilderHelper.newRectangularNodeStyleDescription()
-                .borderColor(this.colorProvider.getColor(NacreViewConstants.MAINGRID_NODE_BORDER_COLOR))
+                .borderColor(this.colorProvider.getColor(NacreViewConstants.CENTRALCONTROLLER_NODE_BORDER_COLOR))
                 .borderSize(3)
                 .borderRadius(10)
-                .background(this.colorProvider.getColor(NacreViewConstants.MAINGRID_NODE_BACKGROUND_COLOR))
+                .background(this.colorProvider.getColor(NacreViewConstants.CENTRALCONTROLLER_NODE_BACKGROUND_COLOR))
                 .childrenLayoutStrategy(layoutStrategy)
                 .build();
     }
@@ -44,10 +44,12 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
     protected Set<NodeDescription> getReusedChildren(IViewDiagramElementFinder cache) {
         return Set.of();
     }
+
     @Override
     protected Set<NodeDescription> getReusedBorderNodes(IViewDiagramElementFinder cache) {
         return Set.of();
     }
+
     @Override
     protected List<NodeDescription> getAllNodeDescriptions(IViewDiagramElementFinder cache) {
         return List.of();
@@ -57,7 +59,6 @@ public class MaingridNodeDescriptionProvider extends AbstractNacreUsageNodeDescr
     protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
         return List.of();
     }
-
 
 
 }

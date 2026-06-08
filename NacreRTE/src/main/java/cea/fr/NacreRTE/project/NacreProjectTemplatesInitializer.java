@@ -26,16 +26,16 @@ public class NacreProjectTemplatesInitializer implements IProjectTemplateInitial
 
     private final IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider;
     private final NacreModelMutationElementService NacreModelMutationElementService;
-    private final ElementUtil elementUtil;
-    private final NacreDiagramMutationDiagramService diagramMutationDiagramService;
+    private final NacreElementUtil elementUtil;
+    private final NacreDiagramCreationService diagramMutationDiagramService;
 
     public NacreProjectTemplatesInitializer(IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider,
                                             NacreModelMutationElementService NacreModelMutationElementService,
-                                            NacreDiagramMutationDiagramService diagramMutationDiagramService) {
+                                            NacreDiagramCreationService diagramMutationDiagramService) {
         this.defaultSysMLv2ResourceProvider = Objects.requireNonNull(defaultSysMLv2ResourceProvider);
         this.NacreModelMutationElementService = NacreModelMutationElementService;
         this.diagramMutationDiagramService = Objects.requireNonNull(diagramMutationDiagramService);
-        this.elementUtil = new ElementUtil();
+        this.elementUtil = new NacreElementUtil();
     }
 
     @Override

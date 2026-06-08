@@ -63,8 +63,8 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
             IColorProvider nacreColorProvider, NacreDescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-        providers.add(new MaingridNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
-        providers.add(new CentralcontrollerNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
+        providers.add(new MainGridNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
+        providers.add(new CentralControllerNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
         providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator, false));
         providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
         return providers;
