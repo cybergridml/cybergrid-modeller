@@ -15,6 +15,7 @@ public enum NacreLibElementType {
     ZONALCONTROLLER("NACREProfile::CFA::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
     COMMUNICATIONMEDIA("NACREProfile::CRA::CommunicationMedia", "CommunicationMedia", "CommunicationMedia", SysmlPackage.eINSTANCE.getPartUsage(), false),
     COMPUTINGRESOURCE("NACREProfile::CRA::ComputingResource", "ComputingResource", "ComputingResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    REDUNDANCYCLUSTER("NACREProfile::CRA::RedundancyCluster", "RedundancyCluster", "RedundancyCluster", SysmlPackage.eINSTANCE.getPartUsage(), false),
     SOFTWARERESOURCE("NACREProfile::CRA::SoftwareResource", "SoftwareResource", "SoftwareResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
     ;
 

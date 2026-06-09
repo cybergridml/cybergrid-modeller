@@ -63,6 +63,11 @@ public class NacreDefinitionsUtil {
         return getNacreDefinition(nResource, NacreLibElementType.SOFTWARERESOURCE, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
+    public static Definition getRedundancyClusterDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.REDUNDANCYCLUSTER, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
 
     public static Optional<Definition> getNacreDefinition(Resource resource, NacreLibElementType nacreLibElementType, boolean isSubclassifier) {
         if (resource == null || nacreLibElementType == null) {
