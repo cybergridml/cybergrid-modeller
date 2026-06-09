@@ -32,6 +32,7 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
     public static final List<NacreLibElementType> ELEMENTS = List.of(
             NacreLibElementType.COMMUNICATIONMEDIA,
             NacreLibElementType.COMPUTINGRESOURCE,
+            NacreLibElementType.REDUNDANCYCLUSTER,
             NacreLibElementType.SOFTWARERESOURCE
     );
 
@@ -73,6 +74,7 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
         providers.add(new AllocateCraEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
         providers.add(new LinkEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
         providers.add(new ConnectEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new RedundancyClusterNodeDescriptionProvider(nacreColorProvider, nameGenerator));
         return providers;
     }
 

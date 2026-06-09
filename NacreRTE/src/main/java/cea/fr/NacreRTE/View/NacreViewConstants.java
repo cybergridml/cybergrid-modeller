@@ -30,4 +30,6 @@ public class NacreViewConstants {
     public static final String CONNECT_EDGE_COLOR = "purple 600";
     public static final String HAZARD_NODE_BACKGROUND_COLOR = "red 100";
     public static final String HAZARD_NODE_BORDER_COLOR = "red 800";
+    public static final String REDUNDANCY_CLUSTER_NODE_BACKGROUND_COLOR = "grey 400";
+    public static final String REDUNDANCY_CLUSTER_NODE_BORDER_COLOR = "grey 800";
 }

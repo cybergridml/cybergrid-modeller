@@ -74,6 +74,11 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             utilService.setFeatureTyping(usage, softwareResourceDefinition);
             NacrePropertyUtil.addAttributesFromDefinition(usage, softwareResourceDefinition);
         }
+        if (nacreLibElementType == NacreLibElementType.REDUNDANCYCLUSTER) {
+            Definition redundancyClusterDefinition = NacreDefinitionsUtil.getRedundancyClusterDefinition(editingContext);
+            utilService.setFeatureTyping(usage, redundancyClusterDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, redundancyClusterDefinition);
+        }
         caseUsage(usage);
         return usage;
     }
