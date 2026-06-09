@@ -25,7 +25,7 @@ public class NacrePropertyUtil {
     private static void addAttributeFromDefinition(Element parent, AttributeUsage defAttr) {
         AttributeUsage attr = SysmlFactory.eINSTANCE.createAttributeUsage();
         attr.setDeclaredName(defAttr.getDeclaredName());
-        attr.setIsComposite(false);
+        attr.setIsComposite(defAttr.isIsComposite());
 
         defAttr.getOwnedRelationship().stream()
                 .filter(FeatureValue.class::isInstance)
@@ -50,6 +50,15 @@ public class NacrePropertyUtil {
                     });
                     attr.getOwnedRelationship().add(fv);
                 });
+
+        if (defAttr.isIsComposite()) {
+            defAttr.getOwnedRelationship().stream()
+                    .filter(FeatureTyping.class::isInstance)
+                    .map(FeatureTyping.class::cast)
+                    .map(FeatureTyping::getType)
+                    .map(Namespace.class::cast)
+                    .forEach(type -> addAttributesFromDefinition(attr, type));
+        }
 
         FeatureMembership fm = SysmlFactory.eINSTANCE.createFeatureMembership();
         fm.getOwnedRelatedElement().add(attr);
