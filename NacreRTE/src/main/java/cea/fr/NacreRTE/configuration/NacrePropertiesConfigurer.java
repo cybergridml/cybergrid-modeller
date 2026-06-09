@@ -136,6 +136,8 @@ public class NacrePropertiesConfigurer implements IPropertiesDescriptionRegistry
         typedByIf.getChildren().add(this.createTypedByWidget());
         group.getChildren().add(typedByIf);
 
+        group.getChildren().add(this.createOwnedPropertiesIf());
+
         return group;
     }
 
@@ -257,6 +259,24 @@ public class NacrePropertiesConfigurer implements IPropertiesDescriptionRegistry
         textField.getBody().add(setNewValueOperation);
 
         return textField;
+    }
+
+    private FormElementDescription createOwnedPropertiesIf() {
+        FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
+        precondition.setName("OwnedProperties_Precondition");
+        precondition.setPredicateExpression("aql:self.ownedFeature->exists(e | e.isProperty())");
+        precondition.getChildren().add(this.createOwnedPropertiesWidget());
+        return precondition;
+    }
+
+    private WidgetDescription createOwnedPropertiesWidget() {
+        ReferenceWidgetDescription refWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
+        refWidget.setName("OwnedPropertiesReferenceWidget");
+        refWidget.setLabelExpression("Properties");
+        refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
+        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getType_OwnedFeature().getName());
+        refWidget.setIsEnabledExpression("aql:false");
+        return refWidget;
     }
 
     private WidgetDescription createTypedByWidget() {
