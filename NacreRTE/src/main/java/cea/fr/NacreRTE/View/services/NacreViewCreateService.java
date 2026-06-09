@@ -104,4 +104,12 @@ public class NacreViewCreateService extends ViewCreateService {
         new NacreElementInitializerSwitch(editingContext, NacreLibElementType.SOFTWARERESOURCE).doSwitch(newPartUsage);
         return newPartUsage;
     }
+    public PartUsage createRedundancyCluster(Element ownerElement, IEditingContext editingContext) {
+        var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
+        ownerElement.getOwnedRelationship().add(featureMembership);
+        var newPartUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        featureMembership.getOwnedRelatedElement().add(newPartUsage);
+        new NacreElementInitializerSwitch(editingContext, NacreLibElementType.REDUNDANCYCLUSTER).doSwitch(newPartUsage);
+        return newPartUsage;
+    }
 }
