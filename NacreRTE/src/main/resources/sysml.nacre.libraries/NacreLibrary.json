@@ -228,7 +228,7 @@
                                           "id": "45b2d76d-5fa0-4981-b034-8e28979f5b06",
                                           "eClass": "sysml:EnumerationUsage",
                                           "data": {
-                                            "declaredName": "concensus",
+                                            "declaredName": "consensus",
                                             "elementId": "fba625b4-0d04-406f-a863-2ac82c4a99f3",
                                             "isComposite": true
                                           }
