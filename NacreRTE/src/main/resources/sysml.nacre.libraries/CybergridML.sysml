@@ -132,8 +132,8 @@ private import NACREEnum::*;
         attribute finish : Integer;
     }
 	metadata def Hazard {
-	attribute description : String:
-	attribute justification : String:
+	attribute description : String;
+	attribute justification : String;
 	attribute period : Period[1];
 	attribute percent : Real[0..1];
 	}
@@ -162,8 +162,8 @@ private import NACREEnum::*;
     }
 
     part def SoftwareResource {
-        attribut Activation_period:Period;
-        attribut Execution_delay:NFP_Duration;
+        attribute Activation_period:Period;
+        attribute Execution_delay:NFP_Duration;
     }
 
     allocation def Allocate {
