@@ -14,7 +14,7 @@ enum def VoltageUnitKind {
         enum 'MW';
     }
 	enum def RedundancyKind {
-        enum 'concensus';
+        enum 'consensus';
         enum 'hypervisor';
         enum 'active_standby';
     }
