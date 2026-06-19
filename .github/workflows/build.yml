@@ -98,6 +98,11 @@ jobs:
                 <username>${GITHUB_ACTOR}</username>
                 <password>${PACKAGES_TOKEN}</password>
               </server>
+              <server>
+                <id>github-sirius-emfjson</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
             </servers>
           </settings>
           EOF
@@ -107,7 +112,7 @@ jobs:
         run: |
           cd "$PROJECT_DIR"
           chmod +x ./mvnw
-          ./mvnw -B -ntp -Drevision="${{ steps.version.outputs.version }}" clean package
+          ./mvnw -B -ntp -U -Drevision="${{ steps.version.outputs.version }}" clean package
 
       - name: Locate release JAR
         id: jar
