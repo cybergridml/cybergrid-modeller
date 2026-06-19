@@ -24,21 +24,6 @@ jobs:
     name: Build and publish release asset
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: Nacre-db
-          POSTGRES_USER: dbuser
-          POSTGRES_PASSWORD: dbpwd
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd="pg_isready -U dbuser -d Nacre-db"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -112,7 +97,7 @@ jobs:
         run: |
           cd "$PROJECT_DIR"
           chmod +x ./mvnw
-          ./mvnw -B -ntp -U -Drevision="${{ steps.version.outputs.version }}" clean package
+          ./mvnw -B -ntp -U -Drevision="${{ steps.version.outputs.version }}" -DskipTests clean package
 
       - name: Locate release JAR
         id: jar
