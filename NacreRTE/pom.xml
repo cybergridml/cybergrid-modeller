@@ -9,8 +9,8 @@
 		<relativePath/>
 	</parent>
 	<groupId>cea.fr</groupId>
-	<artifactId>CyberGridML</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>NacreRTE</artifactId>
+	<version>${revision}</version>
 	<name/>
 	<description/>
 	<url/>
@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<revision>0.0.1-SNAPSHOT</revision>
 		<syson.version>2025.12.0</syson.version>
 		<sirius-web.version>2025.12.0</sirius-web.version>
 	</properties>
@@ -118,6 +119,7 @@
 
 	</dependencies>
 	<build>
+		<finalName>cybergridml-app-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

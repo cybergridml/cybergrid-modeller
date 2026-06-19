@@ -1,0 +1,138 @@
+name: Publish release JAR
+
+"on":
+  push:
+    tags:
+      - "v*.*.*"
+      - "*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing Git tag to publish, for example '1.2.3' or 'v1.2.3'"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  packages: read
+
+env:
+  PROJECT_DIR: NacreRTE
+
+jobs:
+  publish:
+    name: Build and publish release asset
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        env:
+          DISPATCH_TAG: ${{ inputs.tag }}
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            TAG="$DISPATCH_TAG"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+
+          TAG="${TAG#refs/tags/}"
+          VERSION="${TAG#v}"
+
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Unsupported tag '$TAG'. Expected 'x.y.z' or 'vx.y.z', for example '1.2.3' or 'v1.2.3'." >&2
+            exit 1
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "jar_name=cybergridml-app-$VERSION.jar" >> "$GITHUB_OUTPUT"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: ${{ env.PROJECT_DIR }}/pom.xml
+
+      - name: Configure Maven authentication for GitHub Packages
+        shell: bash
+        env:
+          PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN || github.token }}
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github-syson</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+              <server>
+                <id>github-sirius-web</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+              <server>
+                <id>github-sirius-emfjson</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      - name: Build JAR
+        shell: bash
+        run: |
+          cd "$PROJECT_DIR"
+          chmod +x ./mvnw
+          ./mvnw -B -ntp -U -Drevision="${{ steps.version.outputs.version }}" -DskipTests clean package
+
+      - name: Locate release JAR
+        id: jar
+        shell: bash
+        run: |
+          JAR_PATH="$PROJECT_DIR/target/${{ steps.version.outputs.jar_name }}"
+
+          if [[ ! -f "$JAR_PATH" ]]; then
+            echo "Expected JAR not found: $JAR_PATH" >&2
+            echo "Available target files:" >&2
+            find "$PROJECT_DIR/target" -maxdepth 1 -type f -print >&2 || true
+            exit 1
+          fi
+
+          echo "path=$JAR_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version.outputs.jar_name }}
+          path: ${{ steps.jar.outputs.path }}
+          if-no-files-found: error
+
+      - name: Create or update GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          JAR_PATH="${{ steps.jar.outputs.path }}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$JAR_PATH" --clobber
+          else
+            gh release create "$TAG" "$JAR_PATH" \
+              --title "$TAG" \
+              --generate-notes
+          fi
