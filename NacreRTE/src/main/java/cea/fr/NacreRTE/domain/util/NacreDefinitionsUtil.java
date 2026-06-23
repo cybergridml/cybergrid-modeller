@@ -33,6 +33,11 @@ public class NacreDefinitionsUtil {
         return getNacreDefinition(nResource, NacreLibElementType.SUBSTATION, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
+    public static Definition getBusDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.BUS, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
 
     public static Definition getCentralControllerDefinition(IEditingContext editingContext) {
         Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
@@ -45,6 +50,22 @@ public class NacreDefinitionsUtil {
         return getNacreDefinition(nResource, NacreLibElementType.ZONALCONTROLLER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
+    public static Definition getLocalControllerDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.LOCALCONTROLLER, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
+    public static Definition getGeneratorDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.GENERATOR, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
+    public static Definition getBatteryDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.GENERATOR, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
+
 
     public static Definition getCommunicationMediaDefinition(IEditingContext editingContext) {
         Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
@@ -55,6 +76,21 @@ public class NacreDefinitionsUtil {
     public static Definition getComputingResourceDefinition(IEditingContext editingContext) {
         Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
         return getNacreDefinition(nResource, NacreLibElementType.COMPUTINGRESOURCE, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
+    public static Definition getLoadDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.LOAD, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
+    public static Definition getLineDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.LINE, false)
+                .orElse(SysmlFactory.eINSTANCE.createDefinition());
+    }
+    public static Definition getTerminalDefinition(IEditingContext editingContext) {
+        Resource nResource = NacreLibraryUtil.getLcaLibraryResource(editingContext);
+        return getNacreDefinition(nResource, NacreLibElementType.TERMINAL, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
