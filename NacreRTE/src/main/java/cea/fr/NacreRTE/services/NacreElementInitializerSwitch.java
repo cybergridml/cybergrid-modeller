@@ -49,6 +49,11 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             utilService.setFeatureTyping(usage, zonalControllerDefinition);
             NacrePropertyUtil.addAttributesFromDefinition(usage, zonalControllerDefinition);
         }
+        if (nacreLibElementType == NacreLibElementType.LOCALCONTROLLER) {
+            Definition localControllerDefinition = NacreDefinitionsUtil.getLocalControllerDefinition(editingContext);
+            utilService.setFeatureTyping(usage, localControllerDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, localControllerDefinition);
+        }
         if (nacreLibElementType == NacreLibElementType.CENTRALCONTROLLER) {
             Definition centralcontollerDefinition = NacreDefinitionsUtil.getCentralControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
@@ -58,6 +63,36 @@ public class NacreElementInitializerSwitch extends ElementInitializerSwitch {
             Definition substationDefinition = NacreDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
             NacrePropertyUtil.addAttributesFromDefinition(usage, substationDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.GENERATOR) {
+            Definition generatorDefinition = NacreDefinitionsUtil.getGeneratorDefinition(editingContext);
+            utilService.setFeatureTyping(usage, generatorDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, generatorDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.BATTERY) {
+            Definition BatteryDefinition = NacreDefinitionsUtil.getBatteryDefinition(editingContext);
+            utilService.setFeatureTyping(usage, BatteryDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, BatteryDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.BUS) {
+            Definition busDefinition = NacreDefinitionsUtil.getBusDefinition(editingContext);
+            utilService.setFeatureTyping(usage, busDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, busDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.LOAD) {
+            Definition loadDefinition = NacreDefinitionsUtil.getLoadDefinition(editingContext);
+            utilService.setFeatureTyping(usage, loadDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, loadDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.LINE) {
+            Definition lineDefinition = NacreDefinitionsUtil.getLineDefinition(editingContext);
+            utilService.setFeatureTyping(usage, lineDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, lineDefinition);
+        }
+        if (nacreLibElementType == NacreLibElementType.TERMINAL) {
+            Definition terminalDefinition = NacreDefinitionsUtil.getTerminalDefinition(editingContext);
+            utilService.setFeatureTyping(usage, terminalDefinition);
+            NacrePropertyUtil.addAttributesFromDefinition(usage, terminalDefinition);
         }
         if (nacreLibElementType == NacreLibElementType.COMMUNICATIONMEDIA) {
             Definition communicationMediaDefinition = NacreDefinitionsUtil.getCommunicationMediaDefinition(editingContext);
