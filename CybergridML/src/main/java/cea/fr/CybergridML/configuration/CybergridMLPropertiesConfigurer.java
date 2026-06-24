@@ -75,7 +75,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
     @Override
     public void addPropertiesDescriptions(IPropertiesDescriptionRegistry registry) {
-        FormDescription viewFormDescription = this.createNacrePropertiesViewForElement();
+        FormDescription viewFormDescription = this.createCybergridMLPropertiesViewForElement();
 
         URI uri = URI.createURI(IEMFEditingContext.RESOURCE_SCHEME + ":///"
                 + UUID.nameUUIDFromBytes(CybergridMLPropertiesConfigurer.class.getCanonicalName().getBytes()));
@@ -102,17 +102,17 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     }
 
 
-    private FormDescription createNacrePropertiesViewForElement() {
+    private FormDescription createCybergridMLPropertiesViewForElement() {
         String domainType = SysMLMetamodelHelper.buildQualifiedName(SysmlPackage.eINSTANCE.getElement());
         FormDescription form = FormFactory.eINSTANCE.createFormDescription();
-        form.setName("NACRE ");
+        form.setName("CyberGridML ");
         form.setDomainType(domainType);
-        form.setTitleExpression("NACRE Properties View");
+        form.setTitleExpression("CyberGridML Properties View");
 
         PageDescription pageCore = FormFactory.eINSTANCE.createPageDescription();
-        pageCore.setName("NACRE-PropertiesView");
+        pageCore.setName("CyberGridML -PropertiesView");
         pageCore.setDomainType(domainType);
-        pageCore.setLabelExpression("NACRE");
+        pageCore.setLabelExpression("CyberGridML");
         pageCore.getGroups().add(this.createCommonGroup());
         pageCore.getGroups().add(this.createPropertyGroup());
 
@@ -144,7 +144,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private GroupDescription createPropertyGroup() {
         GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
         group.setDisplayMode(GroupDisplayMode.LIST);
-        group.setName("NacreAttributeProperties");
+        group.setName("CyberGridMLAttributeProperties");
         group.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getLabel"));
         group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF + "->select(e | e.isProperty())");
 

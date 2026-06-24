@@ -20,7 +20,7 @@ public class CybergridMLLibrariesConfiguration extends SysONDefaultLibrariesConf
     public static final SysONLibraryLoadingDefinition CYBERGRIDML = new SysONLibraryLoadingDefinition(
             "SysML CyberGridML Library",
             CybergridMLLibraryUtil.CYBERGRIDML_LIBRARY_SCHEME,
-            Paths.get("sysml.nacre.libraries"),
+            Paths.get("sysml.cybergridML.libraries"),
             Collections.singletonList(JsonResourceFactoryImpl.EXTENSION),
             new JSONResourceFactory()::createResource);
 
