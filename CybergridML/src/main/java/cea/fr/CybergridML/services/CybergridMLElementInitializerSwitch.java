@@ -133,7 +133,7 @@ public class CybergridMLElementInitializerSwitch extends ElementInitializerSwitc
         if (owningNamespace != null) {
             return owningNamespace.getOwnedMember().stream()
                     .filter(namespaceElt -> doFilterDefinitions ? namespaceElt instanceof Definition : namespaceElt instanceof Usage)
-                    .filter(namespaceElt -> namespaceElt instanceof Feature f && nacreLibElementType == CybergridMLLibElementType.getNacreElementFromUsage(f))
+                    .filter(namespaceElt -> namespaceElt instanceof Feature f && nacreLibElementType == CybergridMLLibElementType.getCybergridMLElementFromUsage(f))
                     .count();
         }
         return 0;

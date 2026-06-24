@@ -8,14 +8,14 @@ public enum CybergridMLViewType {
     CFA_VIEW("Nacre::CFA"),
     CFRA_VIEW("Nacre::CFRA");
 
-    private final String nacreLibDefinitionName;
+    private final String CybergridMLLibDefinitionName;
 
-    CybergridMLViewType(String nacreLibDefinitionName) {
-        this.nacreLibDefinitionName = Objects.requireNonNull(nacreLibDefinitionName);
+    CybergridMLViewType(String CybergridMLLibDefinitionName) {
+        this.CybergridMLLibDefinitionName = Objects.requireNonNull(CybergridMLLibDefinitionName);
     }
 
     public String getNacreLibDefinitionName() {
-        return nacreLibDefinitionName;
+        return CybergridMLLibDefinitionName;
     }
 }
 

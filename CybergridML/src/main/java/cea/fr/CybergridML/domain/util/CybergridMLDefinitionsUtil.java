@@ -17,102 +17,102 @@ public class CybergridMLDefinitionsUtil {
     }
 
     public static Definition getMaingridDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.MAINGRID, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.MAINGRID, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
     public static Definition getZoneDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.ZONE, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.ZONE, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
     public static Definition getSubstationDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.SUBSTATION, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.SUBSTATION, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getBusDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.BUS, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.BUS, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
     public static Definition getCentralControllerDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.CENTRALCONTROLLER, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.CENTRALCONTROLLER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
     public static Definition getZonalControllerDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.ZONALCONTROLLER, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.ZONALCONTROLLER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getLocalControllerDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.LOCALCONTROLLER, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.LOCALCONTROLLER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getGeneratorDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.GENERATOR, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.GENERATOR, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getBatteryDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.GENERATOR, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.GENERATOR, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
 
     public static Definition getCommunicationMediaDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.COMMUNICATIONMEDIA, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.COMMUNICATIONMEDIA, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
     public static Definition getComputingResourceDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.COMPUTINGRESOURCE, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.COMPUTINGRESOURCE, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getLoadDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.LOAD, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.LOAD, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getLineDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.LINE, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.LINE, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getTerminalDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.TERMINAL, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.TERMINAL, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
     public static Definition getSoftwareResourceDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.SOFTWARERESOURCE, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.SOFTWARERESOURCE, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
     public static Definition getRedundancyClusterDefinition(IEditingContext editingContext) {
-        Resource nResource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
-        return getNacreDefinition(nResource, CybergridMLLibElementType.REDUNDANCYCLUSTER, false)
+        Resource nResource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
+        return getCybergridMLDefinition(nResource, CybergridMLLibElementType.REDUNDANCYCLUSTER, false)
                 .orElse(SysmlFactory.eINSTANCE.createDefinition());
     }
 
-    public static Optional<Definition> getNacreDefinition(Resource resource, CybergridMLLibElementType nacreLibElementType, boolean isSubclassifier) {
-        if (resource == null || nacreLibElementType == null) {
+    public static Optional<Definition> getCybergridMLDefinition(Resource resource, CybergridMLLibElementType cybergridMLLibElementType, boolean isSubclassifier) {
+        if (resource == null || cybergridMLLibElementType == null) {
             return Optional.empty();
         }
         TreeIterator<EObject> contentsIter = resource.getAllContents();
         while (contentsIter.hasNext()) {
             EObject eObject = contentsIter.next();
-            if (eObject instanceof Definition definition && CybergridMLLibraryUtil.typeHasNacreLibraryDefName(definition, nacreLibElementType, isSubclassifier)) {
+            if (eObject instanceof Definition definition && CybergridMLLibraryUtil.typeHasCybergridMLLibraryDefName(definition, cybergridMLLibElementType, isSubclassifier)) {
                 return Optional.of(definition);
             }
         }
@@ -120,7 +120,7 @@ public class CybergridMLDefinitionsUtil {
     }
 
     public static Optional<MetadataDefinition> getHazardDefinition(IEditingContext editingContext) {
-        Resource resource = CybergridMLLibraryUtil.getLcaLibraryResource(editingContext);
+        Resource resource = CybergridMLLibraryUtil.getCybergridMLLibraryResource(editingContext);
         if (resource == null) {
             return Optional.empty();
         }

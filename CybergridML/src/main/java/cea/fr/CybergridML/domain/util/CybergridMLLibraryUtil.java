@@ -14,19 +14,19 @@ import java.util.Optional;
 public class CybergridMLLibraryUtil {
 
 
-    public static final String CYBERGRIDML_LIBRARY_SCHEME = "nacrelibrary";
+    public static final String CYBERGRIDML_LIBRARY_SCHEME = "cybergridmllibrary";
 
     private CybergridMLLibraryUtil() {
     }
 
-    public static boolean typeHasNacreLibraryDefName(Type type, CybergridMLLibElementType nacreElementType, boolean isSubClassifier) {
+    public static boolean typeHasCybergridMLLibraryDefName(Type type, CybergridMLLibElementType nacreElementType, boolean isSubClassifier) {
         if (nacreElementType == null) {
             return false;
         }
         return nacreElementType.getNacreLibDefinitionName().equals(type.getQualifiedName()) && nacreElementType.isSubclassifier() == isSubClassifier;
     }
 
-    public static Resource getLcaLibraryResource(IEditingContext editingContext) {
+    public static Resource getCybergridMLLibraryResource(IEditingContext editingContext) {
         return Optional.of(editingContext)
                 .filter(IEMFEditingContext.class::isInstance)
                 .map(IEMFEditingContext.class::cast)
