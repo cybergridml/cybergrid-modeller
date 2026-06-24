@@ -14,7 +14,7 @@ public enum CybergridMLViewType {
         this.CybergridMLLibDefinitionName = Objects.requireNonNull(CybergridMLLibDefinitionName);
     }
 
-    public String getNacreLibDefinitionName() {
+    public String getCybergridMLLibDefinitionName() {
         return CybergridMLLibDefinitionName;
     }
 }

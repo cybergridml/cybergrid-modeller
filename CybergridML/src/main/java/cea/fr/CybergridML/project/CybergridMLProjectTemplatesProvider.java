@@ -10,11 +10,11 @@ import java.util.List;
 @Service
 public class CybergridMLProjectTemplatesProvider implements IProjectTemplateProvider {
 
-    public static final String NACRE_TEMPLATE_ID = "CyberGridML-template";
+    public static final String CYBERGRIDML_TEMPLATE_ID = "CyberGridML-template";
 
     @Override
     public List<ProjectTemplate> getProjectTemplates() {
-        var nacreTemplate = new ProjectTemplate(NACRE_TEMPLATE_ID, "CyberGridML", "/images/Cybergrid.png", List.of());
+        var nacreTemplate = new ProjectTemplate(CYBERGRIDML_TEMPLATE_ID, "CyberGridML", "/images/Cybergrid.png", List.of());
 
         return List.of(nacreTemplate);
     }
