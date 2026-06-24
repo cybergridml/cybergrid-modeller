@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MainGridNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
     public MainGridNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         this(colorProvider, nameGenerator, true);

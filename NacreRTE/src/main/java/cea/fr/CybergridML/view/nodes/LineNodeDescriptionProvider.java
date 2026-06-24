@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class LineNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class LineNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
     public LineNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.LINE, colorProvider, nameGenerator);

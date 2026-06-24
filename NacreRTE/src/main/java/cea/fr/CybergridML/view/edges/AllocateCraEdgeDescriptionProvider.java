@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AllocateCraEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
+public class AllocateCraEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Allocate";
     private final CybergridMLDescriptionNameGenerator nacreNameGenerator;

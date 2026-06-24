@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class CommunicationMediaNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class CommunicationMediaNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
     public CommunicationMediaNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.COMMUNICATIONMEDIA, colorProvider, nameGenerator);

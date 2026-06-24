@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BatteryNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class BatteryNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
     public BatteryNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.BATTERY, colorProvider, nameGenerator);

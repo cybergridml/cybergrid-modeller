@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ConnectEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
+public class ConnectEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Connect";
     private final CybergridMLDescriptionNameGenerator nacreNameGenerator;

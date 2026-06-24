@@ -15,7 +15,7 @@ import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.util.AQLUtils;
 
-public class ControlEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
+public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Control";
     private final CybergridMLDescriptionNameGenerator nacreNameGenerator;

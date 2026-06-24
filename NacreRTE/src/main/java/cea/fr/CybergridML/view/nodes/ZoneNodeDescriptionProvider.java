@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ZoneNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class ZoneNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
     public ZoneNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.ZONE, colorProvider, nameGenerator);

@@ -17,16 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class AbstractNacreUsageNodeDescriptionProvider extends AbstractUsageNodeDescriptionProvider {
+public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends AbstractUsageNodeDescriptionProvider {
 
     private final CybergridMLLibElementType nacreElementType;
     private final boolean withHazardTool;
 
-    protected AbstractNacreUsageNodeDescriptionProvider(CybergridMLLibElementType nacreElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType nacreElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         this(nacreElementType, colorProvider, nameGenerator, true);
     }
 
-    protected AbstractNacreUsageNodeDescriptionProvider(CybergridMLLibElementType nacreElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType nacreElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
         super(nacreElementType.geteClass(), colorProvider, nameGenerator);
         this.nacreElementType = nacreElementType;
         this.withHazardTool = withHazardTool;

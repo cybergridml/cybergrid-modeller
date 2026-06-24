@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class LinkEdgeDescriptionProvider extends AbstractNacreEdgeDescriptionProvider {
+public class LinkEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Link";
     private final CybergridMLDescriptionNameGenerator nacreNameGenerator;

@@ -6,16 +6,16 @@ import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescriptionProvider;
 
-public abstract class AbstractNacreEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
+public abstract class AbstractCybergridMLEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
 
     private final boolean withHazardTool;
 
 
-    protected AbstractNacreEdgeDescriptionProvider(IColorProvider colorProvider) {
+    protected AbstractCybergridMLEdgeDescriptionProvider(IColorProvider colorProvider) {
         this(colorProvider, true);
     }
 
-    protected AbstractNacreEdgeDescriptionProvider(IColorProvider colorProvider, boolean withHazardTool) {
+    protected AbstractCybergridMLEdgeDescriptionProvider(IColorProvider colorProvider, boolean withHazardTool) {
         super(colorProvider);
         this.withHazardTool = withHazardTool;
     }

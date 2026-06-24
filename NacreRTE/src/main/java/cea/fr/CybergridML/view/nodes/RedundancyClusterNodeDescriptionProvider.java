@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class RedundancyClusterNodeDescriptionProvider extends AbstractNacreUsageNodeDescriptionProvider {
+public class RedundancyClusterNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
     public RedundancyClusterNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.REDUNDANCYCLUSTER, colorProvider, nameGenerator);
