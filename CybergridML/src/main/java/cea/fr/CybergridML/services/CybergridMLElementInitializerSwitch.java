@@ -13,20 +13,20 @@ public class CybergridMLElementInitializerSwitch extends ElementInitializerSwitc
 
     private final UtilService utilService;
     private final IEditingContext editingContext;
-    private final CybergridMLLibElementType nacreLibElementType;
+    private final CybergridMLLibElementType cybergridMLLibElementType;
 
-    public CybergridMLElementInitializerSwitch(IEditingContext editingContext, CybergridMLLibElementType nacreLibElementType) {
+    public CybergridMLElementInitializerSwitch(IEditingContext editingContext, CybergridMLLibElementType cybergridMLLibElementType) {
         super();
         this.utilService = new UtilService();
         this.editingContext = editingContext;
-        this.nacreLibElementType = nacreLibElementType;
+        this.cybergridMLLibElementType = cybergridMLLibElementType;
     }
 
     @Override
     public Element caseUsage(Usage usage) {
-        if (nacreLibElementType != null) {
-            long existingElements = this.countElements(usage, nacreLibElementType);
-            usage.setDeclaredName(nacreLibElementType.getName().toLowerCase() + existingElements);
+        if (cybergridMLLibElementType != null) {
+            long existingElements = this.countElements(usage, cybergridMLLibElementType);
+            usage.setDeclaredName(cybergridMLLibElementType.getName().toLowerCase() + existingElements);
         }
         usage.setIsComposite(true);
         return usage;
@@ -34,82 +34,82 @@ public class CybergridMLElementInitializerSwitch extends ElementInitializerSwitc
 
     @Override
     public Element casePartUsage(PartUsage usage) {
-        if (nacreLibElementType == CybergridMLLibElementType.MAINGRID) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.MAINGRID) {
             Definition maingridDefinition = CybergridMLDefinitionsUtil.getMaingridDefinition(editingContext);
             utilService.setFeatureTyping(usage, maingridDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, maingridDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.ZONE) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.ZONE) {
             Definition zoneDefinition = CybergridMLDefinitionsUtil.getZoneDefinition(editingContext);
             utilService.setFeatureTyping(usage, zoneDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, zoneDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.ZONALCONTROLLER) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.ZONALCONTROLLER) {
             Definition zonalControllerDefinition = CybergridMLDefinitionsUtil.getZonalControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, zonalControllerDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, zonalControllerDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.LOCALCONTROLLER) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.LOCALCONTROLLER) {
             Definition localControllerDefinition = CybergridMLDefinitionsUtil.getLocalControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, localControllerDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, localControllerDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.CENTRALCONTROLLER) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.CENTRALCONTROLLER) {
             Definition centralcontollerDefinition = CybergridMLDefinitionsUtil.getCentralControllerDefinition(editingContext);
             utilService.setFeatureTyping(usage, centralcontollerDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, centralcontollerDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.SUBSTATION) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.SUBSTATION) {
             Definition substationDefinition = CybergridMLDefinitionsUtil.getSubstationDefinition(editingContext);
             utilService.setFeatureTyping(usage, substationDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, substationDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.GENERATOR) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.GENERATOR) {
             Definition generatorDefinition = CybergridMLDefinitionsUtil.getGeneratorDefinition(editingContext);
             utilService.setFeatureTyping(usage, generatorDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, generatorDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.BATTERY) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.BATTERY) {
             Definition BatteryDefinition = CybergridMLDefinitionsUtil.getBatteryDefinition(editingContext);
             utilService.setFeatureTyping(usage, BatteryDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, BatteryDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.BUS) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.BUS) {
             Definition busDefinition = CybergridMLDefinitionsUtil.getBusDefinition(editingContext);
             utilService.setFeatureTyping(usage, busDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, busDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.LOAD) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.LOAD) {
             Definition loadDefinition = CybergridMLDefinitionsUtil.getLoadDefinition(editingContext);
             utilService.setFeatureTyping(usage, loadDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, loadDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.LINE) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.LINE) {
             Definition lineDefinition = CybergridMLDefinitionsUtil.getLineDefinition(editingContext);
             utilService.setFeatureTyping(usage, lineDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, lineDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.TERMINAL) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.TERMINAL) {
             Definition terminalDefinition = CybergridMLDefinitionsUtil.getTerminalDefinition(editingContext);
             utilService.setFeatureTyping(usage, terminalDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, terminalDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.COMMUNICATIONMEDIA) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.COMMUNICATIONMEDIA) {
             Definition communicationMediaDefinition = CybergridMLDefinitionsUtil.getCommunicationMediaDefinition(editingContext);
             utilService.setFeatureTyping(usage, communicationMediaDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, communicationMediaDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.COMPUTINGRESOURCE) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.COMPUTINGRESOURCE) {
             Definition computingResourceDefinition = CybergridMLDefinitionsUtil.getComputingResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, computingResourceDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, computingResourceDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.SOFTWARERESOURCE) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.SOFTWARERESOURCE) {
             Definition softwareResourceDefinition = CybergridMLDefinitionsUtil.getSoftwareResourceDefinition(editingContext);
             utilService.setFeatureTyping(usage, softwareResourceDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, softwareResourceDefinition);
         }
-        if (nacreLibElementType == CybergridMLLibElementType.REDUNDANCYCLUSTER) {
+        if (cybergridMLLibElementType == CybergridMLLibElementType.REDUNDANCYCLUSTER) {
             Definition redundancyClusterDefinition = CybergridMLDefinitionsUtil.getRedundancyClusterDefinition(editingContext);
             utilService.setFeatureTyping(usage, redundancyClusterDefinition);
             CybergridMLPropertyUtil.addAttributesFromDefinition(usage, redundancyClusterDefinition);
@@ -120,20 +120,20 @@ public class CybergridMLElementInitializerSwitch extends ElementInitializerSwitc
 
     @Override
     public Element caseDefinition(Definition definition) {
-        if (nacreLibElementType != null) {
-            long elementsNb = this.countElements(definition, nacreLibElementType);
-            definition.setDeclaredName(nacreLibElementType.getName().toLowerCase() + elementsNb);
+        if (cybergridMLLibElementType != null) {
+            long elementsNb = this.countElements(definition, cybergridMLLibElementType);
+            definition.setDeclaredName(cybergridMLLibElementType.getName().toLowerCase() + elementsNb);
         }
         return definition;
     }
 
-    private long countElements(Element element, CybergridMLLibElementType nacreLibElementType) {
+    private long countElements(Element element, CybergridMLLibElementType cybergridMLLibElementType) {
         Namespace owningNamespace = element.getOwningNamespace();
         boolean doFilterDefinitions = element instanceof Definition;
         if (owningNamespace != null) {
             return owningNamespace.getOwnedMember().stream()
                     .filter(namespaceElt -> doFilterDefinitions ? namespaceElt instanceof Definition : namespaceElt instanceof Usage)
-                    .filter(namespaceElt -> namespaceElt instanceof Feature f && nacreLibElementType == CybergridMLLibElementType.getCybergridMLElementFromUsage(f))
+                    .filter(namespaceElt -> namespaceElt instanceof Feature f && cybergridMLLibElementType == CybergridMLLibElementType.getCybergridMLElementFromUsage(f))
                     .count();
         }
         return 0;
