@@ -24,7 +24,7 @@ import java.util.*;
 @Service
 public class CybergridMLEditService extends SysMLv2EditService {
 
-    public static final String ID_PREFIX = "NacreEditService-";
+    public static final String ID_PREFIX = "CybergridMLEditService-";
     private final ILabelService labelService;
     private final IObjectSearchService objectSearchService;
 
@@ -99,29 +99,29 @@ public class CybergridMLEditService extends SysMLv2EditService {
     public Optional<Object> createChild(IEditingContext editingContext, Object object, String childCreationDescriptionId) {
         if (childCreationDescriptionId.startsWith(ID_PREFIX) && object instanceof Element parent) {
 
-            CybergridMLLibElementType nacreElementType = CybergridMLLibElementType.getCybergridMLElementFromName(childCreationDescriptionId.substring(ID_PREFIX.length()));
-            Element newElement = createElement(parent, nacreElementType);
+            CybergridMLLibElementType cybergridMLElementType = CybergridMLLibElementType.getCybergridMLElementFromName(childCreationDescriptionId.substring(ID_PREFIX.length()));
+            Element newElement = createElement(parent, cybergridMLElementType);
 
             if (newElement != null) {
-                addElementToParent(parent, nacreElementType, newElement);
-                new CybergridMLElementInitializerSwitch(editingContext, nacreElementType).doSwitch(newElement);
+                addElementToParent(parent, cybergridMLElementType, newElement);
+                new CybergridMLElementInitializerSwitch(editingContext, cybergridMLElementType).doSwitch(newElement);
                 return Optional.of(newElement);
             }
         }
         return Optional.empty();
     }
 
-    private Element createElement(Element parent, CybergridMLLibElementType nacreElementType) {
+    private Element createElement(Element parent, CybergridMLLibElementType cybergridMLElementType) {
         if (parent.getClass() == NamespaceImpl.class) {
             return SysmlFactory.eINSTANCE.createPackage();
-        } else if (nacreElementType != null) {
-            return (Element) SysmlFactory.eINSTANCE.create(nacreElementType.geteClass());
+        } else if (cybergridMLElementType != null) {
+            return (Element) SysmlFactory.eINSTANCE.create(cybergridMLElementType.geteClass());
         }
         return null;
     }
 
-    private void addElementToParent(Element parent, CybergridMLLibElementType nacreElementType, Element newElement) {
-        Optional<EClass> intermediateContainerClass = getIntermediateContainerClass(parent, nacreElementType);
+    private void addElementToParent(Element parent, CybergridMLLibElementType cybergridMLElementType, Element newElement) {
+        Optional<EClass> intermediateContainerClass = getIntermediateContainerClass(parent, cybergridMLElementType);
 
         if (intermediateContainerClass.isPresent()) {
             EObject intermediateContainerEObject = SysmlFactory.eINSTANCE.create(intermediateContainerClass.get());
@@ -137,12 +137,12 @@ public class CybergridMLEditService extends SysMLv2EditService {
         ElementUtil.setIsImported(newElement.eResource(), false);
     }
 
-    private Optional<EClass> getIntermediateContainerClass(Element parent, CybergridMLLibElementType lcaElementType) {
+    private Optional<EClass> getIntermediateContainerClass(Element parent, CybergridMLLibElementType cybergridMLElementType) {
         Optional<EClass> intermediateContainerClass = Optional.empty();
         if (parent.getClass() == NamespaceImpl.class) {
             intermediateContainerClass = new GetIntermediateContainerCreationSwitch(parent).doSwitch(SysmlPackage.eINSTANCE.getPackage());
-        } else if (lcaElementType != null) {
-            intermediateContainerClass = new GetIntermediateContainerCreationSwitch(parent).doSwitch(lcaElementType.geteClass());
+        } else if (cybergridMLElementType != null) {
+            intermediateContainerClass = new GetIntermediateContainerCreationSwitch(parent).doSwitch(cybergridMLElementType.geteClass());
         }
         return intermediateContainerClass;
     }
