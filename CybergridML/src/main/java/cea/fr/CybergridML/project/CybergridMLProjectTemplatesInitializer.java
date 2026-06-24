@@ -21,26 +21,26 @@ import java.util.UUID;
 @Service
 public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateInitializer {
 
-    private static final String Nacre_DOCUMENT_NAME = "CyberGridML.sysml";
+    private static final String CYBERGRIDML_DOCUMENT_NAME = "CyberGridML.sysml";
 
 
     private final IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider;
-    private final CybergridMLModelMutationElementService NacreModelMutationElementService;
+    private final CybergridMLModelMutationElementService cybergridMLModelMutationElementService;
     private final CybergridMLElementUtil elementUtil;
     private final CybergridMLDiagramCreationService diagramMutationDiagramService;
 
     public CybergridMLProjectTemplatesInitializer(IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider,
-                                                  CybergridMLModelMutationElementService NacreModelMutationElementService,
+                                                  CybergridMLModelMutationElementService CybergridMLModelMutationElementService,
                                                   CybergridMLDiagramCreationService diagramMutationDiagramService) {
         this.defaultSysMLv2ResourceProvider = Objects.requireNonNull(defaultSysMLv2ResourceProvider);
-        this.NacreModelMutationElementService = NacreModelMutationElementService;
+        this.cybergridMLModelMutationElementService = CybergridMLModelMutationElementService;
         this.diagramMutationDiagramService = Objects.requireNonNull(diagramMutationDiagramService);
         this.elementUtil = new CybergridMLElementUtil();
     }
 
     @Override
     public boolean canHandle(String templateId) {
-        return CybergridMLProjectTemplatesProvider.NACRE_TEMPLATE_ID.equals(templateId);
+        return CybergridMLProjectTemplatesProvider.CYBERGRIDML_TEMPLATE_ID.equals(templateId);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateI
         Optional<ResourceSet> resourceSetOpt = this.getResourceSet(editingContext);
         if (resourceSetOpt.isPresent()) {
             ResourceSet resourceSet = resourceSetOpt.get();
-            Resource resource = defaultSysMLv2ResourceProvider.getDefaultSysMLv2Resource(UUID.randomUUID(), Nacre_DOCUMENT_NAME);
+            Resource resource = defaultSysMLv2ResourceProvider.getDefaultSysMLv2Resource(UUID.randomUUID(), CYBERGRIDML_DOCUMENT_NAME);
             resourceSet.getResources().add(resource);
 
             Optional<ViewUsage> viewUsageOpt = Optional.empty();
@@ -65,12 +65,12 @@ public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateI
             if (packageOpt.isPresent()) {
                 Package packageElt = packageOpt.get();
                 packageElt.setDeclaredName("CyberGridML");
-                viewUsageOpt = NacreModelMutationElementService.createViewUsage(packageElt, "CRA");
-                viewUsageOpt.ifPresent(viewUsage -> NacreModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CRA_VIEW));
-                viewUsageOpt1 = NacreModelMutationElementService.createViewUsage(packageElt, "CFRA");
-                viewUsageOpt1.ifPresent(viewUsage -> NacreModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFRA_VIEW));
-                viewUsageOpt2 = NacreModelMutationElementService.createViewUsage(packageElt, "CFA");
-                viewUsageOpt2.ifPresent(viewUsage -> NacreModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFA_VIEW));
+                viewUsageOpt = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CRA");
+                viewUsageOpt.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CRA_VIEW));
+                viewUsageOpt1 = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CFRA");
+                viewUsageOpt1.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFRA_VIEW));
+                viewUsageOpt2 = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CFA");
+                viewUsageOpt2.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFA_VIEW));
             }
 
             if (viewUsageOpt.isPresent()) {

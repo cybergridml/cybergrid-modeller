@@ -37,10 +37,10 @@ public class CybergridMLModelMutationElementService {
         return viewUsageOpt;
     }
 
-    public void typeViewUsage(Element ownerElement, ViewUsage viewUsage, CybergridMLViewType nacreViewType) {
+    public void typeViewUsage(Element ownerElement, ViewUsage viewUsage, CybergridMLViewType cybergridMLViewType) {
         FeatureTyping featureTyping = SysmlFactory.eINSTANCE.createFeatureTyping();
         viewUsage.getOwnedRelationship().add(featureTyping);
-        var generalViewViewDef = this.elementUtil.findByNameAndType(ownerElement, nacreViewType.getNacreLibDefinitionName(), ViewDefinition.class);
+        var generalViewViewDef = this.elementUtil.findByNameAndType(ownerElement, cybergridMLViewType.getCybergridMLLibDefinitionName(), ViewDefinition.class);
         featureTyping.setType(generalViewViewDef);
         featureTyping.setTypedFeature(viewUsage);
     }

@@ -26,15 +26,15 @@ public class CybergridMLCreateRepresentationInputProcessor implements IInputPreP
 
     private final IObjectSearchService objectSearchService;
     private final IEditingContextPersistenceService editingContextPersistenceService;
-    private final CybergridMLModelMutationElementService nacreModelMutationElementService;
+    private final CybergridMLModelMutationElementService cybergridMLModelMutationElementService;
     private final ElementUtil elementUtil;
 
     public CybergridMLCreateRepresentationInputProcessor(IObjectSearchService objectSearchService,
                                                          IEditingContextPersistenceService editingContextPersistenceService,
-                                                         CybergridMLModelMutationElementService nacreModelMutationElementService) {
+                                                         CybergridMLModelMutationElementService cybergridMLModelMutationElementService) {
         this.objectSearchService = Objects.requireNonNull(objectSearchService);
         this.editingContextPersistenceService = Objects.requireNonNull(editingContextPersistenceService);
-        this.nacreModelMutationElementService = Objects.requireNonNull(nacreModelMutationElementService);
+        this.cybergridMLModelMutationElementService = Objects.requireNonNull(cybergridMLModelMutationElementService);
         this.elementUtil = new ElementUtil();
     }
 
@@ -90,7 +90,7 @@ public class CybergridMLCreateRepresentationInputProcessor implements IInputPreP
     }
 
     private ViewUsage createViewUsage(IInput input, Element containerElement, String viewUsageName) {
-        Optional<ViewUsage> viewUsageOpt = this.nacreModelMutationElementService.createViewUsage(containerElement, viewUsageName);
+        Optional<ViewUsage> viewUsageOpt = this.cybergridMLModelMutationElementService.createViewUsage(containerElement, viewUsageName);
         if (viewUsageOpt.isEmpty()) {
             return null;
         }
@@ -111,18 +111,18 @@ public class CybergridMLCreateRepresentationInputProcessor implements IInputPreP
 
     private Optional<ViewDefinition> getViewDefinition(Element containerElement, CreateRepresentationInput input) {
         String id = input.representationDescriptionId();
-        CybergridMLViewType nacreViewType = null;
+        CybergridMLViewType cybergridMLViewType = null;
         if (Objects.equals(CybergridMLRepresentationDescriptionIdentifiers.CFA_VIEW_DIAGRAM_DESCRIPTION_ID, id)) {
-            nacreViewType = CybergridMLViewType.CFA_VIEW;
+            cybergridMLViewType = CybergridMLViewType.CFA_VIEW;
         } else if (Objects.equals(CybergridMLRepresentationDescriptionIdentifiers.CRA_VIEW_DIAGRAM_DESCRIPTION_ID, id)) {
-            nacreViewType = CybergridMLViewType.CRA_VIEW;
+            cybergridMLViewType = CybergridMLViewType.CRA_VIEW;
         } else if (Objects.equals(CybergridMLRepresentationDescriptionIdentifiers.CFRA_VIEW_DIAGRAM_DESCRIPTION_ID, id)) {
-            nacreViewType = CybergridMLViewType.CFRA_VIEW;
+            cybergridMLViewType = CybergridMLViewType.CFRA_VIEW;
         }
-        if (nacreViewType == null) {
+        if (cybergridMLViewType == null) {
             return Optional.empty();
         }
-        ViewDefinition viewDef = this.elementUtil.findByNameAndType(containerElement, nacreViewType.getNacreLibDefinitionName(), ViewDefinition.class);
+        ViewDefinition viewDef = this.elementUtil.findByNameAndType(containerElement, cybergridMLViewType.getCybergridMLLibDefinitionName(), ViewDefinition.class);
         return Optional.ofNullable(viewDef);
     }
 }
