@@ -21,10 +21,8 @@ public class CybergridMLGetChildCreationSwitch extends SysmlEClassSwitch<List<Cy
     @Override
     public List<CybergridMLLibElementType> casePackage(Package object) {
         List<CybergridMLLibElementType> childrenCandidates = new ArrayList<>();
-        childrenCandidates.add(CybergridMLLibElementType.MAINGRID);
-        //childrenCandidates.add(NacreLibElementType.ZONE);
-        //childrenCandidates.add(NacreLibElementType.ZONALCONTROLLER);
-        childrenCandidates.add(CybergridMLLibElementType.CENTRALCONTROLLER);
+        //childrenCandidates.add(CybergridMLLibElementType.MAINGRID);
+        //childrenCandidates.add(CybergridMLLibElementType.CENTRALCONTROLLER);
         return childrenCandidates;
     }
 
@@ -33,8 +31,6 @@ public class CybergridMLGetChildCreationSwitch extends SysmlEClassSwitch<List<Cy
     public List<CybergridMLLibElementType> casePartDefinition(PartDefinition object) {
         List<CybergridMLLibElementType> childrenCandidates = new ArrayList<>();
         childrenCandidates.add(CybergridMLLibElementType.MAINGRID);
-       // childrenCandidates.add(NacreLibElementType.ZONE);
-       // childrenCandidates.add(NacreLibElementType.ZONALCONTROLLER);
         childrenCandidates.add(CybergridMLLibElementType.CENTRALCONTROLLER);
         return childrenCandidates;
     }
