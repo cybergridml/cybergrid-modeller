@@ -29,7 +29,7 @@ public class CybergridMLViewCreateService extends ViewCreateService {
     }
 
     public Element elementInitializer(Element element, IEditingContext editingContext, String lcaElementTypeName) {
-        CybergridMLElementInitializerSwitch elementInitializerSwitch = new CybergridMLElementInitializerSwitch(editingContext, CybergridMLLibElementType.getNacreElementFromName(lcaElementTypeName));
+        CybergridMLElementInitializerSwitch elementInitializerSwitch = new CybergridMLElementInitializerSwitch(editingContext, CybergridMLLibElementType.getCybergridMLElementFromName(lcaElementTypeName));
         return elementInitializerSwitch.doSwitch(element);
     }
 

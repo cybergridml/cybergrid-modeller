@@ -27,46 +27,46 @@ public enum CybergridMLLibElementType {
 
     ;
 
-    private final String nacreLibDefinitionName;
+    private final String cybergridMLLibDefinitionName;
     private final String name;
     private final String serviceSuffix;
     private final EClass eClass;
     private final boolean isSubclassifier;
 
-    CybergridMLLibElementType(String nacreLibDefinitionName, String name, String serviceSuffix, EClass eClass, boolean isSubclassifier) {
-        this.nacreLibDefinitionName = Objects.requireNonNull(nacreLibDefinitionName);
+    CybergridMLLibElementType(String cybergridMLLibDefinitionName, String name, String serviceSuffix, EClass eClass, boolean isSubclassifier) {
+        this.cybergridMLLibDefinitionName = Objects.requireNonNull(cybergridMLLibDefinitionName);
         this.name = Objects.requireNonNull(name);
         this.serviceSuffix = Objects.requireNonNull(serviceSuffix);
         this.eClass = Objects.requireNonNull(eClass);
         this.isSubclassifier = isSubclassifier;
     }
 
-    public static CybergridMLLibElementType getNacreElementFromUsage(Feature feature) {
+    public static CybergridMLLibElementType getCybergridMLElementFromUsage(Feature feature) {
         return feature.getType().stream()
                 .filter(Objects::nonNull)
                 .map(Type::getQualifiedName)
-                .map(qualifiedName -> getNacreElementByNacreLibDefinitionName(qualifiedName, false))
+                .map(qualifiedName -> getCybergridMLElementByNacreLibDefinitionName(qualifiedName, false))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
     }
 
-    public static CybergridMLLibElementType getNacreElementFromName(String name) {
+    public static CybergridMLLibElementType getCybergridMLElementFromName(String name) {
         for (CybergridMLLibElementType nacreLibElementType : CybergridMLLibElementType.values())
             if (nacreLibElementType.getName().equals(name))
                 return nacreLibElementType;
         return null;
     }
 
-    private static CybergridMLLibElementType getNacreElementByNacreLibDefinitionName(String name, boolean isSubclassifier) {
-        for (CybergridMLLibElementType nacreLibElementType : CybergridMLLibElementType.values())
-            if (nacreLibElementType.getNacreLibDefinitionName().equals(name) && nacreLibElementType.isSubclassifier == isSubclassifier)
-                return nacreLibElementType;
+    private static CybergridMLLibElementType getCybergridMLElementByNacreLibDefinitionName(String name, boolean isSubclassifier) {
+        for (CybergridMLLibElementType cybergridMLLibElementType : CybergridMLLibElementType.values())
+            if (cybergridMLLibElementType.getNacreLibDefinitionName().equals(name) && cybergridMLLibElementType.isSubclassifier == isSubclassifier)
+                return cybergridMLLibElementType;
         return null;
     }
 
     public String getNacreLibDefinitionName() {
-        return nacreLibDefinitionName;
+        return cybergridMLLibDefinitionName;
     }
 
     public String getName() {

@@ -99,7 +99,7 @@ public class CybergridMLEditService extends SysMLv2EditService {
     public Optional<Object> createChild(IEditingContext editingContext, Object object, String childCreationDescriptionId) {
         if (childCreationDescriptionId.startsWith(ID_PREFIX) && object instanceof Element parent) {
 
-            CybergridMLLibElementType nacreElementType = CybergridMLLibElementType.getNacreElementFromName(childCreationDescriptionId.substring(ID_PREFIX.length()));
+            CybergridMLLibElementType nacreElementType = CybergridMLLibElementType.getCybergridMLElementFromName(childCreationDescriptionId.substring(ID_PREFIX.length()));
             Element newElement = createElement(parent, nacreElementType);
 
             if (newElement != null) {
