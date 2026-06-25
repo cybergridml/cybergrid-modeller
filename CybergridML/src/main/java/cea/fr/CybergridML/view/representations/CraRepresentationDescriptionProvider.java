@@ -41,7 +41,7 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("NACRE_CRA");
+    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("CYBERGRIDML_CRA");
     private final CybergridMLToolDescriptionService cybergridMLToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {

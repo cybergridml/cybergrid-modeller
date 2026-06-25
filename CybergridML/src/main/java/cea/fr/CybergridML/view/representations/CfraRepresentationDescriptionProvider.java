@@ -33,7 +33,7 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("NACRE_CFRA");
+    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("CYBERGRIDML_CFRA");
     private final CybergridMLToolDescriptionService cybergridMLToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
