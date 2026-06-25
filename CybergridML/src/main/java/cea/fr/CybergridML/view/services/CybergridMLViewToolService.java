@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 public class CybergridMLViewToolService extends ViewToolService {
 
-    private final CybergridMLUtilService nacreUtilService;
+    private final CybergridMLUtilService cybergridMLUtilService;
 
     public CybergridMLViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService, IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService) {
         super(identityService, objectSearchService, viewRepresentationDescriptionSearchService, feedbackMessageService, moveService);
-        nacreUtilService = new CybergridMLUtilService();
+        cybergridMLUtilService = new CybergridMLUtilService();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CybergridMLViewToolService extends ViewToolService {
         if (!(element instanceof ViewUsage)) {
             return true;
         }
-        CybergridMLViewDefinitionKind viewDefinitionKind = this.nacreUtilService.getNacreViewDefinitionKind(element, List.of(), editingContext);
+        CybergridMLViewDefinitionKind viewDefinitionKind = this.cybergridMLUtilService.getCybergridMLViewDefinitionKind(element, List.of(), editingContext);
         if (viewDefinitionKind == null) {
             return true;
         }
