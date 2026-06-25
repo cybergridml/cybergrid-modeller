@@ -18,7 +18,7 @@ import org.eclipse.syson.util.AQLUtils;
 public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Control";
-    private final CybergridMLDescriptionNameGenerator nacreNameGenerator;
+    private final CybergridMLDescriptionNameGenerator cybergridMLNameGenerator;
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
     public ControlEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
@@ -27,7 +27,7 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
 
     public ControlEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
         super(Objects.requireNonNull(colorProvider), withHazardTool);
-        this.nacreNameGenerator = Objects.requireNonNull(nameGenerator);
+        this.cybergridMLNameGenerator = Objects.requireNonNull(nameGenerator);
     }
 
     @Override
@@ -40,20 +40,20 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
 
     @Override
     protected String getName() {
-        return nacreNameGenerator.getEdgeName(EDGE_NAME);
+        return cybergridMLNameGenerator.getEdgeName(EDGE_NAME);
     }
 
     @Override
     protected List<NodeDescription> getSourceNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
-        cache.getNodeDescription(nacreNameGenerator.getNodeName(CybergridMLLibElementType.CENTRALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.CENTRALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
         return nodes;
     }
 
     @Override
     protected List<NodeDescription> getTargetNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
-        cache.getNodeDescription(nacreNameGenerator.getNodeName(CybergridMLLibElementType.MAINGRID.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.MAINGRID.getServiceSuffix())).ifPresent(nodes::add);
         return nodes;
     }
 

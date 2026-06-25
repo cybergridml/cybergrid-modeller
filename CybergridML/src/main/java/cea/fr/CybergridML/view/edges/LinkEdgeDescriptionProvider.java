@@ -17,12 +17,12 @@ import java.util.Objects;
 public class LinkEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Link";
-    private final CybergridMLDescriptionNameGenerator nacreNameGenerator;
+    private final CybergridMLDescriptionNameGenerator cybergridMLNameGenerator;
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
     public LinkEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         super(Objects.requireNonNull(colorProvider));
-        this.nacreNameGenerator = Objects.requireNonNull(nameGenerator);
+        this.cybergridMLNameGenerator = Objects.requireNonNull(nameGenerator);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class LinkEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescript
 
     @Override
     protected String getName() {
-        return nacreNameGenerator.getEdgeName(EDGE_NAME);
+        return cybergridMLNameGenerator.getEdgeName(EDGE_NAME);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class LinkEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescript
 
     private List<NodeDescription> buildLinkNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
-        cache.getNodeDescription(nacreNameGenerator.getNodeName(CybergridMLLibElementType.COMMUNICATIONMEDIA.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.COMMUNICATIONMEDIA.getServiceSuffix())).ifPresent(nodes::add);
         return nodes;
     }
 
