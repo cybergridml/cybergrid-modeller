@@ -19,16 +19,16 @@ import java.util.List;
 
 public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends AbstractUsageNodeDescriptionProvider {
 
-    private final CybergridMLLibElementType nacreElementType;
+    private final CybergridMLLibElementType cybergridMLElementType;
     private final boolean withHazardTool;
 
-    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType nacreElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
-        this(nacreElementType, colorProvider, nameGenerator, true);
+    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType cybergridMLElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+        this(cybergridMLElementType, colorProvider, nameGenerator, true);
     }
 
-    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType nacreElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
-        super(nacreElementType.geteClass(), colorProvider, nameGenerator);
-        this.nacreElementType = nacreElementType;
+    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType cybergridMLElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+        super(cybergridMLElementType.geteClass(), colorProvider, nameGenerator);
+        this.cybergridMLElementType = cybergridMLElementType;
         this.withHazardTool = withHazardTool;
     }
 
@@ -37,7 +37,7 @@ public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends Ab
     @Override
     protected String getSemanticCandidatesExpression(String domainType) {
         return AQLUtils.getSelfServiceCallExpression("getExposedNacreElements",
-                List.of(AQLUtils.aqlString(getNacreElementType().getNacreLibDefinitionName()),
+                List.of(AQLUtils.aqlString(getCybergridMLElementType().getCybergridMLLibDefinitionName()),
                         domainType,
                         "ancestors",
                         IEditingContext.EDITING_CONTEXT,
@@ -46,11 +46,11 @@ public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends Ab
 
     @Override
     protected String getNodeDescriptionName() {
-        return this.getDescriptionNameGenerator().getNodeName(getNacreElementType().getServiceSuffix());
+        return this.getDescriptionNameGenerator().getNodeName(getCybergridMLElementType().getServiceSuffix());
     }
 
     protected String getDomainType() {
-        return SysMLMetamodelHelper.buildQualifiedName(nacreElementType.geteClass());
+        return SysMLMetamodelHelper.buildQualifiedName(cybergridMLElementType.geteClass());
     }
 
     @Override
@@ -142,8 +142,8 @@ protected abstract NodeStyleDescription createNodeStyle();
         return (CybergridMLDescriptionNameGenerator) super.getDescriptionNameGenerator();
     }
 
-    protected CybergridMLLibElementType getNacreElementType() {
-        return nacreElementType;
+    protected CybergridMLLibElementType getCybergridMLElementType() {
+        return cybergridMLElementType;
     }
 
 }

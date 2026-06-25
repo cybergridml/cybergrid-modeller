@@ -60,12 +60,12 @@ public enum CybergridMLLibElementType {
 
     private static CybergridMLLibElementType getCybergridMLElementByNacreLibDefinitionName(String name, boolean isSubclassifier) {
         for (CybergridMLLibElementType cybergridMLLibElementType : CybergridMLLibElementType.values())
-            if (cybergridMLLibElementType.getNacreLibDefinitionName().equals(name) && cybergridMLLibElementType.isSubclassifier == isSubclassifier)
+            if (cybergridMLLibElementType.getCybergridMLLibDefinitionName().equals(name) && cybergridMLLibElementType.isSubclassifier == isSubclassifier)
                 return cybergridMLLibElementType;
         return null;
     }
 
-    public String getNacreLibDefinitionName() {
+    public String getCybergridMLLibDefinitionName() {
         return cybergridMLLibDefinitionName;
     }
 
