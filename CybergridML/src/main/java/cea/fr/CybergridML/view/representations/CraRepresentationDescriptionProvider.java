@@ -41,8 +41,8 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("NACRE_CRA");
-    private final CybergridMLToolDescriptionService nacreToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
+    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("CYBERGRIDML_CRA");
+    private final CybergridMLToolDescriptionService cybergridMLToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
         String domainType = SysMLMetamodelHelper.buildQualifiedName(SysmlPackage.eINSTANCE.getNamespace());
@@ -69,16 +69,16 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
     }
 
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
-            IColorProvider nacreColorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+            IColorProvider cybergridMLColorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-        providers.add(new CommunicationMediaNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new ComputingResourceNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new SoftwareResourceNodeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new AllocateCraEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new LinkEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new ConnectEdgeDescriptionProvider(nacreColorProvider, nameGenerator));
-        providers.add(new RedundancyClusterNodeDescriptionProvider(nacreColorProvider, nameGenerator));
+        providers.add(new CommunicationMediaNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new ComputingResourceNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new SoftwareResourceNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new ControlEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new AllocateCraEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new LinkEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new ConnectEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new RedundancyClusterNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
         return providers;
     }
 
@@ -92,7 +92,7 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
 
     protected DiagramPalette createDiagramPalette(IViewDiagramElementFinder cache) {
         return this.diagramBuilderHelper.newDiagramPalette()
-                .dropTool(this.nacreToolDescriptionService.createDropFromExplorerTool())
+                .dropTool(this.cybergridMLToolDescriptionService.createDropFromExplorerTool())
                 .nodeTools(this.createNodeTools(cache))
                 .build();
     }
@@ -104,12 +104,12 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
         return nodeTools.toArray(NodeTool[]::new);
     }
 
-    private List<NodeTool> getCreationToolsForElement(CybergridMLLibElementType nacreElementType, IViewDiagramElementFinder cache) {
+    private List<NodeTool> getCreationToolsForElement(CybergridMLLibElementType cybergridMLElementType, IViewDiagramElementFinder cache) {
         List<NodeTool> elementCreationTools = new ArrayList<>();
         NodeDescription nodeDescription = cache.getNodeDescription(
-                descriptionNameGenerator.getNodeName(nacreElementType.getServiceSuffix())).orElse(null);
+                descriptionNameGenerator.getNodeName(cybergridMLElementType.getServiceSuffix())).orElse(null);
         if (nodeDescription != null) {
-            NodeTool nodeTool = this.nacreToolDescriptionService.createNodeToolFromDiagramBackground(nodeDescription, nacreElementType);
+            NodeTool nodeTool = this.cybergridMLToolDescriptionService.createNodeToolFromDiagramBackground(nodeDescription, cybergridMLElementType);
             elementCreationTools.add(nodeTool);
         }
         return elementCreationTools;

@@ -30,11 +30,11 @@ public class CybergridMLViewNodeService extends ViewNodeService {
         return new RevealCompartmentSwitch(true).doSwitch(element);
     }
 
-    public List<Element> getExposedNacreElements(Element element, String nacreElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
-        return this.getExposedNacreElements(element, null, nacreElementTypeName, domainType, ancestors, editingContext, diagramContext);
+    public List<Element> getExposedNacreElements(Element element, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
+        return this.getExposedNacreElements(element, null, cybergridMLElementTypeName, domainType, ancestors, editingContext, diagramContext);
     }
 
-    public List<Element> getExposedNacreElements(Element element, Element parent, String nacreElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
+    public List<Element> getExposedNacreElements(Element element, Element parent, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
         List<Element> elementsToExpose = new ArrayList<>();
         if (element instanceof ViewUsage viewUsage) {
             var exposedElements = new ArrayList<Element>();
@@ -45,7 +45,7 @@ public class CybergridMLViewNodeService extends ViewNodeService {
             }
             var filteredExposedElements = exposedElements.stream()
                     .filter(elt -> this.isTypeOf(elt, domainType)
-                            && this.isTypedWithNacreDefinition(elt, nacreElementTypeName)
+                            && this.isTypedWithNacreDefinition(elt, cybergridMLElementTypeName)
                             && isAncestor(parent, elt))
                     .toList();
             elementsToExpose.addAll(filteredExposedElements);
@@ -59,7 +59,7 @@ public class CybergridMLViewNodeService extends ViewNodeService {
         } else if (element instanceof Namespace namespace && (ancestors == null || ancestors.isEmpty())) {
             namespace.getOwnedMember().stream()
                     .filter(elt -> this.isTypeOf(elt, domainType))
-                    .filter(elt -> this.isTypedWithNacreDefinition(elt, nacreElementTypeName))
+                    .filter(elt -> this.isTypedWithNacreDefinition(elt, cybergridMLElementTypeName))
                     .forEach(elementsToExpose::add);
         } else if (ancestors != null) {
             var viewUsageContainingElement = ancestors.stream()
@@ -67,15 +67,15 @@ public class CybergridMLViewNodeService extends ViewNodeService {
                     .map(ViewUsage.class::cast)
                     .findFirst();
             if (viewUsageContainingElement.isPresent()) {
-                List<Element> exposedNacreElements = this.getExposedNacreElements(viewUsageContainingElement.get(), element, nacreElementTypeName, domainType, ancestors, editingContext, diagramContext);
+                List<Element> exposedNacreElements = this.getExposedNacreElements(viewUsageContainingElement.get(), element, cybergridMLElementTypeName, domainType, ancestors, editingContext, diagramContext);
                 elementsToExpose.addAll(exposedNacreElements);
             }
         }
         return elementsToExpose;
     }
 
-    private boolean isTypedWithNacreDefinition(Element elt, String nacreElementTypeName) {
-        if (nacreElementTypeName == null || nacreElementTypeName.isEmpty()) {
+    private boolean isTypedWithNacreDefinition(Element elt, String cybergridMLElementTypeName) {
+        if (cybergridMLElementTypeName == null || cybergridMLElementTypeName.isEmpty()) {
             return true;
         }
         if (!(elt instanceof Feature feature)) {
@@ -83,7 +83,7 @@ public class CybergridMLViewNodeService extends ViewNodeService {
         }
         return feature.getType().stream()
                 .filter(Objects::nonNull)
-                .anyMatch(t -> nacreElementTypeName.equals(t.getQualifiedName()));
+                .anyMatch(t -> cybergridMLElementTypeName.equals(t.getQualifiedName()));
     }
 
     private static boolean isAncestor(Element parent, Element elt) {

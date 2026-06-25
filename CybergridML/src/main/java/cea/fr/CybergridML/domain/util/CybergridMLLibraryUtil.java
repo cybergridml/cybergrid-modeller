@@ -19,11 +19,11 @@ public class CybergridMLLibraryUtil {
     private CybergridMLLibraryUtil() {
     }
 
-    public static boolean typeHasCybergridMLLibraryDefName(Type type, CybergridMLLibElementType nacreElementType, boolean isSubClassifier) {
-        if (nacreElementType == null) {
+    public static boolean typeHasCybergridMLLibraryDefName(Type type, CybergridMLLibElementType cybergridMLElementType, boolean isSubClassifier) {
+        if (cybergridMLElementType == null) {
             return false;
         }
-        return nacreElementType.getNacreLibDefinitionName().equals(type.getQualifiedName()) && nacreElementType.isSubclassifier() == isSubClassifier;
+        return cybergridMLElementType.getCybergridMLLibDefinitionName().equals(type.getQualifiedName()) && cybergridMLElementType.isSubclassifier() == isSubClassifier;
     }
 
     public static Resource getCybergridMLLibraryResource(IEditingContext editingContext) {

@@ -45,27 +45,27 @@ public enum CybergridMLLibElementType {
         return feature.getType().stream()
                 .filter(Objects::nonNull)
                 .map(Type::getQualifiedName)
-                .map(qualifiedName -> getCybergridMLElementByNacreLibDefinitionName(qualifiedName, false))
+                .map(qualifiedName -> getCybergridMLElementByCybergridMLLibDefinitionName(qualifiedName, false))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
     }
 
     public static CybergridMLLibElementType getCybergridMLElementFromName(String name) {
-        for (CybergridMLLibElementType nacreLibElementType : CybergridMLLibElementType.values())
-            if (nacreLibElementType.getName().equals(name))
-                return nacreLibElementType;
-        return null;
-    }
-
-    private static CybergridMLLibElementType getCybergridMLElementByNacreLibDefinitionName(String name, boolean isSubclassifier) {
         for (CybergridMLLibElementType cybergridMLLibElementType : CybergridMLLibElementType.values())
-            if (cybergridMLLibElementType.getNacreLibDefinitionName().equals(name) && cybergridMLLibElementType.isSubclassifier == isSubclassifier)
+            if (cybergridMLLibElementType.getName().equals(name))
                 return cybergridMLLibElementType;
         return null;
     }
 
-    public String getNacreLibDefinitionName() {
+    private static CybergridMLLibElementType getCybergridMLElementByCybergridMLLibDefinitionName(String name, boolean isSubclassifier) {
+        for (CybergridMLLibElementType cybergridMLLibElementType : CybergridMLLibElementType.values())
+            if (cybergridMLLibElementType.getCybergridMLLibDefinitionName().equals(name) && cybergridMLLibElementType.isSubclassifier == isSubclassifier)
+                return cybergridMLLibElementType;
+        return null;
+    }
+
+    public String getCybergridMLLibDefinitionName() {
         return cybergridMLLibDefinitionName;
     }
 

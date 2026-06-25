@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CybergridMLUtilService {
 
-    public CybergridMLViewDefinitionKind getNacreViewDefinitionKind(Element element, List<Object> ancestors, IEditingContext editingContext) {
+    public CybergridMLViewDefinitionKind getCybergridMLViewDefinitionKind(Element element, List<Object> ancestors, IEditingContext editingContext) {
         CybergridMLViewDefinitionKind kind = CybergridMLViewDefinitionKind.CFA_VIEW;
         if (element instanceof ViewUsage viewUsage) {
             var types = viewUsage.getType();
@@ -26,7 +26,7 @@ public class CybergridMLUtilService {
             var viewUsageContainingElement = ancestors.stream().filter(ViewUsage.class::isInstance).map(ViewUsage.class::cast).findFirst();
             if (viewUsageContainingElement.isPresent()) {
                 ViewUsage viewUsage = viewUsageContainingElement.get();
-                kind = this.getNacreViewDefinitionKind(viewUsage, List.of(), editingContext);
+                kind = this.getCybergridMLViewDefinitionKind(viewUsage, List.of(), editingContext);
             }
         }
         return kind;

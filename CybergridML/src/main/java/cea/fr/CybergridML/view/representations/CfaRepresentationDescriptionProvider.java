@@ -35,8 +35,8 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("NACRE_CFA");
-    private final CybergridMLToolDescriptionService nacreToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
+    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("CYBERGRIDML_CFA");
+    private final CybergridMLToolDescriptionService cybergridMLToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
         String domainType = SysMLMetamodelHelper.buildQualifiedName(SysmlPackage.eINSTANCE.getNamespace());
@@ -63,12 +63,12 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
     }
 
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
-            IColorProvider nacreColorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+            IColorProvider cybergridMLColorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
-        providers.add(new MainGridNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
-        providers.add(new CentralControllerNodeDescriptionProvider(nacreColorProvider, nameGenerator, false));
-        providers.add(new ControlEdgeDescriptionProvider(nacreColorProvider, nameGenerator, false));
-        providers.addAll(this.createAllEdgeDescriptionProviders(nacreColorProvider));
+        providers.add(new MainGridNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
+        providers.add(new CentralControllerNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
+        providers.add(new ControlEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
+        providers.addAll(this.createAllEdgeDescriptionProviders(cybergridMLColorProvider));
         return providers;
     }
 
@@ -82,7 +82,7 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
 
     protected DiagramPalette createDiagramPalette(IViewDiagramElementFinder cache) {
         return this.diagramBuilderHelper.newDiagramPalette()
-                .dropTool(this.nacreToolDescriptionService.createDropFromExplorerTool())
+                .dropTool(this.cybergridMLToolDescriptionService.createDropFromExplorerTool())
                 .nodeTools(this.createNodeTools(cache))
                 .build();
     }
@@ -94,12 +94,12 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
         return nodeTools.toArray(NodeTool[]::new);
     }
 
-    private List<NodeTool> getCreationToolsForElement(CybergridMLLibElementType nacreElementType, IViewDiagramElementFinder cache) {
+    private List<NodeTool> getCreationToolsForElement(CybergridMLLibElementType cybergridMLElementType, IViewDiagramElementFinder cache) {
         List<NodeTool> elementCreationTools = new ArrayList<>();
         NodeDescription nodeDescription = cache.getNodeDescription(
-                descriptionNameGenerator.getNodeName(nacreElementType.getServiceSuffix())).orElse(null);
+                descriptionNameGenerator.getNodeName(cybergridMLElementType.getServiceSuffix())).orElse(null);
         if (nodeDescription != null) {
-            NodeTool nodeTool = this.nacreToolDescriptionService.createNodeToolFromDiagramBackground(nodeDescription, nacreElementType);
+            NodeTool nodeTool = this.cybergridMLToolDescriptionService.createNodeToolFromDiagramBackground(nodeDescription, cybergridMLElementType);
             elementCreationTools.add(nodeTool);
         }
         return elementCreationTools;

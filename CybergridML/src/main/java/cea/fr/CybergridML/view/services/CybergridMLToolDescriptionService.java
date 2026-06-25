@@ -26,32 +26,32 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
         super(descriptionNameGenerator);
     }
 
-    public NodeTool createNodeToolFromDiagramBackground(NodeDescription nodeDescription, CybergridMLLibElementType nacreElementType) {
-        NodeTool nodeTool = super.createNodeToolFromDiagramBackground(nodeDescription, nacreElementType.geteClass());
-        String nodeToolName = nacreElementType.getName();
-        modifyLcaNodeTool(nacreElementType, nodeToolName, nodeTool);
+    public NodeTool createNodeToolFromDiagramBackground(NodeDescription nodeDescription, CybergridMLLibElementType cybergridMLElementType) {
+        NodeTool nodeTool = super.createNodeToolFromDiagramBackground(nodeDescription, cybergridMLElementType.geteClass());
+        String nodeToolName = cybergridMLElementType.getName();
+        modifyLcaNodeTool(cybergridMLElementType, nodeToolName, nodeTool);
         return nodeTool;
     }
 
-    private void modifyLcaNodeTool(CybergridMLLibElementType nacreElementType, String nodeToolName, NodeTool nodeTool) {
+    private void modifyLcaNodeTool(CybergridMLLibElementType cybergridMLElementType, String nodeToolName, NodeTool nodeTool) {
         nodeTool.setName(nodeToolName);
-        changeElementCreation(nodeTool.getBody(), nacreElementType);
+        changeElementCreation(nodeTool.getBody(), cybergridMLElementType);
         LOGGER.debug("Created node tool {}", nodeTool.getName());
     }
 
-    private void changeElementCreation(final EList<Operation> operationList, CybergridMLLibElementType nacreElementType) {
+    private void changeElementCreation(final EList<Operation> operationList, CybergridMLLibElementType cybergridMLElementType) {
         for (Operation operation : operationList) {
-            if (operation instanceof CreateInstance createInstance && createInstance.getTypeName().equals(SysMLMetamodelHelper.buildQualifiedName(nacreElementType.geteClass()))) {
+            if (operation instanceof CreateInstance createInstance && createInstance.getTypeName().equals(SysMLMetamodelHelper.buildQualifiedName(cybergridMLElementType.geteClass()))) {
                 createInstance.getChildren().stream()
                         .filter(ChangeContext.class::isInstance)
                         .findFirst()
                         .map(ChangeContext.class::cast)
                         .ifPresent(newInstanceChangeContext -> {
-                            List<String> parameters = List.of(IEditingContext.EDITING_CONTEXT, AQLUtils.aqlString(nacreElementType.getName()));
+                            List<String> parameters = List.of(IEditingContext.EDITING_CONTEXT, AQLUtils.aqlString(cybergridMLElementType.getName()));
                             newInstanceChangeContext.setExpression(AQLUtils.getServiceCallExpression(NEW_INSTANCE, SERVICE_ELEMENT_INITIALIZER, parameters));
                         });
             }
-            changeElementCreation(operation.getChildren(), nacreElementType);
+            changeElementCreation(operation.getChildren(), cybergridMLElementType);
         }
     }
 }
