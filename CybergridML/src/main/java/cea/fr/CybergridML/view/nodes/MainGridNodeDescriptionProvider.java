@@ -4,6 +4,7 @@ import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
 import cea.fr.CybergridML.view.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import org.eclipse.sirius.components.view.Operation;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
@@ -44,10 +45,12 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
     protected Set<NodeDescription> getReusedChildren(IViewDiagramElementFinder cache) {
         return Set.of();
     }
+
     @Override
     protected Set<NodeDescription> getReusedBorderNodes(IViewDiagramElementFinder cache) {
         return Set.of();
     }
+
     @Override
     protected List<NodeDescription> getAllNodeDescriptions(IViewDiagramElementFinder cache) {
         return List.of();
@@ -55,9 +58,17 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
 
     @Override
     protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
-        return List.of();
+        Operation logOperation = this.viewBuilderHelper
+                .newChangeContext()
+                .expression("aql:self")
+                .build();
+
+        NodeTool importTool = this.diagramBuilderHelper
+                .newNodeTool()
+                .name("Import topology")
+                .body(logOperation)
+                .build();
+
+        return List.of(importTool);
     }
-
-
-
 }
