@@ -8,22 +8,22 @@ import java.util.Objects;
 
 public enum CybergridMLLibElementType {
 
-    MAINGRID("NACREProfile::CFA::MainGrid", "MainGrid", "MainGrid", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    ZONE("NACREProfile::CFA::Zone", "Zone", "Zone", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    SUBSTATION("NACREProfile::CFA::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    BUS("NACREProfile::CFA::Bus", "Bus", "Bus", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    CENTRALCONTROLLER("NACREProfile::CFA::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    ZONALCONTROLLER("NACREProfile::CFA::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    LOCALCONTROLLER("NACREProfile::CFA::LocalController", "LocalController", "LocalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    COMMUNICATIONMEDIA("NACREProfile::CRA::CommunicationMedia", "CommunicationMedia", "CommunicationMedia", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    COMPUTINGRESOURCE("NACREProfile::CRA::ComputingResource", "ComputingResource", "ComputingResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    REDUNDANCYCLUSTER("NACREProfile::CRA::RedundancyCluster", "RedundancyCluster", "RedundancyCluster", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    GENERATOR("NACREProfile::CRA::Generator", "Generator", "Generator", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    SOFTWARERESOURCE("NACREProfile::CRA::SoftwareResource", "SoftwareResource", "SoftwareResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    BATTERY("NACREProfile::CRA::Battery", "Battery", "Battery", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    LOAD("NACREProfile::CRA::Load", "Load", "Load", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    LINE("NACREProfile::CRA::Line", "Line", "Line", SysmlPackage.eINSTANCE.getPartUsage(), false),
-    TERMINAL("NACREProfile::CRA::Terminal", "Terminal", "Terminal", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    MAINGRID("CyberGridMLProfile::CFA::MainGrid", "MainGrid", "MainGrid", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    ZONE("CyberGridMLProfile::CFA::Zone", "Zone", "Zone", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    SUBSTATION("CyberGridMLProfile::CFA::Substation", "Substation", "Substation", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    BUS("CyberGridMLProfile::CFA::Bus", "Bus", "Bus", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    CENTRALCONTROLLER("CyberGridMLProfile::CFA::CentralController", "CentralController", "CentralController", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    ZONALCONTROLLER("CyberGridMLProfile::CFA::ZonalController", "ZonalController", "ZonalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    LOCALCONTROLLER("CyberGridMLProfile::CFA::LocalController", "LocalController", "LocalController", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    COMMUNICATIONMEDIA("CyberGridMLProfile::CRA::CommunicationMedia", "CommunicationMedia", "CommunicationMedia", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    COMPUTINGRESOURCE("CyberGridMLProfile::CRA::ComputingResource", "ComputingResource", "ComputingResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    REDUNDANCYCLUSTER("CyberGridMLProfile::CRA::RedundancyCluster", "RedundancyCluster", "RedundancyCluster", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    GENERATOR("CyberGridMLProfile::CFA::Generator", "Generator", "Generator", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    SOFTWARERESOURCE("CyberGridMLProfile::CRA::SoftwareResource", "SoftwareResource", "SoftwareResource", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    BATTERY("CyberGridMLProfile::CFA::Battery", "Battery", "Battery", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    LOAD("CyberGridMLProfile::CFA::Load", "Load", "Load", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    LINE("CyberGridMLProfile::CFA::Line", "Line", "Line", SysmlPackage.eINSTANCE.getPartUsage(), false),
+    TERMINAL("CyberGridMLProfile::CFA::Terminal", "Terminal", "Terminal", SysmlPackage.eINSTANCE.getPartUsage(), false),
 
     ;
 

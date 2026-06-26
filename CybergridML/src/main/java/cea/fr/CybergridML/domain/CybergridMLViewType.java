@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public enum CybergridMLViewType {
 
-    CRA_VIEW("Nacre::CRA"),
-    CFA_VIEW("Nacre::CFA"),
-    CFRA_VIEW("Nacre::CFRA");
+    CRA_VIEW("CyberGridML::CRA"),
+    CFA_VIEW("CyberGridML::CFA"),
+    CFRA_VIEW("CyberGridML::CFRA");
 
     private final String CybergridMLLibDefinitionName;
 

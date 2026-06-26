@@ -127,7 +127,7 @@ public class CybergridMLDefinitionsUtil {
         TreeIterator<EObject> it = resource.getAllContents();
         while (it.hasNext()) {
             EObject obj = it.next();
-            if (obj instanceof MetadataDefinition md && "NACREDatatypes::Hazard".equals(md.getQualifiedName())) {
+            if (obj instanceof MetadataDefinition md && "CyberGridMLDatatypes::Hazard".equals(md.getQualifiedName())) {
                 return Optional.of(md);
             }
         }
