@@ -17,7 +17,7 @@ permissions:
   packages: read
 
 env:
-  PROJECT_DIR: NacreRTE
+  PROJECT_DIR: CybergridML
 
 jobs:
   publish:
