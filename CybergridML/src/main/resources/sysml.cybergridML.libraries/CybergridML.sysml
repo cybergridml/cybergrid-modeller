@@ -1,4 +1,4 @@
-library package NACREEnum{
+library package CyberGridMLEnum{
 private import Metaobjects::SemanticMetadata;
 private import ScalarValues::*;
 private import ISQBase::*;
@@ -54,7 +54,7 @@ enum def VoltageUnitKind {
         enum 'ApproximateLinearMPC';
         enum 'Limiter';
         enum 'ReleaseAll';
-	
+
     }
 	enum def LatencyUnitKind {
         enum 'Nanoseconds';
@@ -81,12 +81,12 @@ enum def VoltageUnitKind {
        enum day;
 
     }
-    }	
-	library package NACREDatatypes {
+    }
+library package CyberGridMLDatatypes {
 private import Metaobjects::SemanticMetadata;
 private import ScalarValues::*;
 private import ISQBase::*;
-private import NACREEnum::*;
+private import CyberGridMLEnum::*;
     attribute def NFP_Latency {
         attribute unit : LatencyUnitKind[0..1];
         attribute precision : Integer[1];
@@ -132,29 +132,29 @@ private import NACREEnum::*;
         attribute finish : Integer;
     }
 	metadata def Hazard {
-	attribute description : String;
-	attribute justification : String;
+	attribute description : String:
+	attribute justification : String:
 	attribute period : Period[1];
 	attribute percent : Real[0..1];
 	}
-	
+
 
 }
-library package NACREProfile {
+library package CyberGridMLProfile {
 library package CRA {
 
 private import ScalarValues::*;
 private import ISQBase::*;
-private import NACREDatatypes::*;
-private import NACREEnum::*;
+private import CyberGridMLDatatypes::*;
+private import CyberGridMLEnum::*;
 
     part def ComputingResource;
     part def RedundancyCluster {
 	    attribute runtime : RedundancyKind[1];
-	    attribute active : SoftwareResource[1..*];
-		attribute passive : SoftwareResource[1..*];
-		attribute hypervisor : SoftwareResource[0..1];
-		
+	    ref active : SoftwareResource[1..*];
+	    ref passive : SoftwareResource[1..*];
+	    ref hypervisor : SoftwareResource[0..1];
+
 	}
     part def CommunicationMedia {
         attribute capacity : NFP_Capacity;
@@ -184,7 +184,7 @@ private import NACREEnum::*;
 library package CFA {
 private import ScalarValues::*;
 private import ISQBase::*;
-private import NACREDatatypes::*;
+private import CyberGridMLDatatypes::*;
 
 
     part def GridElement;
@@ -198,22 +198,22 @@ private import NACREDatatypes::*;
         centralController : CentralController;
 		part zone : Zone[1..*];
         part line : Line[1..*];
-		
+
     }
 
     part def Zone :> GridElement {
-	
+
          part zonalController : ZonalController;
 		 part substations : Substation[1..*];
 		 part line : Line[1..*];
-         
+
     }
-	
+
 
     part def Substation {
          part bus : Bus[1..*];
-		 ref zone : Zone[1];
-         
+		 ref zone : Zone[*];
+
     }
 
     part def Bus {
@@ -261,11 +261,10 @@ private import NACREDatatypes::*;
 		attribute branch : String;
         attribute side : Integer;
         attribute ecr : NFP_Current;
-        attribute connected : Boolean;
 		ref line : Line[0..2];
 		attribute v : NFP_Voltage;
 	}
 
-   
+
 }
 }
