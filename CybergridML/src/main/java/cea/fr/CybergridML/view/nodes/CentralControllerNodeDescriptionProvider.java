@@ -59,6 +59,10 @@ public class CentralControllerNodeDescriptionProvider extends AbstractCybergridM
     protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
         return List.of();
     }
-
+    protected InsideLabelStyle createInsideLabelStyle() {
+        InsideLabelStyle labelStyle = super.createInsideLabelStyle();
+        labelStyle.setLabelIcon("/images/central_controller1.png");
+        return labelStyle;
+    }
 
 }
