@@ -52,7 +52,12 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
     protected List<NodeDescription> getAllNodeDescriptions(IViewDiagramElementFinder cache) {
         return List.of();
     }
-
+    @Override
+    protected InsideLabelStyle createInsideLabelStyle() {
+        InsideLabelStyle labelStyle = super.createInsideLabelStyle();
+        labelStyle.setLabelIcon("/images/maingrid.svg");
+        return labelStyle;
+    }
     @Override
     protected List<NodeTool> getToolsWithoutSection(NodeDescription nodeDescription, IViewDiagramElementFinder cache) {
         return List.of();

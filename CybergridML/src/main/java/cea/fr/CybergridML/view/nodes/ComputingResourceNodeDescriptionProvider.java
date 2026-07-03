@@ -6,6 +6,7 @@ import cea.fr.CybergridML.view.CybergridMLViewConstants;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
+import org.eclipse.sirius.components.view.diagram.InsideLabelStyle;
 import org.eclipse.sirius.components.view.diagram.NodeDescription;
 import org.eclipse.sirius.components.view.diagram.NodeStyleDescription;
 
@@ -50,5 +51,9 @@ public class ComputingResourceNodeDescriptionProvider extends AbstractCybergridM
     protected List<NodeDescription> getAllNodeDescriptions(IViewDiagramElementFinder cache) {
         return List.of();
     }
-
+    protected InsideLabelStyle createInsideLabelStyle() {
+        InsideLabelStyle labelStyle = super.createInsideLabelStyle();
+        labelStyle.setLabelIcon("/images/computingRS.png");
+        return labelStyle;
+    }
 }
