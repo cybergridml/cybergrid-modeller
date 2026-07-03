@@ -132,8 +132,8 @@ private import CyberGridMLEnum::*;
         attribute finish : Integer;
     }
 	metadata def Hazard {
-	attribute description : String:
-	attribute justification : String:
+	attribute description : String;
+	attribute justification : String;
 	attribute period : Period[1];
 	attribute percent : Real[0..1];
 	}
