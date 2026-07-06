@@ -3,8 +3,8 @@ import ISQBase::*;
 import ISQ::*;
 import SI::*;
 import NACREEnum::*;
-import NACREDatatypes::*;
-import NACREProfile::*;
+import CyberGridMLDatatypes::*;
+import CyberGridMLProfile::*;
 import CRA::*;
 import CFA::*;
 
@@ -16,145 +16,132 @@ package CyberGridML2 {
 	S1 :Substation
 	{
 		 B1:Bus {
-		 	::> nominalLevel {
-		 		 unit= "VoltageUnitKind::KV";
-		 		::> precision = 135  ;
-		 		}
-		 		
-		 	::> connected= true;
-		 	equipment {
+		 	
 		 		B1_G : Generator;
 		 		L1_2_1_1 :Terminal;
 		 		L1_5_1 :Terminal;
-		 	}
-		}
+		 	
+		 }		 			
 	}
 	S2 :Substation
 	{
-		B2:Bus {
-			nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-			connected= true;
-			equipment {
-		 		B1_G : Generator;
+		B2:Bus {		
+			
+		 		B2_G : Generator;
+		 		B2_L: Load;
 		 		L1_2_1_1 :Terminal;
-		 		L1_5_1 :Terminal;
-		 	}
-		
+		 		L2_3_1_1 :Terminal;
+		 		L2_4_1_1 :Terminal;
+		 		L2_5_1_1 :Terminal;
+				
 		}
 	}
 	 S3 :Substation
 	{
 		B3:Bus {
-			nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-			connected= true;	
+				B3_G : Generator;
+		 		B3_L: Load;
+		 		L2_3_1_2 :Terminal;
+		 		L3_4_1_1 :Terminal;
 		
 		}
 	}
 	 S4 : Substation
 	{
 		B4:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+		B4_L: Load;
+		 		L2_4_1_2 :Terminal;
+		 		L3_4_1_2 :Terminal;
+		 		L4_5_1_1 :Terminal;
+		 		T4_7_1_1 :Terminal;
+		T4_9_1_1 :Terminal;
 		}
 		B7:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+		L7_8_1_1 :Terminal;
+		 		L7_9_1_1 :Terminal;
+		 		T4_7_1_2 :Terminal;
+		 	
 		}
 		B9:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+		B9_L: Load;
+		 		L7_9_1_2 :Terminal;
+		 		L9_10_1_1 :Terminal;
+		 		L9_14_1_1 :Terminal;
+		 		T4_9_1_2 :Terminal;
+		 	
 		}
 	}
 	 S5 :Substation
 	{
 		B5:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+		B5_L: Load;
+		 		L1_5_1_2 :Terminal;
+		 		L2_5_1_2 :Terminal;
+		 		L4_5_1_2 :Terminal;
+		 		T5_6_1_1 :Terminal;
+			
 		}
 		B6:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+		B6_G : Generator;
+		 		B6_L: Load;
+		 		L6_11_1_1 :Terminal;
+		 		L6_12_1_1 :Terminal;
+		 		L6_13_1_1 :Terminal;
+		 		T5_6_1_2 :Terminal;
+		
 		}
 	}
 	 S8 : Substation
 	{
 		B8:Bus {
-		 nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+				B8_G : Generator;
+				 L7_8_1_2 :Terminal;
 		}
 	}
 	 S10 : Substation
 	{
 		B10:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+				B10_L: Load;
+		 		L9_10_1_2:Terminal;
+		 		L10_11_1_1 :Terminal;
+		 		
 		}
 	}
 	 S11 : Substation
 	{
 		B11:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+				B11_L: Load;
+		 		L6_11_1_2:Terminal;
+		 		L10_11_1_2 :Terminal;
+			
 		}
 	}
 	 S12 : Substation
 	{
 		B12:Bus {
-		 nominalLevel = 12 [VoltageUnitKind::KV];nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+		 		B12_L: Load;
+		 		L6_11_1_2:Terminal;
+		 		L12_13_1_1 :Terminal;
+				
 		}
 	}
 	 S13 : Substation
 	{
 		B13:Bus {
-		 nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;connected= true;		
+				B13_L: Load;
+		 		L6_13_1_2:Terminal;
+		 		L12_13_1_2 :Terminal;
+				L13_14_1_1 :Terminal;
+		
 		}
 	}
 	 S14 : Substation
 	{
 		B14:Bus {
-		nominalLevel {
-		 		unit= "VoltageUnitKind::KV";
-		 		precision = 135  ;
-		 		}
-		 connected= true;		
+				B14_L: Load;
+		 		L9_14_1_2:Terminal;
+				L13_14_1_2 :Terminal;
+				 		
 		}
 	}
 
