@@ -15,8 +15,11 @@ import org.eclipse.syson.sysml.ViewUsage;
 import org.eclipse.syson.sysml.helper.EMFUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CybergridMLViewNodeService extends ViewNodeService {
@@ -28,6 +31,15 @@ public class CybergridMLViewNodeService extends ViewNodeService {
     @Override
     protected boolean needToRevealCompartment(Element element, boolean isGeneralView) {
         return new RevealCompartmentSwitch(true).doSwitch(element);
+    }
+
+    @Override
+    protected Set<Element> getDirectExposedElements(ViewUsage viewUsage) {
+        Set<Element> directExposedElements = super.getDirectExposedElements(viewUsage);
+        return directExposedElements.stream()
+                .filter(element -> directExposedElements.stream()
+                        .noneMatch(other -> !Objects.equals(other, element) && EMFUtils.isAncestor(other, element)))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public List<Element> getExposedNacreElements(Element element, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
