@@ -50,6 +50,8 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
 
         cache.getNodeDescription(getDescriptionNameGenerator().getNodeName(CybergridMLLibElementType.ZONE.getServiceSuffix()))
                 .ifPresent(nodes::add);
+        cache.getNodeDescription(getDescriptionNameGenerator().getNodeName(CybergridMLLibElementType.SUBSTATION.getServiceSuffix()))
+                .ifPresent(nodes::add);
         return nodes;
     }
     @Override
@@ -71,6 +73,8 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
         var tools = new ArrayList<NodeTool>();
 
         tools.add(createChildCreationTool(CybergridMLLibElementType.ZONE.getName(), "createZone"));
+        tools.add(createChildCreationTool(CybergridMLLibElementType.SUBSTATION.getName(), "createSubstation"));
+
 
         return tools;
     }
