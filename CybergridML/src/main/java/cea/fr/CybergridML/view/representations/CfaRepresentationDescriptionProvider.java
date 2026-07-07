@@ -67,6 +67,7 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
         providers.add(new MainGridNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.add(new CentralControllerNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
+        providers.add(new ZoneNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
         providers.add(new ControlEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.addAll(this.createAllEdgeDescriptionProviders(cybergridMLColorProvider));
         return providers;
