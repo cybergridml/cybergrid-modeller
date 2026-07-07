@@ -57,7 +57,7 @@ public class SoftwareResourceNodeDescriptionProvider extends AbstractCybergridML
     }
     protected InsideLabelStyle createInsideLabelStyle() {
         InsideLabelStyle labelStyle = super.createInsideLabelStyle();
-        labelStyle.setLabelIcon("/images/SoftwrRS.png");
+        labelStyle.setLabelIcon("/images/software_resource.png");
         return labelStyle;
     }
 }
