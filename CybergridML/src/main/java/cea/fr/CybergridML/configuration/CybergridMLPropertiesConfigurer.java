@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import cea.fr.CybergridML.domain.util.CybergridMLPropertyUtil;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -32,7 +33,9 @@ import org.eclipse.sirius.components.view.form.FormFactory;
 import org.eclipse.sirius.components.view.form.GroupDescription;
 import org.eclipse.sirius.components.view.form.GroupDisplayMode;
 import org.eclipse.sirius.components.view.form.LabelDescription;
+import org.eclipse.sirius.components.view.form.MultiSelectDescription;
 import org.eclipse.sirius.components.view.form.PageDescription;
+import org.eclipse.sirius.components.view.form.SelectDescription;
 import org.eclipse.sirius.components.view.form.TextAreaDescription;
 import org.eclipse.sirius.components.view.form.TextfieldDescription;
 import org.eclipse.sirius.components.view.form.WidgetDescription;
@@ -42,10 +45,19 @@ import org.eclipse.syson.services.UtilService;
 import org.eclipse.syson.sysml.AttributeUsage;
 import org.eclipse.syson.sysml.Comment;
 import org.eclipse.syson.sysml.Element;
+import org.eclipse.syson.sysml.EnumerationDefinition;
+import org.eclipse.syson.sysml.EnumerationUsage;
+import org.eclipse.syson.sysml.Expression;
 import org.eclipse.syson.sysml.FeatureTyping;
 import org.eclipse.syson.sysml.FeatureValue;
+import org.eclipse.syson.sysml.LiteralInfinity;
+import org.eclipse.syson.sysml.LiteralInteger;
 import org.eclipse.syson.sysml.LiteralString;
+import org.eclipse.syson.sysml.MultiplicityRange;
 import org.eclipse.syson.sysml.OwningMembership;
+import org.eclipse.syson.sysml.PartUsage;
+import org.eclipse.syson.sysml.ReferenceUsage;
+import org.eclipse.syson.sysml.Subsetting;
 import org.eclipse.syson.sysml.SysmlFactory;
 import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.sysml.Type;
@@ -115,6 +127,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         pageCore.setLabelExpression("CyberGridML");
         pageCore.getGroups().add(this.createCommonGroup());
         pageCore.getGroups().add(this.createPropertyGroup());
+        pageCore.getGroups().add(this.createReferenceGroup());
 
         form.getPages().add(pageCore);
         return form;
@@ -137,6 +150,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         group.getChildren().add(typedByIf);
 
         group.getChildren().add(this.createOwnedPropertiesIf());
+        group.getChildren().add(this.createOwnedReferencesIf());
 
         return group;
     }
@@ -154,11 +168,40 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         textAreaIf.getChildren().add(this.createPropertyValueTextAreaWidget());
         group.getChildren().add(textAreaIf);
 
+        FormElementIf enumIf = FormFactory.eINSTANCE.createFormElementIf();
+        enumIf.setName("EnumProperty_Precondition");
+        enumIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isEnumProperty"));
+        enumIf.getChildren().add(this.createPropertyValueSelectWidget());
+        group.getChildren().add(enumIf);
+
         FormElementIf textFieldIf = FormFactory.eINSTANCE.createFormElementIf();
         textFieldIf.setName("TextFieldProperty_Precondition");
-        textFieldIf.setPredicateExpression(AQLConstants.AQL + "not(self.isTextAreaProperty())");
+        textFieldIf.setPredicateExpression(AQLConstants.AQL
+                + "not(self.isTextAreaProperty()) and not(self.isEnumProperty())");
         textFieldIf.getChildren().add(this.createPropertyValueWidget());
         group.getChildren().add(textFieldIf);
+
+        return group;
+    }
+
+    private GroupDescription createReferenceGroup() {
+        GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
+        group.setDisplayMode(GroupDisplayMode.LIST);
+        group.setName("CyberGridMLReferenceProperties");
+        group.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getLabel"));
+        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF + "->select(e | e.isReferenceProperty())");
+
+        FormElementIf singleValuedIf = FormFactory.eINSTANCE.createFormElementIf();
+        singleValuedIf.setName("SingleValuedReference_Precondition");
+        singleValuedIf.setPredicateExpression(AQLConstants.AQL + "not(self.isManyValuedReference())");
+        singleValuedIf.getChildren().add(this.createReferencePropertySelectWidget());
+        group.getChildren().add(singleValuedIf);
+
+        FormElementIf manyValuedIf = FormFactory.eINSTANCE.createFormElementIf();
+        manyValuedIf.setName("ManyValuedReference_Precondition");
+        manyValuedIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isManyValuedReference"));
+        manyValuedIf.getChildren().add(this.createReferencePropertyMultiSelectWidget());
+        group.getChildren().add(manyValuedIf);
 
         return group;
     }
@@ -261,6 +304,57 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         return textField;
     }
 
+    private WidgetDescription createPropertyValueSelectWidget() {
+        SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
+        select.setName("PropertyValueSelectWidget");
+        select.setLabelExpression("Value");
+        select.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getEnumCandidates"));
+        select.setCandidateLabelExpression("aql:candidate.declaredName");
+        select.setValueExpression(AQLUtils.getSelfServiceCallExpression("getEnumPropertyValue"));
+        select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+
+        ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setEnumPropertyValue",
+                ViewFormDescriptionConverter.NEW_VALUE));
+        select.getBody().add(setNewValueOperation);
+
+        return select;
+    }
+
+    private WidgetDescription createReferencePropertySelectWidget() {
+        SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
+        select.setName("ReferencePropertyValueSelectWidget");
+        select.setLabelExpression("Value");
+        select.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
+        select.setCandidateLabelExpression("aql:candidate.declaredName");
+        select.setValueExpression(AQLUtils.getSelfServiceCallExpression("getSingleReferencePropertyValue"));
+        select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+
+        ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setSingleReferencePropertyValue",
+                ViewFormDescriptionConverter.NEW_VALUE));
+        select.getBody().add(setNewValueOperation);
+
+        return select;
+    }
+
+    private WidgetDescription createReferencePropertyMultiSelectWidget() {
+        MultiSelectDescription multiSelect = FormFactory.eINSTANCE.createMultiSelectDescription();
+        multiSelect.setName("ReferencePropertyValueMultiSelectWidget");
+        multiSelect.setLabelExpression("Value");
+        multiSelect.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
+        multiSelect.setCandidateLabelExpression("aql:candidate.declaredName");
+        multiSelect.setValueExpression(AQLUtils.getSelfServiceCallExpression("getReferencePropertyValue"));
+        multiSelect.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+
+        ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setReferencePropertyValues",
+                ViewFormDescriptionConverter.NEW_VALUE));
+        multiSelect.getBody().add(setNewValueOperation);
+
+        return multiSelect;
+    }
+
     private FormElementDescription createOwnedPropertiesIf() {
         FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
         precondition.setName("OwnedProperties_Precondition");
@@ -274,7 +368,25 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         refWidget.setName("OwnedPropertiesReferenceWidget");
         refWidget.setLabelExpression("Properties");
         refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
-        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getType_OwnedFeature().getName());
+        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getUsage_NestedAttribute().getName());
+        refWidget.setIsEnabledExpression("aql:false");
+        return refWidget;
+    }
+
+    private FormElementDescription createOwnedReferencesIf() {
+        FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
+        precondition.setName("OwnedReferences_Precondition");
+        precondition.setPredicateExpression("aql:self.ownedFeature->exists(e | e.isReferenceProperty())");
+        precondition.getChildren().add(this.createOwnedReferencesWidget());
+        return precondition;
+    }
+
+    private WidgetDescription createOwnedReferencesWidget() {
+        ReferenceWidgetDescription refWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
+        refWidget.setName("OwnedReferencesReferenceWidget");
+        refWidget.setLabelExpression("References");
+        refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
+        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getUsage_NestedReference().getName());
         refWidget.setIsEnabledExpression("aql:false");
         return refWidget;
     }
@@ -413,6 +525,136 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         if (!(element instanceof AttributeUsage au)) return false;
         String name = au.getDeclaredName();
         return "description".equals(name) || "justification".equals(name);
+    }
+
+    public boolean isEnumProperty(Element element) {
+        return element instanceof AttributeUsage usage && this.getEnumerationDefinition(usage) != null;
+    }
+
+    private EnumerationDefinition getEnumerationDefinition(AttributeUsage usage) {
+        return usage.getType().stream()
+                .filter(EnumerationDefinition.class::isInstance)
+                .map(EnumerationDefinition.class::cast)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<EnumerationUsage> getEnumCandidates(AttributeUsage usage) {
+        EnumerationDefinition enumerationDefinition = this.getEnumerationDefinition(usage);
+        return enumerationDefinition != null ? enumerationDefinition.getEnumeratedValue() : List.of();
+    }
+
+    public EnumerationUsage getEnumPropertyValue(AttributeUsage usage) {
+        String currentValue = this.getPropertyValue(usage);
+        return this.getEnumCandidates(usage).stream()
+                .filter(literal -> literal.getDeclaredName().equals(currentValue))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public AttributeUsage setEnumPropertyValue(AttributeUsage usage, EnumerationUsage newValue) {
+        if (newValue != null) {
+            this.setPropertyValue(usage, newValue.getDeclaredName());
+        }
+        return usage;
+    }
+
+    public boolean isReferenceProperty(Element element) {
+        return element instanceof ReferenceUsage;
+    }
+
+    public boolean isManyValuedReference(Element element) {
+        if (!(element instanceof ReferenceUsage usage)) {
+            return false;
+        }
+        if (!(usage.getMultiplicity() instanceof MultiplicityRange range)) {
+            return false;
+        }
+        Expression upper = range.getUpperBound();
+        if (upper instanceof LiteralInfinity) {
+            return true;
+        }
+        return upper instanceof LiteralInteger literalInteger && literalInteger.getValue() > 1;
+    }
+
+    public List<PartUsage> getReferenceCandidates(ReferenceUsage usage) {
+        Type type = this.getExplicitType(usage);
+        if (type == null) {
+            return List.of();
+        }
+        String qualifiedName = type.getQualifiedName();
+        if (qualifiedName == null) {
+            return List.of();
+        }
+        EObject root = EcoreUtil.getRootContainer(usage);
+        List<PartUsage> candidates = new ArrayList<>();
+        root.eAllContents().forEachRemaining(eObject -> {
+            if (eObject instanceof PartUsage candidate && this.hasType(candidate, qualifiedName)) {
+                candidates.add(candidate);
+            }
+        });
+        return candidates;
+    }
+
+    private boolean hasType(PartUsage candidate, String qualifiedName) {
+        try {
+            return candidate.getType().stream()
+                    .filter(Objects::nonNull)
+                    .map(Type::getQualifiedName)
+                    .filter(Objects::nonNull)
+                    .anyMatch(qualifiedName::equals);
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    private Type getExplicitType(ReferenceUsage usage) {
+        return usage.getOwnedRelationship().stream()
+                .filter(FeatureTyping.class::isInstance)
+                .map(FeatureTyping.class::cast)
+                .map(FeatureTyping::getType)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private List<Subsetting> getOwnedSubsettings(ReferenceUsage usage) {
+        return usage.getOwnedRelationship().stream()
+                .filter(Subsetting.class::isInstance)
+                .map(Subsetting.class::cast)
+                .toList();
+    }
+
+    public List<PartUsage> getReferencePropertyValue(ReferenceUsage usage) {
+        return this.getOwnedSubsettings(usage).stream()
+                .map(Subsetting::getSubsettedFeature)
+                .filter(PartUsage.class::isInstance)
+                .map(PartUsage.class::cast)
+                .toList();
+    }
+
+    public PartUsage getSingleReferencePropertyValue(ReferenceUsage usage) {
+        return this.getReferencePropertyValue(usage).stream().findFirst().orElse(null);
+    }
+
+    public ReferenceUsage setReferencePropertyValues(ReferenceUsage usage, List<PartUsage> newValues) {
+        if (this.readOnlyObjectPredicate.test(usage)) {
+            return usage;
+        }
+        usage.getOwnedRelationship().removeAll(this.getOwnedSubsettings(usage));
+        if (newValues != null) {
+            newValues.forEach(target -> {
+                Subsetting subsetting = SysmlFactory.eINSTANCE.createSubsetting();
+                usage.getOwnedRelationship().add(subsetting);
+                subsetting.setSubsettingFeature(usage);
+                subsetting.setSubsettedFeature(target);
+            });
+        }
+        return usage;
+    }
+
+    public ReferenceUsage setSingleReferencePropertyValue(ReferenceUsage usage, PartUsage newValue) {
+        return this.setReferencePropertyValues(usage, newValue != null ? List.of(newValue) : List.of());
     }
 
     public String getPropertyValue(AttributeUsage usage) {
