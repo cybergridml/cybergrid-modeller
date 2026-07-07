@@ -60,7 +60,7 @@ public class ZonalControllerNodeDescriptionProvider extends AbstractCybergridMLU
     }
     protected InsideLabelStyle createInsideLabelStyle() {
         InsideLabelStyle labelStyle = super.createInsideLabelStyle();
-        labelStyle.setLabelIcon("/images/zonal_controller.png");
+        labelStyle.setLabelIcon("/images/zonal_controller1.png");
         return labelStyle;
     }
 

@@ -53,7 +53,7 @@ public class CommunicationMediaNodeDescriptionProvider extends AbstractCybergrid
     }
     protected InsideLabelStyle createInsideLabelStyle() {
         InsideLabelStyle labelStyle = super.createInsideLabelStyle();
-        labelStyle.setLabelIcon("/images/communicationMedia.svg");
+        labelStyle.setLabelIcon("/images/communication_media.png");
         return labelStyle;
     }
 
