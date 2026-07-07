@@ -53,7 +53,7 @@ public class ComputingResourceNodeDescriptionProvider extends AbstractCybergridM
     }
     protected InsideLabelStyle createInsideLabelStyle() {
         InsideLabelStyle labelStyle = super.createInsideLabelStyle();
-        labelStyle.setLabelIcon("/images/computingRS.png");
+        labelStyle.setLabelIcon("/images/computing_resource.png");
         return labelStyle;
     }
 }

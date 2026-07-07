@@ -31,7 +31,8 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
 
     public static final List<CybergridMLLibElementType> ELEMENTS = List.of(
             CybergridMLLibElementType.MAINGRID,
-            CybergridMLLibElementType.CENTRALCONTROLLER
+            CybergridMLLibElementType.CENTRALCONTROLLER,
+            CybergridMLLibElementType.ZONALCONTROLLER
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
@@ -67,6 +68,9 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
         providers.add(new MainGridNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.add(new CentralControllerNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
+        providers.add(new ZoneNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new ZonalControllerNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new SubstationNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
         providers.add(new ControlEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.addAll(this.createAllEdgeDescriptionProviders(cybergridMLColorProvider));
         return providers;

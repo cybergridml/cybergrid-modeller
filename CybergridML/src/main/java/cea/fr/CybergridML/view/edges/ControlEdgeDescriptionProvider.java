@@ -47,6 +47,8 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
     protected List<NodeDescription> getSourceNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
         cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.CENTRALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.ZONALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
+
         return nodes;
     }
 
@@ -54,6 +56,8 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
     protected List<NodeDescription> getTargetNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
         cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.MAINGRID.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.ZONE.getServiceSuffix())).ifPresent(nodes::add);
+
         return nodes;
     }
 
