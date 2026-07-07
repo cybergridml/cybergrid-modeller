@@ -29,10 +29,14 @@ import org.eclipse.sirius.components.view.form.FormDescription;
 import org.eclipse.sirius.components.view.form.FormElementDescription;
 import org.eclipse.sirius.components.view.form.FormElementFor;
 import org.eclipse.sirius.components.view.form.FormElementIf;
+import org.eclipse.sirius.components.view.form.ContainerBorderStyle;
+import org.eclipse.sirius.components.view.form.FlexDirection;
+import org.eclipse.sirius.components.view.form.FlexboxContainerDescription;
 import org.eclipse.sirius.components.view.form.FormFactory;
 import org.eclipse.sirius.components.view.form.GroupDescription;
 import org.eclipse.sirius.components.view.form.GroupDisplayMode;
 import org.eclipse.sirius.components.view.form.LabelDescription;
+import org.eclipse.sirius.components.view.form.LabelDescriptionStyle;
 import org.eclipse.sirius.components.view.form.MultiSelectDescription;
 import org.eclipse.sirius.components.view.form.PageDescription;
 import org.eclipse.sirius.components.view.form.SelectDescription;
@@ -73,6 +77,9 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private static final String E_STRUCTURAL_FEATURE = "eStructuralFeature";
     private static final String AQL_NOT_SELF_IS_READ_ONLY_E_STRUCTURAL_FEATURE = "aql:not(self.isReadOnly(eStructuralFeature))";
     private static final String AQL_NOT_SELF_IS_READ_ONLY = "aql:not(self.isReadOnly())";
+    private static final String ATTRIBUTE_CANDIDATE = "attributeCandidate";
+    private static final String REFERENCE_CANDIDATE = "referenceCandidate";
+    private static final int MAX_PROPERTY_NESTING_DEPTH = 5;
 
     private final ViewFormDescriptionConverter converter;
     private final IReadOnlyObjectPredicate readOnlyObjectPredicate;
@@ -149,9 +156,6 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         typedByIf.getChildren().add(this.createTypedByWidget());
         group.getChildren().add(typedByIf);
 
-        group.getChildren().add(this.createOwnedPropertiesIf());
-        group.getChildren().add(this.createOwnedReferencesIf());
-
         return group;
     }
 
@@ -159,51 +163,97 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
         group.setDisplayMode(GroupDisplayMode.LIST);
         group.setName("CyberGridMLAttributeProperties");
-        group.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getLabel"));
-        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF + "->select(e | e.isProperty())");
+        group.setLabelExpression("Properties");
+        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF);
+        group.getChildren().add(this.createPropertyWidgetsFor(ATTRIBUTE_CANDIDATE,
+                AQLUtils.getSelfServiceCallExpression("getPropertyCandidates"), 0));
+        return group;
+    }
+
+    private FormElementDescription createPropertyWidgetsFor(String variableName, String iterableExpression, int depth) {
+        FormElementFor forElt = FormFactory.eINSTANCE.createFormElementFor();
+        forElt.setName("Widgets for Attribute Properties (depth " + depth + ")");
+        forElt.setIterator(variableName);
+        forElt.setIterableExpression(iterableExpression);
+        forElt.getChildren().addAll(this.createPropertyWidgets(variableName, depth));
+        return forElt;
+    }
+
+    private List<FormElementIf> createPropertyWidgets(String variableName, int depth) {
+        List<FormElementIf> widgets = new ArrayList<>();
 
         FormElementIf textAreaIf = FormFactory.eINSTANCE.createFormElementIf();
         textAreaIf.setName("TextAreaProperty_Precondition");
-        textAreaIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isTextAreaProperty"));
-        textAreaIf.getChildren().add(this.createPropertyValueTextAreaWidget());
-        group.getChildren().add(textAreaIf);
+        textAreaIf.setPredicateExpression(AQLUtils.getServiceCallExpression(variableName, "isTextAreaProperty"));
+        textAreaIf.getChildren().add(this.createPropertyValueTextAreaWidget(variableName));
+        widgets.add(textAreaIf);
 
         FormElementIf enumIf = FormFactory.eINSTANCE.createFormElementIf();
         enumIf.setName("EnumProperty_Precondition");
-        enumIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isEnumProperty"));
-        enumIf.getChildren().add(this.createPropertyValueSelectWidget());
-        group.getChildren().add(enumIf);
+        enumIf.setPredicateExpression(AQLUtils.getServiceCallExpression(variableName, "isEnumProperty"));
+        enumIf.getChildren().add(this.createPropertyValueSelectWidget(variableName));
+        widgets.add(enumIf);
+
+        FormElementIf measurementIf = FormFactory.eINSTANCE.createFormElementIf();
+        measurementIf.setName("MeasurementProperty_Precondition");
+        measurementIf.setPredicateExpression(AQLUtils.getServiceCallExpression(variableName, "isMeasurementProperty"));
+        measurementIf.getChildren().add(this.createMeasurementWidget(variableName, depth));
+        widgets.add(measurementIf);
+
+        if (depth < MAX_PROPERTY_NESTING_DEPTH) {
+            FormElementIf compositeIf = FormFactory.eINSTANCE.createFormElementIf();
+            compositeIf.setName("CompositeProperty_Precondition");
+            compositeIf.setPredicateExpression(AQLUtils.getServiceCallExpression(variableName, "isCompositeProperty"));
+            compositeIf.getChildren().add(this.createCompositePropertyWidget(variableName, depth));
+            widgets.add(compositeIf);
+        }
 
         FormElementIf textFieldIf = FormFactory.eINSTANCE.createFormElementIf();
         textFieldIf.setName("TextFieldProperty_Precondition");
         textFieldIf.setPredicateExpression(AQLConstants.AQL
-                + "not(self.isTextAreaProperty()) and not(self.isEnumProperty())");
-        textFieldIf.getChildren().add(this.createPropertyValueWidget());
-        group.getChildren().add(textFieldIf);
+                + "not(" + variableName + ".isTextAreaProperty()) and not(" + variableName + ".isEnumProperty())"
+                + " and not(" + variableName + ".isMeasurementProperty()) and not(" + variableName + ".isCompositeProperty())");
+        textFieldIf.getChildren().add(this.createPropertyValueWidget(variableName));
+        widgets.add(textFieldIf);
 
-        return group;
+        return widgets;
     }
 
     private GroupDescription createReferenceGroup() {
         GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
         group.setDisplayMode(GroupDisplayMode.LIST);
         group.setName("CyberGridMLReferenceProperties");
-        group.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getLabel"));
-        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF + "->select(e | e.isReferenceProperty())");
+        group.setLabelExpression("References");
+        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF);
+        group.getChildren().add(this.createReferenceWidgetsFor());
+        return group;
+    }
+
+    private FormElementDescription createReferenceWidgetsFor() {
+        FormElementFor forElt = FormFactory.eINSTANCE.createFormElementFor();
+        forElt.setName("Widgets for Reference Properties");
+        forElt.setIterator(REFERENCE_CANDIDATE);
+        forElt.setIterableExpression(AQLUtils.getSelfServiceCallExpression("getReferencePropertyCandidates"));
+        forElt.getChildren().addAll(this.createReferenceWidgets());
+        return forElt;
+    }
+
+    private List<FormElementIf> createReferenceWidgets() {
+        List<FormElementIf> widgets = new ArrayList<>();
 
         FormElementIf singleValuedIf = FormFactory.eINSTANCE.createFormElementIf();
         singleValuedIf.setName("SingleValuedReference_Precondition");
-        singleValuedIf.setPredicateExpression(AQLConstants.AQL + "not(self.isManyValuedReference())");
+        singleValuedIf.setPredicateExpression(AQLConstants.AQL + "not(" + REFERENCE_CANDIDATE + ".isManyValuedReference())");
         singleValuedIf.getChildren().add(this.createReferencePropertySelectWidget());
-        group.getChildren().add(singleValuedIf);
+        widgets.add(singleValuedIf);
 
         FormElementIf manyValuedIf = FormFactory.eINSTANCE.createFormElementIf();
         manyValuedIf.setName("ManyValuedReference_Precondition");
-        manyValuedIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isManyValuedReference"));
+        manyValuedIf.setPredicateExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "isManyValuedReference"));
         manyValuedIf.getChildren().add(this.createReferencePropertyMultiSelectWidget());
-        group.getChildren().add(manyValuedIf);
+        widgets.add(manyValuedIf);
 
-        return group;
+        return widgets;
     }
 
     private FormElementDescription createCoreWidgets() {
@@ -276,62 +326,181 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         return precondition;
     }
 
-    private WidgetDescription createPropertyValueTextAreaWidget() {
+    private WidgetDescription createPropertyValueTextAreaWidget(String variableName) {
         TextAreaDescription textArea = FormFactory.eINSTANCE.createTextAreaDescription();
         textArea.setName("PropertyValueTextAreaWidget");
-        textArea.setLabelExpression("Value");
-        textArea.setValueExpression(AQLUtils.getSelfServiceCallExpression("getPropertyValue"));
+        textArea.setLabelExpression(AQLUtils.getServiceCallExpression(variableName, "getPropertyLabel"));
+        textArea.setValueExpression(AQLUtils.getServiceCallExpression(variableName, "getPropertyValue"));
         textArea.setHelpExpression("Use 'shift + enter' to add new lines");
-        textArea.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+        textArea.setIsEnabledExpression(AQLConstants.AQL + "not(" + variableName + ".isReadOnly())");
         ChangeContext setTextAreaValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setTextAreaValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setPropertyValue",
+        setTextAreaValueOperation.setExpression(AQLUtils.getServiceCallExpression(variableName, "setPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         textArea.getBody().add(setTextAreaValueOperation);
         return textArea;
     }
 
-    private WidgetDescription createPropertyValueWidget() {
+    private WidgetDescription createPropertyValueWidget(String variableName) {
         TextfieldDescription textField = FormFactory.eINSTANCE.createTextfieldDescription();
         textField.setName("PropertyValueTextFieldWidget");
-        textField.setLabelExpression("Value");
-        textField.setValueExpression(AQLUtils.getSelfServiceCallExpression("getPropertyValue"));
+        textField.setLabelExpression(AQLUtils.getServiceCallExpression(variableName, "getPropertyLabel"));
+        textField.setValueExpression(AQLUtils.getServiceCallExpression(variableName, "getPropertyValue"));
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setPropertyValue",
+        setNewValueOperation.setExpression(AQLUtils.getServiceCallExpression(variableName, "setPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         textField.getBody().add(setNewValueOperation);
 
         return textField;
     }
 
-    private WidgetDescription createPropertyValueSelectWidget() {
+    private WidgetDescription createPropertyValueSelectWidget(String variableName) {
         SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
         select.setName("PropertyValueSelectWidget");
-        select.setLabelExpression("Value");
-        select.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getEnumCandidates"));
+        select.setLabelExpression(AQLUtils.getServiceCallExpression(variableName, "getPropertyLabel"));
+        select.setCandidatesExpression(AQLUtils.getServiceCallExpression(variableName, "getEnumCandidates"));
         select.setCandidateLabelExpression("aql:candidate.declaredName");
-        select.setValueExpression(AQLUtils.getSelfServiceCallExpression("getEnumPropertyValue"));
-        select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+        select.setValueExpression(AQLUtils.getServiceCallExpression(variableName, "getEnumPropertyValue"));
+        select.setIsEnabledExpression(AQLConstants.AQL + "not(" + variableName + ".isReadOnly())");
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setEnumPropertyValue",
+        setNewValueOperation.setExpression(AQLUtils.getServiceCallExpression(variableName, "setEnumPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         select.getBody().add(setNewValueOperation);
 
         return select;
     }
 
+    private WidgetDescription createMeasurementWidget(String variableName, int depth) {
+        FlexboxContainerDescription container = FormFactory.eINSTANCE.createFlexboxContainerDescription();
+        container.setName("MeasurementWidget");
+        container.setFlexDirection(FlexDirection.COLUMN);
+        container.getChildren().add(this.createPropertyNameWidget(variableName, depth));
+        container.getChildren().add(this.createMeasurementFieldsRow(variableName));
+        if (depth < MAX_PROPERTY_NESTING_DEPTH) {
+            container.getChildren().add(this.createOptionalNestedPropertyGroup(
+                    variableName, variableName + "Extra", "getMeasurementExtraProperties", depth));
+        }
+        return container;
+    }
+
+    private WidgetDescription createPropertyNameWidget(String variableName, int depth) {
+        LabelDescription label = FormFactory.eINSTANCE.createLabelDescription();
+        label.setName("PropertyNameWidget");
+        label.setLabelExpression(AQLUtils.getServiceCallExpression(variableName, "getPropertyLabel"));
+        label.setValueExpression("aql:''");
+        LabelDescriptionStyle style = FormFactory.eINSTANCE.createLabelDescriptionStyle();
+        style.setBold(true);
+        style.setFontSize(depth == 0 ? 16 : 13);
+        style.setColor(this.createFixedColor(depth == 0 ? "#0B5FFF" : "#6E7781"));
+        label.setStyle(style);
+        return label;
+    }
+
+    private org.eclipse.sirius.components.view.FixedColor createFixedColor(String hexValue) {
+        org.eclipse.sirius.components.view.FixedColor color = ViewFactory.eINSTANCE.createFixedColor();
+        color.setValue(hexValue);
+        return color;
+    }
+
+    private WidgetDescription createMeasurementFieldsRow(String variableName) {
+        FlexboxContainerDescription row = FormFactory.eINSTANCE.createFlexboxContainerDescription();
+        row.setName("MeasurementFieldsRow");
+        row.setFlexDirection(FlexDirection.ROW);
+        row.getChildren().add(this.createMeasurementValueWidget(variableName));
+        row.getChildren().add(this.createMeasurementUnitWidget(variableName));
+        return row;
+    }
+
+    private WidgetDescription createMeasurementValueWidget(String variableName) {
+        TextfieldDescription textField = FormFactory.eINSTANCE.createTextfieldDescription();
+        textField.setName("MeasurementValueWidget");
+        textField.setLabelExpression("Precision");
+        textField.setValueExpression(
+                "aql:" + variableName + ".getMeasurementValueAttribute().getPropertyValue()");
+        textField.setStyle(this.alignMeasurementField(FormFactory.eINSTANCE.createTextfieldDescriptionStyle()));
+
+        ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        setNewValueOperation.setExpression("aql:" + variableName
+                + ".getMeasurementValueAttribute().setPropertyValue(" + ViewFormDescriptionConverter.NEW_VALUE + ")");
+        textField.getBody().add(setNewValueOperation);
+
+        return textField;
+    }
+
+    private WidgetDescription createMeasurementUnitWidget(String variableName) {
+        SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
+        select.setName("MeasurementUnitWidget");
+        select.setLabelExpression("Unit");
+        select.setCandidatesExpression(
+                "aql:" + variableName + ".getMeasurementUnitAttribute().getEnumCandidates()");
+        select.setCandidateLabelExpression("aql:candidate.declaredName");
+        select.setValueExpression(
+                "aql:" + variableName + ".getMeasurementUnitAttribute().getEnumPropertyValue()");
+        select.setStyle(this.alignMeasurementField(FormFactory.eINSTANCE.createSelectDescriptionStyle()));
+
+        ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        setNewValueOperation.setExpression("aql:" + variableName
+                + ".getMeasurementUnitAttribute().setEnumPropertyValue(" + ViewFormDescriptionConverter.NEW_VALUE + ")");
+        select.getBody().add(setNewValueOperation);
+
+        return select;
+    }
+
+    private WidgetDescription createCompositePropertyWidget(String variableName, int depth) {
+        FlexboxContainerDescription container = FormFactory.eINSTANCE.createFlexboxContainerDescription();
+        container.setName("CompositePropertyWidget");
+        container.setFlexDirection(FlexDirection.COLUMN);
+        container.getChildren().add(this.createPropertyNameWidget(variableName, depth));
+        container.getChildren().add(this.createOptionalNestedPropertyGroup(
+                variableName, variableName + "Child", "getNestedPropertyCandidates", depth));
+        return container;
+    }
+
+    private FormElementDescription createOptionalNestedPropertyGroup(String parentVariable, String childVariable,
+            String iterableMethodName, int depth) {
+        FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
+        precondition.setName("NestedPropertyGroup_Precondition");
+        precondition.setPredicateExpression(AQLConstants.AQL
+                + "not(" + parentVariable + "." + iterableMethodName + "()->isEmpty())");
+
+        FlexboxContainerDescription nestedGroup = FormFactory.eINSTANCE.createFlexboxContainerDescription();
+        nestedGroup.setName("NestedPropertyGroup");
+        nestedGroup.setFlexDirection(FlexDirection.COLUMN);
+        ContainerBorderStyle borderStyle = FormFactory.eINSTANCE.createContainerBorderStyle();
+        borderStyle.setBorderSize(1);
+        borderStyle.setBorderRadius(6);
+        borderStyle.setBorderColor(this.createFixedColor("#D0D7DE"));
+        nestedGroup.setBorderStyle(borderStyle);
+        nestedGroup.getChildren().add(this.createPropertyWidgetsFor(childVariable,
+                AQLUtils.getServiceCallExpression(parentVariable, iterableMethodName), depth + 1));
+
+        precondition.getChildren().add(nestedGroup);
+        return precondition;
+    }
+
+    private <T extends org.eclipse.sirius.components.view.form.WidgetGridLayout> T alignMeasurementField(T style) {
+        style.setGridTemplateColumns("1fr");
+        style.setGridTemplateRows("auto auto");
+        style.setLabelGridRow("1");
+        style.setLabelGridColumn("1");
+        style.setWidgetGridRow("2");
+        style.setWidgetGridColumn("1");
+        style.setGap("4px");
+        return style;
+    }
+
     private WidgetDescription createReferencePropertySelectWidget() {
         SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
         select.setName("ReferencePropertyValueSelectWidget");
-        select.setLabelExpression("Value");
-        select.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
+        select.setLabelExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "getPropertyLabel"));
+        select.setCandidatesExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "getReferenceCandidates"));
         select.setCandidateLabelExpression("aql:candidate.declaredName");
-        select.setValueExpression(AQLUtils.getSelfServiceCallExpression("getSingleReferencePropertyValue"));
-        select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+        select.setValueExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "getSingleReferencePropertyValue"));
+        select.setIsEnabledExpression(AQLConstants.AQL + "not(" + REFERENCE_CANDIDATE + ".isReadOnly())");
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setSingleReferencePropertyValue",
+        setNewValueOperation.setExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "setSingleReferencePropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         select.getBody().add(setNewValueOperation);
 
@@ -341,54 +510,18 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createReferencePropertyMultiSelectWidget() {
         MultiSelectDescription multiSelect = FormFactory.eINSTANCE.createMultiSelectDescription();
         multiSelect.setName("ReferencePropertyValueMultiSelectWidget");
-        multiSelect.setLabelExpression("Value");
-        multiSelect.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
+        multiSelect.setLabelExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "getPropertyLabel"));
+        multiSelect.setCandidatesExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "getReferenceCandidates"));
         multiSelect.setCandidateLabelExpression("aql:candidate.declaredName");
-        multiSelect.setValueExpression(AQLUtils.getSelfServiceCallExpression("getReferencePropertyValue"));
-        multiSelect.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+        multiSelect.setValueExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "getReferencePropertyValue"));
+        multiSelect.setIsEnabledExpression(AQLConstants.AQL + "not(" + REFERENCE_CANDIDATE + ".isReadOnly())");
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setReferencePropertyValues",
+        setNewValueOperation.setExpression(AQLUtils.getServiceCallExpression(REFERENCE_CANDIDATE, "setReferencePropertyValues",
                 ViewFormDescriptionConverter.NEW_VALUE));
         multiSelect.getBody().add(setNewValueOperation);
 
         return multiSelect;
-    }
-
-    private FormElementDescription createOwnedPropertiesIf() {
-        FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
-        precondition.setName("OwnedProperties_Precondition");
-        precondition.setPredicateExpression("aql:self.ownedFeature->exists(e | e.isProperty())");
-        precondition.getChildren().add(this.createOwnedPropertiesWidget());
-        return precondition;
-    }
-
-    private WidgetDescription createOwnedPropertiesWidget() {
-        ReferenceWidgetDescription refWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
-        refWidget.setName("OwnedPropertiesReferenceWidget");
-        refWidget.setLabelExpression("Properties");
-        refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
-        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getUsage_NestedAttribute().getName());
-        refWidget.setIsEnabledExpression("aql:false");
-        return refWidget;
-    }
-
-    private FormElementDescription createOwnedReferencesIf() {
-        FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
-        precondition.setName("OwnedReferences_Precondition");
-        precondition.setPredicateExpression("aql:self.ownedFeature->exists(e | e.isReferenceProperty())");
-        precondition.getChildren().add(this.createOwnedReferencesWidget());
-        return precondition;
-    }
-
-    private WidgetDescription createOwnedReferencesWidget() {
-        ReferenceWidgetDescription refWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
-        refWidget.setName("OwnedReferencesReferenceWidget");
-        refWidget.setLabelExpression("References");
-        refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
-        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getUsage_NestedReference().getName());
-        refWidget.setIsEnabledExpression("aql:false");
-        return refWidget;
     }
 
     private WidgetDescription createTypedByWidget() {
@@ -519,6 +652,92 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
     public boolean isProperty(Element element) {
         return element instanceof AttributeUsage;
+    }
+
+    public List<AttributeUsage> getPropertyCandidates(Element element) {
+        if (element instanceof Type type) {
+            List<AttributeUsage> nested = type.getOwnedFeature().stream()
+                    .filter(AttributeUsage.class::isInstance)
+                    .map(AttributeUsage.class::cast)
+                    .toList();
+            if (!nested.isEmpty()) {
+                return nested;
+            }
+        }
+        if (element instanceof AttributeUsage attribute) {
+            return List.of(attribute);
+        }
+        return List.of();
+    }
+
+    public List<AttributeUsage> getNestedPropertyCandidates(AttributeUsage attribute) {
+        return attribute.getOwnedFeature().stream()
+                .filter(AttributeUsage.class::isInstance)
+                .map(AttributeUsage.class::cast)
+                .toList();
+    }
+
+    public List<AttributeUsage> getMeasurementExtraProperties(AttributeUsage attribute) {
+        return attribute.getOwnedFeature().stream()
+                .filter(AttributeUsage.class::isInstance)
+                .map(AttributeUsage.class::cast)
+                .filter(child -> !"unit".equals(child.getDeclaredName()) && !"precision".equals(child.getDeclaredName()))
+                .toList();
+    }
+
+    public boolean isCompositeProperty(Element element) {
+        return element instanceof Type type
+                && type.getOwnedFeature().stream().anyMatch(AttributeUsage.class::isInstance)
+                && !this.isMeasurementProperty(element);
+    }
+
+    public boolean isMeasurementProperty(Element element) {
+        return element instanceof AttributeUsage attribute
+                && this.getMeasurementUnitAttribute(attribute) != null
+                && this.getMeasurementValueAttribute(attribute) != null;
+    }
+
+    public AttributeUsage getMeasurementUnitAttribute(AttributeUsage attribute) {
+        return this.getNestedAttributeByName(attribute, "unit");
+    }
+
+    public AttributeUsage getMeasurementValueAttribute(AttributeUsage attribute) {
+        return this.getNestedAttributeByName(attribute, "precision");
+    }
+
+    private AttributeUsage getNestedAttributeByName(AttributeUsage attribute, String name) {
+        return attribute.getOwnedFeature().stream()
+                .filter(AttributeUsage.class::isInstance)
+                .map(AttributeUsage.class::cast)
+                .filter(child -> name.equals(child.getDeclaredName()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<ReferenceUsage> getReferencePropertyCandidates(Element element) {
+        if (element instanceof Type type) {
+            List<ReferenceUsage> nested = type.getOwnedFeature().stream()
+                    .filter(ReferenceUsage.class::isInstance)
+                    .map(ReferenceUsage.class::cast)
+                    .toList();
+            if (!nested.isEmpty()) {
+                return nested;
+            }
+        }
+        if (element instanceof ReferenceUsage reference) {
+            return List.of(reference);
+        }
+        return List.of();
+    }
+
+    public String getPropertyLabel(Element element) {
+        String name = element.getDeclaredName();
+        if (name == null || name.isEmpty()) {
+            return "";
+        }
+        String withSpaces = name.replace('_', ' ');
+        return withSpaces.substring(0, 1).toUpperCase()
+                + withSpaces.substring(1).replaceAll("([A-Z])", " $1").trim();
     }
 
     public boolean isTextAreaProperty(Element element) {
