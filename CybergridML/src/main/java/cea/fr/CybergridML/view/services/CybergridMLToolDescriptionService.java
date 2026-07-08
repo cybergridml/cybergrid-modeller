@@ -22,6 +22,10 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CybergridMLToolDescriptionService.class);
 
+    private static final String GET_VIEW_USAGE_OWNER_EXPRESSION = AQLUtils.getSelfServiceCallExpression("getViewUsageOwner");
+
+    private static final String SELF_EXPRESSION = "aql:self";
+
     public CybergridMLToolDescriptionService(IDescriptionNameGenerator descriptionNameGenerator) {
         super(descriptionNameGenerator);
     }
@@ -41,6 +45,9 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
 
     private void changeElementCreation(final EList<Operation> operationList, CybergridMLLibElementType cybergridMLElementType) {
         for (Operation operation : operationList) {
+            if (operation instanceof ChangeContext changeContext && GET_VIEW_USAGE_OWNER_EXPRESSION.equals(changeContext.getExpression())) {
+                changeContext.setExpression(SELF_EXPRESSION);
+            }
             if (operation instanceof CreateInstance createInstance && createInstance.getTypeName().equals(SysMLMetamodelHelper.buildQualifiedName(cybergridMLElementType.geteClass()))) {
                 createInstance.getChildren().stream()
                         .filter(ChangeContext.class::isInstance)
