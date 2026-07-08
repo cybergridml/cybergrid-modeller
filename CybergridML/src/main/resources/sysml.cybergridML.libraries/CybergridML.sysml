@@ -3,39 +3,39 @@ private import Metaobjects::SemanticMetadata;
 private import ScalarValues::*;
 private import ISQBase::*;
 enum def VoltageUnitKind {
-        enum 'K';
-        enum 'KV';
-        enum 'MV';
+        enum K;
+        enum KV;
+        enum MV;
     }
 
 	enum def PowerUnitKind {
-        enum 'W';
-        enum 'KW';
-        enum 'MW';
+        enum W;
+        enum KW;
+        enum MW;
     }
 	enum def RedundancyKind {
-        enum 'consensus';
-        enum 'hypervisor';
-        enum 'active_standby';
+        enum consensus;
+        enum hypervisor;
+        enum active_standby;
     }
 
     enum def EnergyUnitKind {
-        enum 'J';
-        enum 'KJ';
-        enum 'Wh';
-        enum 'KWh';
-        enum 'MWh';
+        enum J;
+        enum KJ;
+        enum Wh;
+        enum KWh;
+        enum MWh;
     }
 
     enum def CurrentUnitKind {
-        enum 'A';
-        enum 'MA';
+        enum A;
+        enum MA;
     }
 
     enum def ReactivePowerUnitKind {
-        enum 'VAR';
-        enum 'KVAR';
-        enum 'MVAR';
+        enum VAR;
+        enum KVAR;
+        enum MVAR;
     }
 
     enum def VoltageLevel {
@@ -49,31 +49,31 @@ enum def VoltageUnitKind {
     }
 
     enum def ControlType {
-        enum 'DefaultControl';
-        enum 'MPCRte';
-        enum 'ApproximateLinearMPC';
-        enum 'Limiter';
-        enum 'ReleaseAll';
+        enum DefaultControl;
+        enum MPCRte;
+        enum ApproximateLinearMPC;
+        enum Limiter;
+        enum ReleaseAll;
 
     }
 	enum def LatencyUnitKind {
-        enum 'Nanoseconds';
-        enum 'Microseconds';
-        enum 'Milliseconds';
-        enum 'Seconds';
-        enum 'Minutes';
+        enum Nanoseconds;
+        enum Microseconds;
+        enum Milliseconds;
+        enum Seconds;
+        enum Minutes;
     }
 	enum def CapacityUnitKind {
-        enum 'Bytes';
-        enum 'Kilobytes';
-        enum 'Megabytes';
-        enum 'Gigabytes';
-        enum 'Terabytes';
-        enum 'Petabytes';
+        enum Bytes;
+        enum Kilobytes;
+        enum Megabytes;
+        enum Gigabytes;
+        enum Terabytes;
+        enum Petabytes;
     }
       enum def TimeUnitKind{
-       enum 's';
-       enum 'tick';
+       enum s;
+       enum tick;
        enum ms;
        enum us;
        enum min;
@@ -88,12 +88,12 @@ private import ScalarValues::*;
 private import ISQBase::*;
 private import CyberGridMLEnum::*;
     attribute def NFP_Latency {
-        attribute unit : LatencyUnitKind[0..1];
-        attribute precision : Integer[1];
+        attribute unit : LatencyUnitKind[0..1] default := Milliseconds;
+        attribute precision : Integer[1] default := 30;
     }
     attribute def NFP_Capacity {
-        attribute unit : CapacityUnitKind[0..1];
-        attribute precision : Integer[1];
+        attribute unit : CapacityUnitKind[0..1] default := Kilobytes;
+        attribute precision : Integer[1] default := 250;
     }
     attribute def NFP_Duration {
         attribute unit : TimeUnitKind[0..1];
@@ -129,7 +129,7 @@ private import CyberGridMLEnum::*;
 
     attribute def Period {
         attribute start : Integer default := 0;
-        attribute finish : Integer;
+        attribute finish : Integer default := 15;
     }
 	metadata def Hazard {
 	attribute description : String;
@@ -157,8 +157,8 @@ private import CyberGridMLEnum::*;
 
 	}
     part def CommunicationMedia {
-        attribute capacity : NFP_Capacity;
-        attribute latency : NFP_Latency;
+        attribute capacity : NFP_Capacity ;
+        attribute latency : NFP_Latency ;
     }
 
     part def SoftwareResource {
