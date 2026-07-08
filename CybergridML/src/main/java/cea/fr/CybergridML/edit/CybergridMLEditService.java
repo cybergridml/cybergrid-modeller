@@ -2,6 +2,11 @@ package cea.fr.CybergridML.edit;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import cea.fr.CybergridML.services.CybergridMLElementInitializerSwitch;
+import cea.fr.CybergridML.view.representations.CfaRepresentationDescriptionProvider;
+import cea.fr.CybergridML.view.representations.CfraRepresentationDescriptionProvider;
+import cea.fr.CybergridML.view.representations.CraRepresentationDescriptionProvider;
+import cea.fr.CybergridML.view.services.CybergridMLUtilService;
+import cea.fr.CybergridML.view.services.CybergridMLViewDefinitionKind;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -27,6 +32,7 @@ public class CybergridMLEditService extends SysMLv2EditService {
     public static final String ID_PREFIX = "CybergridMLEditService-";
     private final ILabelService labelService;
     private final IObjectSearchService objectSearchService;
+    private final CybergridMLUtilService cybergridMLUtilService = new CybergridMLUtilService();
 
     public CybergridMLEditService(IDefaultEditService defaultEditService,
                                   ILabelService labelService,
@@ -76,7 +82,12 @@ public class CybergridMLEditService extends SysMLv2EditService {
             EPackage ePackage = eClass.getEPackage();
             if (SysmlPackage.eNS_PREFIX.equals(ePackage.getNsPrefix())) {
                 List<ChildCreationDescription> childCreationDescriptions = new ArrayList<>();
-                List<CybergridMLLibElementType> childrenCandidates = new CybergridMLGetChildCreationSwitch().doSwitch(eClass);
+                List<CybergridMLLibElementType> childrenCandidates;
+                if (container instanceof ViewUsage viewUsage) {
+                    childrenCandidates = this.getChildrenCandidatesForView(viewUsage, editingContext);
+                } else {
+                    childrenCandidates = new CybergridMLGetChildCreationSwitch().doSwitch(eClass);
+                }
                 childrenCandidates.forEach(candidate -> {
                     List<String> iconURL = this.labelService.getImagePaths(EcoreUtil.create(candidate.geteClass()));
                     StyledString styledLabel = this.labelService.getStyledLabel(candidate);
@@ -93,6 +104,18 @@ public class CybergridMLEditService extends SysMLv2EditService {
 
         result.sort(Comparator.comparing(ChildCreationDescription::label, String.CASE_INSENSITIVE_ORDER));
         return result;
+    }
+
+    private List<CybergridMLLibElementType> getChildrenCandidatesForView(ViewUsage viewUsage, IEditingContext editingContext) {
+        CybergridMLViewDefinitionKind viewDefinitionKind = this.cybergridMLUtilService.getCybergridMLViewDefinitionKind(viewUsage, List.of(), editingContext);
+        if (viewDefinitionKind == null) {
+            return List.of();
+        }
+        return switch (viewDefinitionKind) {
+            case CFA_VIEW -> CfaRepresentationDescriptionProvider.ELEMENTS;
+            case CRA_VIEW -> CraRepresentationDescriptionProvider.ELEMENTS;
+            case CFRA_VIEW -> CfraRepresentationDescriptionProvider.ELEMENTS;
+        };
     }
 
     @Override
