@@ -1,64 +1,143 @@
-# Illustration des fonctionnalités de CyberGridML
+# CyberGridML Project Creation
 
-Cette section présente les principales fonctionnalités de **CyberGridML** à travers un cas d'étude basé sur une architecture **SCADA**.
+CyberGridML is based on the **SysON** tool. To create a new project, the user selects the **CyberGridML** template, as illustrated in **Figure 1**.
 
----
-
-## 1. Création d'un projet CyberGridML
-
-CyberGridML fournit un modèle de projet (*template*) construit sur **SysON**.
-
-![Template CyberGridML basé sur SysON](images/cybergridml_template.png)
-
-Tout au long de cette démonstration, nous nous appuyons sur un modèle **SCADA** afin d'illustrer les différentes fonctionnalités offertes par CyberGridML.
-
+![Figure 1 CyberGridML basé sur SysON](images/cybergridml_template.png)
+*Figure 1 – Creation of a new project*
 
 ---
 
-## 2. Création du CFA
+# 1. CFA Creation
 
-La palette de création permet d'ajouter les différents éléments constituant un **Cyber Functional Architecture (CFA)**.
+A dedicated diagram allows users to create and display the **CFA**.
 
-![Palette de création du CFA](images/cfa_palette.png)
+As a reminder, the user must first create the following mandatory elements:
 
-La figure suivante présente un exemple complet de CFA.
+- **MainGrid**
+- **CentralController**
+- **ZonalController**
+- **Zone**
+- **Substation**
 
-![Exemple complet de CFA](images/cfa_complete.png)
+Additional control elements can then be created as needed.
+
+![Figure 2 – CFA elements are added to the view using pop-up context menus](images/palette_CFA.png)
+
+*Figure 2 – CFA elements are added to the view using pop-up context menus*
+
+The user must also specify the structure to which each controller is associated. Once all controllers have been defined, the CFA is complete.
+
+An example of a simple CFA for a SCADA system is shown in **Figure 3**.
+
+![Figure 3 – SCADA CFA](images/cfa_complete.png)
+
+*Figure 3 – SCADA CFA*
+
+In the CFA , we can create also ZonalController , as shown in **Figure 4**.
+
+![Figure 4 – ZonalController](images/Maingrid_zonalcontroller.png)
+
+*Figure 4 – ZonalController in CFA*
+
+In a maingrid, you can create zones and substations, as shown in **Figure 5**.
+
+![Figure 5 – Maingrid children](images/Maingrid_children.png)
+
+*Figure 5 – Maingrid children*
+
+Highlighting the creation of a Substation in maingrid.
+
+![Figure 6 – Substation in Maingrid](images/Maingrid_substation.png)
+
+*Figure 6 – Substation in Maingrid*
+
+Highlighting the creation of a zone in maingrid.
+
+![Figure 7 – Zone in Maingrid](images/Maingrid_zone.png)
+
+*Figure 7 – Zone in Maingrid*
+
+Link a zone to a ZonalController via the Control Link.
+
+![Figure 8 – Zone-ZonalController Link](images/Zone_ZonalController.png)
+
+*Figure 8 – Zone-ZonalController Link*
 
 ---
 
-## 3. Création d'un CRA
+# 2. CRA Creation
 
-La figure suivante met en évidence la palette dédiée à la création d'un **Cyber Risk Assessment (CRA)**.
+A dedicated diagram allows users to create and display the communication and computing resources of the **CRA**.
 
-![Palette du CRA](images/cra_palette.png)
+As illustrated in **Figure 4**, the following element types can be created:
 
-L'exemple ci-dessous présente un CRA construit à partir du cas d'étude **SCADA**.
+- **CommunicationMedia** (displayed in blue)
+- **ComputingResource** (displayed in green)
+- **RedundancyCluster** (displayed in gray)
+- **SoftwareResource** (displayed in yellow)
 
-![CRA basé sur le cas d'étude SCADA](images/cra_scada.png)
+The colors help users quickly identify the different element types within the diagram.
 
-Les propriétés associées sont automatiquement renseignées dans l'onglet **NACRE** de la vue **Properties**.
+![Figure 9 – Menu showing which elements the user can create in a CRA](images/cra_palette.png)
 
-![Vue Properties - Onglet NACRE](images/nacre_properties_1.png)
+*Figure 9 – Menu showing which elements the user can create in a CRA*
 
-![Détails des propriétés NACRE](images/nacre_properties_2.png)
+Once these resources have been created, they must be linked together to describe the system architecture:
+
+- Each **SoftwareResource** must be allocated to a **ComputingResource**.
+- A **SoftwareResource** may optionally belong to a **RedundancyCluster**.
+- Each **ComputingResource** must be connected to at least one **CommunicationMedia**, and may be connected to several.
+- **CommunicationMedia** can be connected together to represent the communication network.
+
+A complete CRA for a decentralized SCADA system is illustrated in **Figure 5**.
+
+![Figure 10 – CRA example for a modular SCADA system](images/cra_scada.png)
+
+*Figure 10 – CRA example for a modular SCADA system*
+
+Each CRA component has properties whose values can be configured by the user. The **Details** tab, located on the right-hand side of the window, displays the name, documentation, type, and properties of the selected element.
+
+![Figure 11 – Details tab](images/nacre_properties_1.png)
+
+*Figure 11 – Details tab*
+
+Property values can be edited directly from this panel, as illustrated in **Figure 7**.
+
+![Figure 12 – Filling in capacity value in details tab](images/nacre_properties_2.png)
+
+*Figure 12 – Filling in capacity value in the Details tab*
 
 ---
 
-## 4. Application des Hazards
+# 3. Hazards Definition
 
-L'application d'un **Hazard** s'effectue en sélectionnant dans un premier temps l'élément concerné.
+Hazards are properties associated with CRA components. To define a hazard, the user must first select the target element, as illustrated in **Figure 8**.
 
-![Sélection de l'élément](images/hazard_selection.png)
+![Figure 13 – Selection of DC1 Network](images/hazard_selection.png)
 
-Une fois l'élément sélectionné, le Hazard peut être appliqué.
+*Figure 13 – Selection of DC1 Network*
 
-![Application du Hazard](images/hazard_application.png)
+The user can then apply a hazard to the selected element using the **Toggle Hazard** command, as shown in **Figure 9**.
 
-Après son application, l'élément est mis en évidence par une coloration rouge.
+![Figure 14 – Hazard application](images/hazard_application.png)
 
-![Élément marqué après application du Hazard](images/hazard_marked_element.png)
+*Figure 14 – Hazard application*
 
-Les propriétés associées au Hazard sont alors automatiquement ajoutées à l'élément concerné.
+To make hazard assignments easily identifiable, elements carrying a hazard are displayed in **red**, as illustrated in **Figure 10**.
 
-![Propriétés du Hazard](images/hazard_properties.png)
+![Figure 15 – DC1 Network shown in red after hazard application](images/hazard_marked_element.png)
+
+*Figure 15 – DC1 Network shown in red after hazard application*
+
+Communication hazards include the following properties:
+
+- Description
+- Justification
+- Percentage of lost messages
+- Hazard occurrence period
+
+Once a hazard has been applied to an element, its properties become visible in the **Model Explorer**, as shown in **Figure 11**.
+
+![Figure 16 – Hazard properties are added to DC1 Network](images/hazard_properties.png)
+
+*Figure 16 – Hazard properties are added to DC1 Network*
