@@ -95,13 +95,7 @@ private import CyberGridMLEnum::*;
         attribute unit : CapacityUnitKind[0..1] default := Kilobytes;
         attribute precision : Integer[1] default := 250;
     }
-    attribute def NFP_Duration {
-        attribute unit : TimeUnitKind[0..1];
-        attribute precision : Real[0..1];
-        attribute clock : String[0..1];
-        attribute worst : Real[0..1];
-        attribute best : Real[0..1];
-    }
+ s
     attribute def NFP_Voltage {
         attribute unit : VoltageUnitKind[0..1];
         attribute precision : Real[0..1];
@@ -163,7 +157,7 @@ private import CyberGridMLEnum::*;
 
     part def SoftwareResource {
         attribute Activation_period:Period;
-        attribute Execution_delay:NFP_Duration;
+        attribute Execution_delay:Period;
     }
 
     allocation def Allocate {
