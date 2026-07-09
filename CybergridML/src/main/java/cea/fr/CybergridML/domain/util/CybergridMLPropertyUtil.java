@@ -6,8 +6,12 @@ import org.eclipse.syson.sysml.textual.SysMLElementSerializer;
 import org.eclipse.syson.sysml.textual.utils.FileNameDeresolver;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class CybergridMLPropertyUtil {
+
+    private static final String NFP_LATENCY_QUALIFIED_NAME = "CyberGridMLDatatypes::NFP_Latency";
+    private static final String NFP_CAPACITY_QUALIFIED_NAME = "CyberGridMLDatatypes::NFP_Capacity";
 
     private CybergridMLPropertyUtil() {
     }
@@ -63,9 +67,18 @@ public class CybergridMLPropertyUtil {
                             var copy = SysmlFactory.eINSTANCE.createLiteralString();
                             copy.setValue(ls.getValue());
                             fv.getOwnedRelatedElement().add(copy);
+                        } else if (expr instanceof FeatureReferenceExpression fre) {
+                            String enumLiteralName = resolveEnumDefaultLiteralName(fre, defAttr);
+                            if (enumLiteralName != null) {
+                                var copy = SysmlFactory.eINSTANCE.createLiteralString();
+                                copy.setValue(enumLiteralName);
+                                fv.getOwnedRelatedElement().add(copy);
+                            }
                         }
                     });
-                    attr.getOwnedRelationship().add(fv);
+                    if (!fv.getOwnedRelatedElement().isEmpty()) {
+                        attr.getOwnedRelationship().add(fv);
+                    }
                 });
 
         if (defAttr.isIsComposite()) {
@@ -130,6 +143,31 @@ public class CybergridMLPropertyUtil {
                 boundMembership.getOwnedRelatedElement().add(copy);
             }
         });
+    }
+
+    private static String resolveEnumDefaultLiteralName(FeatureReferenceExpression defaultExpression, AttributeUsage defAttr) {
+        Feature referent = defaultExpression.getReferent();
+        if (referent != null) {
+            return referent.getDeclaredName();
+        }
+        // CybergridMLLibrary.json currently ships with an unresolved reference for the "unit" defaults of
+        // NFP_Latency/NFP_Capacity (the FeatureReferenceExpression's Membership has no memberElement), so the
+        // enum literal declared in CybergridML.sysml ("default := Milliseconds"/"default := Kilobytes") can't
+        // be read from the model. Fall back to the values declared in the library until the compiled JSON is
+        // regenerated with a resolvable reference.
+        if (!"unit".equals(defAttr.getDeclaredName())) {
+            return null;
+        }
+        String owningTypeQualifiedName = Optional.ofNullable(defAttr.getOwningType())
+                .map(Type::getQualifiedName)
+                .orElse(null);
+        if (NFP_LATENCY_QUALIFIED_NAME.equals(owningTypeQualifiedName)) {
+            return "Milliseconds";
+        }
+        if (NFP_CAPACITY_QUALIFIED_NAME.equals(owningTypeQualifiedName)) {
+            return "Kilobytes";
+        }
+        return null;
     }
 
     public static Object getAttributeValue(AttributeUsage usage) {

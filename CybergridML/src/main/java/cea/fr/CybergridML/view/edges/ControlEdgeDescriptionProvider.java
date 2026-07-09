@@ -65,22 +65,63 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
     public void link(DiagramDescription diagramDescription, IViewDiagramElementFinder cache) {
         super.link(diagramDescription, cache);
 
-        var targetNodes = getTargetNodes(cache);
+        var mainGrid = cache.getNodeDescription(
+                cybergridMLNameGenerator.getNodeName(
+                        CybergridMLLibElementType.MAINGRID.getServiceSuffix()));
 
-        getSourceNodes(cache).forEach(sourceNode -> {
-            var changeContext = this.viewBuilderHelper.newChangeContext()
-                    .expression(AQLUtils.getServiceCallExpression("semanticEdgeSource", "createAllocateEdge",
-                            List.of("semanticEdgeTarget", "edgeSource", "editingContext", "diagramServices")))
-                    .build();
+        var zone = cache.getNodeDescription(
+                cybergridMLNameGenerator.getNodeName(
+                        CybergridMLLibElementType.ZONE.getServiceSuffix()));
 
-            var edgeTool = this.diagramBuilderHelper.newEdgeTool()
-                    .name(EDGE_NAME)
-                    .body(new Operation[] { changeContext })
-                    .targetElementDescriptions(targetNodes.toArray(NodeDescription[]::new))
-                    .build();
+        // CentralController -> MainGrid
+        cache.getNodeDescription(
+                        cybergridMLNameGenerator.getNodeName(
+                                CybergridMLLibElementType.CENTRALCONTROLLER.getServiceSuffix()))
+                .ifPresent(sourceNode -> {
 
-            sourceNode.getPalette().getEdgeTools().add(edgeTool);
-        });
+                    var changeContext = this.viewBuilderHelper.newChangeContext()
+                            .expression(AQLUtils.getServiceCallExpression(
+                                    "semanticEdgeSource",
+                                    "createAllocateEdge",
+                                    List.of("semanticEdgeTarget", "edgeSource",
+                                            "editingContext", "diagramServices")))
+                            .build();
+
+                    mainGrid.ifPresent(target -> {
+                        var edgeTool = this.diagramBuilderHelper.newEdgeTool()
+                                .name(EDGE_NAME)
+                                .body(new Operation[] { changeContext })
+                                .targetElementDescriptions(target)
+                                .build();
+
+                        sourceNode.getPalette().getEdgeTools().add(edgeTool);
+                    });
+                });
+
+        // ZonalController -> Zone
+        cache.getNodeDescription(
+                        cybergridMLNameGenerator.getNodeName(
+                                CybergridMLLibElementType.ZONALCONTROLLER.getServiceSuffix()))
+                .ifPresent(sourceNode -> {
+
+                    var changeContext = this.viewBuilderHelper.newChangeContext()
+                            .expression(AQLUtils.getServiceCallExpression(
+                                    "semanticEdgeSource",
+                                    "createAllocateEdge",
+                                    List.of("semanticEdgeTarget", "edgeSource",
+                                            "editingContext", "diagramServices")))
+                            .build();
+
+                    zone.ifPresent(target -> {
+                        var edgeTool = this.diagramBuilderHelper.newEdgeTool()
+                                .name(EDGE_NAME)
+                                .body(new Operation[] { changeContext })
+                                .targetElementDescriptions(target)
+                                .build();
+
+                        sourceNode.getPalette().getEdgeTools().add(edgeTool);
+                    });
+                });
     }
 
     private EdgeStyle generateEdgeStyle() {
