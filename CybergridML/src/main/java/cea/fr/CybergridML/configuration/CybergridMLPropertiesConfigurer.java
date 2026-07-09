@@ -414,8 +414,10 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         String name = au.getDeclaredName();
         return "description".equals(name) || "justification".equals(name);
     }
-
     public String getPropertyValue(AttributeUsage usage) {
+        initializeCapacityUnit(usage);
+        initializeLatencyUnit(usage);
+
         Object value = CybergridMLPropertyUtil.getAttributeValue(usage);
         return value != null ? value.toString() : "";
     }
@@ -436,5 +438,50 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         usage.getOwnedRelationship().add(featureValueMembership);
         featureValueMembership.getOwnedRelatedElement().add(literalValue);
         return usage;
+    }
+    private void initializeCapacityUnit(AttributeUsage usage) {
+
+        if (!"capacity".equals(usage.getDeclaredName())) {
+            return;
+        }
+        usage.getOwnedRelationship().stream()
+                .filter(OwningMembership.class::isInstance)
+                .map(OwningMembership.class::cast)
+                .flatMap(m -> m.getOwnedRelatedElement().stream())
+                .filter(AttributeUsage.class::isInstance)
+                .map(AttributeUsage.class::cast)
+                .filter(attribute -> "unit".equals(attribute.getDeclaredName()))
+                .findFirst()
+                .ifPresent(unitProperty -> {
+
+                    Object currentValue = CybergridMLPropertyUtil.getAttributeValue(unitProperty);
+                    if (currentValue == null || currentValue.toString().isBlank()) {
+                        setPropertyValue(unitProperty, "Kilobytes");
+                    }
+                });
+    }
+    private void initializeLatencyUnit(AttributeUsage usage) {
+
+        if (!"latency".equals(usage.getDeclaredName())) {
+            return;
+        }
+
+        usage.getOwnedRelationship().stream()
+                .filter(OwningMembership.class::isInstance)
+                .map(OwningMembership.class::cast)
+                .flatMap(m -> m.getOwnedRelatedElement().stream())
+                .filter(AttributeUsage.class::isInstance)
+                .map(AttributeUsage.class::cast)
+                .filter(attribute -> "unit".equals(attribute.getDeclaredName()))
+                .findFirst()
+                .ifPresent(unitProperty -> {
+
+                    Object currentValue = CybergridMLPropertyUtil.getAttributeValue(unitProperty);
+
+                    // On initialise uniquement si unit est vide
+                    if (currentValue == null || currentValue.toString().isBlank()) {
+                        setPropertyValue(unitProperty, "Milliseconds");
+                    }
+                });
     }
 }
