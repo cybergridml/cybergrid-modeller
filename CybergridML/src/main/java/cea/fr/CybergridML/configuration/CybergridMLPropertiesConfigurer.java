@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import cea.fr.CybergridML.domain.util.CybergridMLPropertyUtil;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
@@ -52,6 +53,7 @@ import org.eclipse.syson.sysml.Element;
 import org.eclipse.syson.sysml.EnumerationDefinition;
 import org.eclipse.syson.sysml.EnumerationUsage;
 import org.eclipse.syson.sysml.Expression;
+import org.eclipse.syson.sysml.Feature;
 import org.eclipse.syson.sysml.FeatureTyping;
 import org.eclipse.syson.sysml.FeatureValue;
 import org.eclipse.syson.sysml.LiteralInfinity;
@@ -154,7 +156,28 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         typedByIf.getChildren().add(this.createTypedByWidget());
         group.getChildren().add(typedByIf);
 
+        group.getChildren().add(this.createOwnedReferencesIf());
+
         return group;
+    }
+
+    private FormElementDescription createOwnedReferencesIf() {
+        FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
+        precondition.setName("OwnedReferences_Precondition");
+        precondition.setPredicateExpression(AQLConstants.AQL
+                + "self.ownedFeature->exists(e | e.isReferenceProperty()) and self.getReferencePropertyCandidates()->isEmpty()");
+        precondition.getChildren().add(this.createOwnedReferencesWidget());
+        return precondition;
+    }
+
+    private WidgetDescription createOwnedReferencesWidget() {
+        ReferenceWidgetDescription refWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
+        refWidget.setName("OwnedReferencesReferenceWidget");
+        refWidget.setLabelExpression("References");
+        refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
+        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getUsage_NestedReference().getName());
+        refWidget.setIsEnabledExpression("aql:false");
+        return refWidget;
     }
 
     private GroupDescription createPropertyGroup() {
@@ -222,7 +245,8 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         group.setDisplayMode(GroupDisplayMode.LIST);
         group.setName("CyberGridMLReferenceProperties");
         group.setLabelExpression("References");
-        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF);
+        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF
+                + "->select(e | not(e.getReferencePropertyCandidates()->isEmpty()))");
         group.getChildren().add(this.createReferenceWidgetsFor());
         return group;
     }
@@ -711,15 +735,24 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
             List<ReferenceUsage> nested = type.getOwnedFeature().stream()
                     .filter(ReferenceUsage.class::isInstance)
                     .map(ReferenceUsage.class::cast)
+                    .filter(this::isEditableReference)
                     .toList();
             if (!nested.isEmpty()) {
                 return nested;
             }
         }
-        if (element instanceof ReferenceUsage reference) {
+        if (element instanceof ReferenceUsage reference && this.isEditableReference(reference)) {
             return List.of(reference);
         }
         return List.of();
+    }
+
+    private boolean isEditableReference(ReferenceUsage usage) {
+        Type owningType = usage.getOwningType();
+        return owningType instanceof Feature owningFeature
+                && owningFeature.getType().stream()
+                        .map(Type::getQualifiedName)
+                        .anyMatch(CybergridMLLibElementType.REDUNDANCYCLUSTER.getCybergridMLLibDefinitionName()::equals);
     }
 
     public String getPropertyLabel(Element element) {
