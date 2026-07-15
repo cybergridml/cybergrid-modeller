@@ -1,17 +1,21 @@
 package cea.fr.CybergridML.view.services;
 
+import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.springframework.stereotype.Service;
 import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
 import org.eclipse.sirius.components.core.api.IIdentityService;
 import org.eclipse.sirius.components.core.api.IObjectSearchService;
+import org.eclipse.sirius.components.emf.services.api.IEMFEditingContext;
 import org.eclipse.sirius.components.view.emf.IViewRepresentationDescriptionSearchService;
 import org.eclipse.syson.diagram.common.view.services.ViewToolService;
 import org.eclipse.syson.services.api.ISysMLMoveElementService;
 import org.eclipse.syson.sysml.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,5 +56,26 @@ public class CybergridMLViewToolService extends ViewToolService {
     private boolean toolShouldBeAvailableOnCRAView(EClass newElementType) {
         return SysmlPackage.eINSTANCE.getActionUsage().equals(newElementType) ||
                 SysmlPackage.eINSTANCE.getPartUsage().equals(newElementType);
+    }
+
+    public List<Element> getComputingResourceSelectionDialogElements(IEditingContext editingContext) {
+        List<Element> computingResources = new ArrayList<>();
+        if (editingContext instanceof IEMFEditingContext emfEditingContext) {
+            for (Resource resource : emfEditingContext.getDomain().getResourceSet().getResources()) {
+                var contents = resource.getAllContents();
+                while (contents.hasNext()) {
+                    var eObject = contents.next();
+                    if (eObject instanceof PartUsage partUsage
+                            && CybergridMLLibElementType.COMPUTINGRESOURCE == CybergridMLLibElementType.getCybergridMLElementFromUsage(partUsage)) {
+                        computingResources.add(partUsage);
+                    }
+                }
+            }
+        }
+        return computingResources;
+    }
+
+    public List<Object> getComputingResourceSelectionDialogChildren(Object selectionDialogTreeElement) {
+        return List.of();
     }
 }
