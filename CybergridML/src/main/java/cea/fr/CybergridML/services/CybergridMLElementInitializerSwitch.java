@@ -4,7 +4,7 @@ import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import cea.fr.CybergridML.domain.util.CybergridMLDefinitionsUtil;
 import cea.fr.CybergridML.domain.util.CybergridMLPropertyUtil;
 import org.eclipse.sirius.components.core.api.IEditingContext;
-import org.eclipse.syson.services.ElementInitializerSwitch;
+import org.eclipse.syson.sysml.metamodel.services.ElementInitializerSwitch;
 import org.eclipse.syson.services.UtilService;
 import org.eclipse.syson.sysml.*;
 

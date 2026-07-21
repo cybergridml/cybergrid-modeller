@@ -5,11 +5,11 @@ import cea.fr.CybergridML.domain.CybergridMLViewType;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
-import org.eclipse.sirius.components.core.RepresentationMetadata;
 import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.sirius.components.core.api.IEditingContextPersistenceService;
 import org.eclipse.sirius.components.emf.services.api.IEMFEditingContext;
 import org.eclipse.sirius.components.events.ICause;
-import org.eclipse.sirius.web.application.project.services.api.IProjectTemplateInitializer;
+import org.eclipse.sirius.web.application.project.services.api.ISemanticDataInitializer;
 import org.eclipse.syson.application.sysmlv2.api.IDefaultSysMLv2ResourceProvider;
 import org.eclipse.syson.sysml.*;
 import org.eclipse.syson.sysml.Package;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateInitializer {
+public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInitializer {
 
     private static final String CYBERGRIDML_DOCUMENT_NAME = "CyberGridML.sysml";
 
@@ -28,13 +28,16 @@ public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateI
     private final CybergridMLModelMutationElementService cybergridMLModelMutationElementService;
     private final CybergridMLElementUtil elementUtil;
     private final CybergridMLDiagramCreationService diagramMutationDiagramService;
+    private final IEditingContextPersistenceService editingContextPersistenceService;
 
     public CybergridMLProjectTemplatesInitializer(IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider,
                                                   CybergridMLModelMutationElementService CybergridMLModelMutationElementService,
-                                                  CybergridMLDiagramCreationService diagramMutationDiagramService) {
+                                                  CybergridMLDiagramCreationService diagramMutationDiagramService,
+                                                  IEditingContextPersistenceService editingContextPersistenceService) {
         this.defaultSysMLv2ResourceProvider = Objects.requireNonNull(defaultSysMLv2ResourceProvider);
         this.cybergridMLModelMutationElementService = CybergridMLModelMutationElementService;
         this.diagramMutationDiagramService = Objects.requireNonNull(diagramMutationDiagramService);
+        this.editingContextPersistenceService = Objects.requireNonNull(editingContextPersistenceService);
         this.elementUtil = new CybergridMLElementUtil();
     }
 
@@ -44,14 +47,14 @@ public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateI
     }
 
     @Override
-    public Optional<RepresentationMetadata> handle(ICause cause, String projectTemplateId, IEditingContext editingContext) {
-        if (!canHandle(projectTemplateId)) {
-            return Optional.empty();
+    public void handle(ICause cause, IEditingContext editingContext, String projectTemplateId) {
+        if (canHandle(projectTemplateId)) {
+            initializeNacreProject(editingContext);
+            this.editingContextPersistenceService.persist(cause, editingContext);
         }
-        return initializeNacreProject(editingContext);
     }
 
-    private Optional<RepresentationMetadata> initializeNacreProject(IEditingContext editingContext) {
+    private void initializeNacreProject(IEditingContext editingContext) {
         Optional<ResourceSet> resourceSetOpt = this.getResourceSet(editingContext);
         if (resourceSetOpt.isPresent()) {
             ResourceSet resourceSet = resourceSetOpt.get();
@@ -79,7 +82,6 @@ public class CybergridMLProjectTemplatesInitializer implements IProjectTemplateI
                 diagramMutationDiagramService.createDiagram(viewUsageOpt2.get(), editingContext, CybergridMLRepresentationDescriptionIdentifiers.CFA_VIEW_DIAGRAM_DESCRIPTION_ID);
             }
         }
-        return Optional.empty();
     }
 
 

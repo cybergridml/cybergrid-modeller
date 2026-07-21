@@ -11,9 +11,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.sirius.components.collaborative.api.IRepresentationMetadataPersistenceService;
-import org.eclipse.sirius.components.collaborative.api.IRepresentationPersistenceService;
-import org.eclipse.sirius.components.collaborative.diagrams.api.IDiagramCreationService;
 import org.eclipse.sirius.components.core.api.*;
 import org.eclipse.sirius.components.core.api.labels.StyledString;
 import org.eclipse.syson.application.services.SysMLv2EditService;
@@ -25,30 +22,48 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-
+/**
+ * {@link SysMLv2EditService} can no longer be extended directly: its constructor requires a
+ * package-private {@code SysMLv2EditServiceExtraServices} record that isn't visible outside
+ * {@code org.eclipse.syson.application.services}. This delegate composes the Syson-provided bean
+ * instead, and only delegates to it for the two capabilities ({@code createRootObject}, {@code delete})
+ * that CybergridML does not customize.
+ */
 @Service
-public class CybergridMLEditService extends SysMLv2EditService {
+public class CybergridMLEditService implements IEditServiceDelegate {
 
     public static final String ID_PREFIX = "CybergridMLEditService-";
     private final ILabelService labelService;
     private final IObjectSearchService objectSearchService;
+    private final SysMLv2EditService sysMLv2EditService;
     private final CybergridMLUtilService cybergridMLUtilService = new CybergridMLUtilService();
 
-    public CybergridMLEditService(IDefaultEditService defaultEditService,
-                                  ILabelService labelService,
+    public CybergridMLEditService(ILabelService labelService,
                                   IObjectSearchService objectSearchService,
-                                  IDiagramCreationService diagramCreationService,
-                                  IRepresentationDescriptionSearchService representationDescriptionSearchService,
-                                  IRepresentationMetadataPersistenceService representationMetadataPersistenceService,
-                                  IRepresentationPersistenceService representationPersistenceService) {
-        super(defaultEditService, labelService, objectSearchService, diagramCreationService, representationDescriptionSearchService, representationMetadataPersistenceService, representationPersistenceService);
+                                  SysMLv2EditService sysMLv2EditService) {
         this.labelService = Objects.requireNonNull(labelService);
         this.objectSearchService = Objects.requireNonNull(objectSearchService);
+        this.sysMLv2EditService = Objects.requireNonNull(sysMLv2EditService);
     }
 
     @Override
     public boolean canHandle(Object object) {
         return object instanceof Element;
+    }
+
+    @Override
+    public boolean canHandle(IEditingContext editingContext) {
+        return true;
+    }
+
+    @Override
+    public Optional<Object> createRootObject(IEditingContext editingContext, UUID documentId, String domainId, String rootObjectCreationDescriptionId) {
+        return this.sysMLv2EditService.createRootObject(editingContext, documentId, domainId, rootObjectCreationDescriptionId);
+    }
+
+    @Override
+    public void delete(Object object) {
+        this.sysMLv2EditService.delete(object);
     }
 
     @Override
