@@ -26,6 +26,11 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
 
     private static final String SELF_EXPRESSION = "aql:self";
 
+    /** {@code ToolDescriptionService.SERVICE_ELEMENT_INITIALIZER} was removed in Syson 2026.5.0; this calls
+     * {@link CybergridMLViewCreateService#elementInitializer}, a distinct method of the same name, so the
+     * literal is kept locally instead of relying on the (now-gone) inherited constant. */
+    private static final String SERVICE_ELEMENT_INITIALIZER = "elementInitializer";
+
     public CybergridMLToolDescriptionService(IDescriptionNameGenerator descriptionNameGenerator) {
         super(descriptionNameGenerator);
     }

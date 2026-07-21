@@ -14,6 +14,7 @@ import org.eclipse.sirius.components.view.emf.IViewRepresentationDescriptionSear
 import org.eclipse.syson.diagram.common.view.services.ViewToolService;
 import org.eclipse.syson.services.api.ISysMLMoveElementService;
 import org.eclipse.syson.sysml.*;
+import org.eclipse.syson.tree.explorer.services.api.ISysONExplorerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,8 @@ public class CybergridMLViewToolService extends ViewToolService {
 
     private final CybergridMLUtilService cybergridMLUtilService;
 
-    public CybergridMLViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService, IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService) {
-        super(identityService, objectSearchService, viewRepresentationDescriptionSearchService, feedbackMessageService, moveService);
+    public CybergridMLViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService, IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService, ISysONExplorerService sysONExplorerService) {
+        super(identityService, objectSearchService, viewRepresentationDescriptionSearchService, feedbackMessageService, moveService, sysONExplorerService);
         cybergridMLUtilService = new CybergridMLUtilService();
     }
 

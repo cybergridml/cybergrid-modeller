@@ -48,8 +48,9 @@ public class CommunicationMediaNodeDescriptionProvider extends AbstractCybergrid
                 .build();
 
         var selectionDialog = this.diagramBuilderHelper.newSelectionDialogDescription()
-                .selectionMessage("Select the ComputingResource elements to connect (hold Ctrl/Cmd and click to select several):")
                 .selectionDialogTreeDescription(selectionDialogTree)
+                .defaultTitleExpression(CONNECT_IN_BULK_TOOL_NAME)
+                .descriptionExpression("Select the ComputingResource elements to connect (hold Ctrl/Cmd and click to select several):")
                 .multiple(true)
                 .build();
 

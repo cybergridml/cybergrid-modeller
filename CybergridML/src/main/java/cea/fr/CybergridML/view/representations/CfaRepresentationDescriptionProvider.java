@@ -43,10 +43,11 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
         String domainType = SysMLMetamodelHelper.buildQualifiedName(SysmlPackage.eINSTANCE.getNamespace());
         var diagramDescriptionBuilder = this.diagramBuilderHelper.newDiagramDescription();
         diagramDescriptionBuilder.arrangeLayoutDirection(ArrangeLayoutDirection.RIGHT)
-                .autoLayout(false)
+                .layoutOption(DiagramLayoutOption.NONE)
                 .domainType(domainType)
                 .preconditionExpression(AQLUtils.getSelfServiceCallExpression("canCreateDiagram"))
                 .name(DESCRIPTION_NAME)
+                .style(this.diagramBuilderHelper.newDiagramStyleDescription().build())
                 .titleExpression("aql:'%s'+ Sequence{self.existingViewUsagesCountForRepresentationCreation(), 1}->sum()".formatted(DESCRIPTION_NAME));
         var diagramDescription = diagramDescriptionBuilder.build();
 
