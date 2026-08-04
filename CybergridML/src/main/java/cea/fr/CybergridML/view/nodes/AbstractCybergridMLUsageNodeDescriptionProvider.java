@@ -4,6 +4,7 @@ import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
 import cea.fr.CybergridML.view.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
@@ -36,7 +37,7 @@ public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends Ab
 
     @Override
     protected String getSemanticCandidatesExpression(String domainType) {
-        return AQLUtils.getSelfServiceCallExpression("getExposedNacreElements",
+        return CybergridMLAQLUtils.getSelfServiceCallExpression("getExposedNacreElements",
                 List.of(AQLUtils.aqlString(getCybergridMLElementType().getCybergridMLLibDefinitionName()),
                         domainType,
                         "ancestors",

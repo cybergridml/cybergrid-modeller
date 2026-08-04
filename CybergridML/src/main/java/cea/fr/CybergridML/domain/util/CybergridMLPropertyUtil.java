@@ -2,8 +2,9 @@ package cea.fr.CybergridML.domain.util;
 
 
 import org.eclipse.syson.sysml.*;
-import org.eclipse.syson.sysml.textual.SysMLElementSerializer;
-import org.eclipse.syson.sysml.textual.utils.FileNameDeresolver;
+import org.eclipse.syson.sysml.metamodel.services.textual.SysMLElementSerializer;
+import org.eclipse.syson.sysml.metamodel.services.textual.SysMLSerializingOptions;
+import org.eclipse.syson.sysml.metamodel.services.textual.utils.FileNameDeresolver;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -185,11 +186,12 @@ public class CybergridMLPropertyUtil {
         } else if (expression.eClass().equals(SysmlPackage.eINSTANCE.getOperatorExpression())
                 || expression.eClass().equals(SysmlPackage.eINSTANCE.getFeatureChainExpression())
                 || expression.eClass().equals(SysmlPackage.eINSTANCE.getFeatureReferenceExpression())) {
-            String operationAsString = new SysMLElementSerializer(
-                    "\n",
-                    "\t",
-                    new FileNameDeresolver(),
-                    s -> {
+            SysMLSerializingOptions options = new SysMLSerializingOptions.Builder()
+                    .lineSeparator("\n")
+                    .indentation("\t")
+                    .nameDeresolver(new FileNameDeresolver())
+                    .build();
+            String operationAsString = new SysMLElementSerializer(options, s -> {
                     })
                     .doSwitch(expression);
             return "=" + operationAsString;

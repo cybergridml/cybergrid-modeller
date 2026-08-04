@@ -5,41 +5,96 @@ import org.springframework.stereotype.Service;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
 import org.eclipse.sirius.components.core.api.IEditingContext;
-import org.eclipse.sirius.components.core.api.IObjectSearchService;
-import org.eclipse.syson.diagram.common.view.services.RevealCompartmentSwitch;
-import org.eclipse.syson.diagram.common.view.services.ViewNodeService;
 import org.eclipse.syson.sysml.Element;
+import org.eclipse.syson.sysml.Expose;
 import org.eclipse.syson.sysml.Feature;
+import org.eclipse.syson.sysml.LibraryPackage;
+import org.eclipse.syson.sysml.MembershipExpose;
 import org.eclipse.syson.sysml.Namespace;
+import org.eclipse.syson.sysml.Package;
+import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.sysml.ViewUsage;
 import org.eclipse.syson.sysml.helper.EMFUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * {@code ViewNodeService} was deleted by Syson in 2026.5.0 (its exposure logic moved into the
+ * package-private internals of {@code DiagramQueryExposeService}), so this can no longer extend it.
+ * The direct-exposure traversal and the ancestor-deduplication on top of it are reimplemented here;
+ * {@code needToRevealCompartment} was dropped because its call path (through {@code ViewNodeService})
+ * no longer exists and nothing else in CybergridML references it. The public {@code getExposedNacreElements}
+ * methods are kept as-is: they are invoked by name from generated AQL expressions
+ * (see {@code AbstractCybergridMLUsageNodeDescriptionProvider#getSemanticCandidatesExpression}).
+ */
 @Service
-public class CybergridMLViewNodeService extends ViewNodeService {
+public class CybergridMLViewNodeService {
 
-    public CybergridMLViewNodeService(IObjectSearchService objectSearchService) {
-        super(objectSearchService);
-    }
-
-    @Override
-    protected boolean needToRevealCompartment(Element element, boolean isGeneralView) {
-        return new RevealCompartmentSwitch(true).doSwitch(element);
-    }
-
-    @Override
-    protected Set<Element> getDirectExposedElements(ViewUsage viewUsage) {
-        Set<Element> directExposedElements = super.getDirectExposedElements(viewUsage);
+    private Set<Element> getDirectExposedElements(ViewUsage viewUsage) {
+        Set<Element> directExposedElements = this.computeDirectExposedElements(viewUsage);
         return directExposedElements.stream()
                 .filter(element -> directExposedElements.stream()
                         .noneMatch(other -> !Objects.equals(other, element) && EMFUtils.isAncestor(other, element)))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Set<Element> computeDirectExposedElements(ViewUsage viewUsage) {
+        var directExposedElements = new HashSet<Element>();
+        List<Expose> exposedElements = viewUsage.getOwnedRelationship().stream()
+                .filter(Expose.class::isInstance)
+                .map(Expose.class::cast)
+                .toList();
+        for (Expose exposedElement : exposedElements) {
+            Element importedElement = exposedElement.getImportedElement();
+            if (importedElement instanceof Package) {
+                directExposedElements.add(importedElement);
+            } else if (exposedElement instanceof MembershipExpose membershipExpose) {
+                var importedMembership = membershipExpose.getImportedMembership();
+                if (importedMembership != null) {
+                    var memberElement = importedMembership.getMemberElement();
+                    if (memberElement != null && !this.isChildOfExposedPackage(memberElement, exposedElements)) {
+                        directExposedElements.add(memberElement);
+                        if (exposedElement.isIsRecursive()) {
+                            directExposedElements.addAll(this.getRecursiveContents(memberElement));
+                        }
+                    }
+                }
+            }
+        }
+        return directExposedElements;
+    }
+
+    private boolean isChildOfExposedPackage(Element element, List<Expose> exposedElements) {
+        boolean isChildOfExposedElement = false;
+        for (Expose exposedElement : exposedElements) {
+            Element importedElement = exposedElement.getImportedElement();
+            if (importedElement instanceof Package && !Objects.equals(element, importedElement) && EMFUtils.isAncestor(importedElement, element)) {
+                isChildOfExposedElement = true;
+                break;
+            }
+        }
+        return isChildOfExposedElement;
+    }
+
+    private List<Element> getRecursiveContents(Element element) {
+        var contents = new ArrayList<Element>();
+        var ownedElements = element.getOwnedElement().stream().filter(Objects::nonNull).toList();
+        contents.addAll(ownedElements);
+        ownedElements.forEach(oe -> contents.addAll(this.getRecursiveContents(oe)));
+        return contents;
+    }
+
+    private boolean isTypeOf(Element element, EClass domainType) {
+        if (element instanceof LibraryPackage) {
+            return Objects.equals(SysmlPackage.eINSTANCE.getPackage(), domainType);
+        }
+        return element != null && Objects.equals(element.eClass(), domainType);
     }
 
     public List<Element> getExposedNacreElements(Element element, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {

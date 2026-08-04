@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import cea.fr.CybergridML.domain.util.CybergridMLPropertyUtil;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
@@ -68,7 +69,6 @@ import org.eclipse.syson.sysml.SysmlFactory;
 import org.eclipse.syson.sysml.SysmlPackage;
 import org.eclipse.syson.sysml.Type;
 import org.eclipse.syson.util.AQLConstants;
-import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 import org.springframework.context.annotation.Configuration;
 
@@ -144,7 +144,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
         group.setDisplayMode(GroupDisplayMode.LIST);
         group.setName("Properties");
-        group.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getLabel"));
+        group.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getLabel"));
         group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF);
 
         group.getChildren().add(this.createCoreWidgets());
@@ -187,7 +187,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         group.setLabelExpression("Properties");
         group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF);
         group.getChildren().add(this.createPropertyWidgetsFor(
-                AQLUtils.getSelfServiceCallExpression("getPropertyCandidates"), 0));
+                CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyCandidates"), 0));
         return group;
     }
 
@@ -205,26 +205,26 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
         FormElementIf textAreaIf = FormFactory.eINSTANCE.createFormElementIf();
         textAreaIf.setName("TextAreaProperty_Precondition");
-        textAreaIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isTextAreaProperty"));
+        textAreaIf.setPredicateExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("isTextAreaProperty"));
         textAreaIf.getChildren().add(this.createPropertyValueTextAreaWidget());
         widgets.add(textAreaIf);
 
         FormElementIf enumIf = FormFactory.eINSTANCE.createFormElementIf();
         enumIf.setName("EnumProperty_Precondition");
-        enumIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isEnumProperty"));
+        enumIf.setPredicateExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("isEnumProperty"));
         enumIf.getChildren().add(this.createPropertyValueSelectWidget());
         widgets.add(enumIf);
 
         FormElementIf measurementIf = FormFactory.eINSTANCE.createFormElementIf();
         measurementIf.setName("MeasurementProperty_Precondition");
-        measurementIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isMeasurementProperty"));
+        measurementIf.setPredicateExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("isMeasurementProperty"));
         measurementIf.getChildren().add(this.createMeasurementWidget(depth));
         widgets.add(measurementIf);
 
         if (depth < MAX_PROPERTY_NESTING_DEPTH) {
             FormElementIf compositeIf = FormFactory.eINSTANCE.createFormElementIf();
             compositeIf.setName("CompositeProperty_Precondition");
-            compositeIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isCompositeProperty"));
+            compositeIf.setPredicateExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("isCompositeProperty"));
             compositeIf.getChildren().add(this.createCompositePropertyWidget(depth));
             widgets.add(compositeIf);
         }
@@ -255,7 +255,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         FormElementFor forElt = FormFactory.eINSTANCE.createFormElementFor();
         forElt.setName("Widgets for Reference Properties");
         forElt.setIterator(AQLConstants.SELF);
-        forElt.setIterableExpression(AQLUtils.getSelfServiceCallExpression("getReferencePropertyCandidates"));
+        forElt.setIterableExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getReferencePropertyCandidates"));
         forElt.getChildren().addAll(this.createReferenceWidgets());
         return forElt;
     }
@@ -271,7 +271,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
         FormElementIf manyValuedIf = FormFactory.eINSTANCE.createFormElementIf();
         manyValuedIf.setName("ManyValuedReference_Precondition");
-        manyValuedIf.setPredicateExpression(AQLUtils.getSelfServiceCallExpression("isManyValuedReference"));
+        manyValuedIf.setPredicateExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("isManyValuedReference"));
         manyValuedIf.getChildren().add(this.createReferencePropertyMultiSelectWidget());
         widgets.add(manyValuedIf);
 
@@ -282,7 +282,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         FormElementFor forElt = FormFactory.eINSTANCE.createFormElementFor();
         forElt.setName("Widgets for Core Group");
         forElt.setIterator(E_STRUCTURAL_FEATURE);
-        forElt.setIterableExpression(AQLUtils.getSelfServiceCallExpression("getCoreFeatures"));
+        forElt.setIterableExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getCoreFeatures"));
         forElt.getChildren().addAll(this.createWidgets());
         return forElt;
     }
@@ -293,14 +293,14 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         FormElementIf label = FormFactory.eINSTANCE.createFormElementIf();
         label.setName("Read-only String Attributes");
         label.setPredicateExpression(
-                AQLUtils.getSelfServiceCallExpression("isReadOnlyStringAttribute", E_STRUCTURAL_FEATURE));
+                CybergridMLAQLUtils.getSelfServiceCallExpression("isReadOnlyStringAttribute", E_STRUCTURAL_FEATURE));
         label.getChildren().add(this.createLabelWidget());
         widgets.add(label);
 
         FormElementIf textfield = FormFactory.eINSTANCE.createFormElementIf();
         textfield.setName("String Attributes");
         textfield.setPredicateExpression(
-                AQLUtils.getSelfServiceCallExpression("isStringAttribute", E_STRUCTURAL_FEATURE));
+                CybergridMLAQLUtils.getSelfServiceCallExpression("isStringAttribute", E_STRUCTURAL_FEATURE));
         textfield.getChildren().add(this.createTextfieldWidget());
         widgets.add(textfield);
 
@@ -311,8 +311,8 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         LabelDescription label = FormFactory.eINSTANCE.createLabelDescription();
         label.setName("LabelWidget");
         label.setLabelExpression(
-                AQLUtils.getSelfServiceCallExpression(GET_DETAILS_VIEW_LABEL_SERVICE, E_STRUCTURAL_FEATURE));
-        label.setValueExpression(AQLUtils.getSelfServiceCallExpression("eGet", E_STRUCTURAL_FEATURE));
+                CybergridMLAQLUtils.getSelfServiceCallExpression(GET_DETAILS_VIEW_LABEL_SERVICE, E_STRUCTURAL_FEATURE));
+        label.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("eGet", E_STRUCTURAL_FEATURE));
         return label;
     }
 
@@ -320,11 +320,11 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         TextfieldDescription textfield = FormFactory.eINSTANCE.createTextfieldDescription();
         textfield.setName("TextfieldWidget");
         textfield.setLabelExpression(
-                AQLUtils.getSelfServiceCallExpression(GET_DETAILS_VIEW_LABEL_SERVICE, E_STRUCTURAL_FEATURE));
-        textfield.setValueExpression(AQLUtils.getSelfServiceCallExpression("eGet", E_STRUCTURAL_FEATURE));
+                CybergridMLAQLUtils.getSelfServiceCallExpression(GET_DETAILS_VIEW_LABEL_SERVICE, E_STRUCTURAL_FEATURE));
+        textfield.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("eGet", E_STRUCTURAL_FEATURE));
         textfield.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY_E_STRUCTURAL_FEATURE);
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setNewValue",
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setNewValue",
                 List.of(E_STRUCTURAL_FEATURE, ViewFormDescriptionConverter.NEW_VALUE)));
         textfield.getBody().add(setNewValueOperation);
         return textfield;
@@ -334,11 +334,11 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         TextAreaDescription textarea = FormFactory.eINSTANCE.createTextAreaDescription();
         textarea.setName("DocumentationWidget");
         textarea.setLabelExpression("Documentation");
-        textarea.setValueExpression(AQLUtils.getSelfServiceCallExpression("getDocumentation"));
+        textarea.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getDocumentation"));
         textarea.setHelpExpression("Use 'shift + enter' to add new lines");
         textarea.setIsEnabledExpression(AQLConstants.AQL + "not(self.isReadOnly())");
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setNewDocumentationValue",
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setNewDocumentationValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         textarea.getBody().add(setNewValueOperation);
         FormElementIf precondition = FormFactory.eINSTANCE.createFormElementIf();
@@ -351,12 +351,12 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createPropertyValueTextAreaWidget() {
         TextAreaDescription textArea = FormFactory.eINSTANCE.createTextAreaDescription();
         textArea.setName("PropertyValueTextAreaWidget");
-        textArea.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
-        textArea.setValueExpression(AQLUtils.getSelfServiceCallExpression("getPropertyValue"));
+        textArea.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        textArea.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyValue"));
         textArea.setHelpExpression("Use 'shift + enter' to add new lines");
         textArea.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
         ChangeContext setTextAreaValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setTextAreaValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setPropertyValue",
+        setTextAreaValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         textArea.getBody().add(setTextAreaValueOperation);
         return textArea;
@@ -365,11 +365,11 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createPropertyValueWidget() {
         TextfieldDescription textField = FormFactory.eINSTANCE.createTextfieldDescription();
         textField.setName("PropertyValueTextFieldWidget");
-        textField.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
-        textField.setValueExpression(AQLUtils.getSelfServiceCallExpression("getPropertyValue"));
+        textField.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        textField.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyValue"));
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setPropertyValue",
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         textField.getBody().add(setNewValueOperation);
 
@@ -379,14 +379,14 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createPropertyValueSelectWidget() {
         SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
         select.setName("PropertyValueSelectWidget");
-        select.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
-        select.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getEnumCandidates"));
+        select.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        select.setCandidatesExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getEnumCandidates"));
         select.setCandidateLabelExpression("aql:candidate.declaredName");
-        select.setValueExpression(AQLUtils.getSelfServiceCallExpression("getEnumPropertyValue"));
+        select.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getEnumPropertyValue"));
         select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setEnumPropertyValue",
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setEnumPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         select.getBody().add(setNewValueOperation);
 
@@ -408,7 +408,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createPropertyNameWidget(int depth) {
         LabelDescription label = FormFactory.eINSTANCE.createLabelDescription();
         label.setName("PropertyNameWidget");
-        label.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        label.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
         label.setValueExpression("aql:''");
         LabelDescriptionStyle style = FormFactory.eINSTANCE.createLabelDescriptionStyle();
         style.setBold(true);
@@ -489,7 +489,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         borderStyle.setBorderColor(this.createFixedColor("#D0D7DE"));
         nestedGroup.setBorderStyle(borderStyle);
         nestedGroup.getChildren().add(this.createPropertyWidgetsFor(
-                AQLUtils.getSelfServiceCallExpression(iterableMethodName), depth + 1));
+                CybergridMLAQLUtils.getSelfServiceCallExpression(iterableMethodName), depth + 1));
 
         precondition.getChildren().add(nestedGroup);
         return precondition;
@@ -509,14 +509,14 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createReferencePropertySelectWidget() {
         SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
         select.setName("ReferencePropertyValueSelectWidget");
-        select.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
-        select.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
+        select.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        select.setCandidatesExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
         select.setCandidateLabelExpression("aql:candidate.declaredName");
-        select.setValueExpression(AQLUtils.getSelfServiceCallExpression("getSingleReferencePropertyValue"));
+        select.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getSingleReferencePropertyValue"));
         select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setSingleReferencePropertyValue",
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setSingleReferencePropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         select.getBody().add(setNewValueOperation);
 
@@ -526,14 +526,14 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
     private WidgetDescription createReferencePropertyMultiSelectWidget() {
         MultiSelectDescription multiSelect = FormFactory.eINSTANCE.createMultiSelectDescription();
         multiSelect.setName("ReferencePropertyValueMultiSelectWidget");
-        multiSelect.setLabelExpression(AQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
-        multiSelect.setCandidatesExpression(AQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
+        multiSelect.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        multiSelect.setCandidatesExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getReferenceCandidates"));
         multiSelect.setCandidateLabelExpression("aql:candidate.declaredName");
-        multiSelect.setValueExpression(AQLUtils.getSelfServiceCallExpression("getReferencePropertyValue"));
+        multiSelect.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getReferencePropertyValue"));
         multiSelect.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
-        setNewValueOperation.setExpression(AQLUtils.getSelfServiceCallExpression("setReferencePropertyValues",
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setReferencePropertyValues",
                 ViewFormDescriptionConverter.NEW_VALUE));
         multiSelect.getBody().add(setNewValueOperation);
 
@@ -548,7 +548,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
         refWidget.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
         ChangeContext setRefWidget = ViewFactory.eINSTANCE.createChangeContext();
-        setRefWidget.setExpression(AQLUtils.getSelfServiceCallExpression("handleFeatureTypingNewValue",
+        setRefWidget.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("handleFeatureTypingNewValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         refWidget.getBody().add(setRefWidget);
 

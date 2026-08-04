@@ -7,6 +7,7 @@ import cea.fr.CybergridML.view.services.CybergridMLToolDescriptionService;
 import cea.fr.CybergridML.view.edges.ControlEdgeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.*;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
@@ -17,7 +18,6 @@ import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.ViewDiagramElementFinder;
 import org.eclipse.syson.standard.diagrams.view.edges.*;
 import org.eclipse.syson.sysml.SysmlPackage;
-import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.IDescriptionNameGenerator;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 
@@ -43,10 +43,11 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
         String domainType = SysMLMetamodelHelper.buildQualifiedName(SysmlPackage.eINSTANCE.getNamespace());
         var diagramDescriptionBuilder = this.diagramBuilderHelper.newDiagramDescription();
         diagramDescriptionBuilder.arrangeLayoutDirection(ArrangeLayoutDirection.RIGHT)
-                .autoLayout(false)
+                .layoutOption(DiagramLayoutOption.NONE)
                 .domainType(domainType)
-                .preconditionExpression(AQLUtils.getSelfServiceCallExpression("canCreateDiagram"))
+                .preconditionExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("canCreateDiagram"))
                 .name(DESCRIPTION_NAME)
+                .style(this.diagramBuilderHelper.newDiagramStyleDescription().build())
                 .titleExpression("aql:'%s'+ Sequence{self.existingViewUsagesCountForRepresentationCreation(), 1}->sum()".formatted(DESCRIPTION_NAME));
         var diagramDescription = diagramDescriptionBuilder.build();
 

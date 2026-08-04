@@ -8,7 +8,6 @@ import org.eclipse.syson.application.configuration.SysONLoadDefaultLibrariesOnAp
 import org.eclipse.syson.application.libraries.SysONLibraryLoadingDefinition;
 import org.springframework.context.annotation.Configuration;
 
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,7 +19,7 @@ public class CybergridMLLibrariesConfiguration extends SysONDefaultLibrariesConf
     public static final SysONLibraryLoadingDefinition CYBERGRIDML = new SysONLibraryLoadingDefinition(
             "SysML CyberGridML Library",
             CybergridMLLibraryUtil.CYBERGRIDML_LIBRARY_SCHEME,
-            Paths.get("sysml.cybergridML.libraries"),
+            "sysml.cybergridML.libraries",
             Collections.singletonList(JsonResourceFactoryImpl.EXTENSION),
             new JSONResourceFactory()::createResource);
 

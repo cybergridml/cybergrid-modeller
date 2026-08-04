@@ -8,8 +8,8 @@ import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.syson.diagram.common.view.edges.AbstractAllocateEdgeDescriptionProvider;
-import org.eclipse.syson.util.AQLUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class AbstractEdgeDescriptionProvider extends AbstractAllocateEdgeDescrip
 
         getSourceNodes(cache).forEach(sourceNode -> {
             var changeContext = this.viewBuilderHelper.newChangeContext()
-                    .expression(AQLUtils.getServiceCallExpression("semanticEdgeSource", "createAllocateEdge",
+                    .expression(CybergridMLAQLUtils.getServiceCallExpression("semanticEdgeSource", "createAllocateEdge",
                             List.of("semanticEdgeTarget", "edgeSource", "editingContext", "diagramServices")))
                     .build();
 
