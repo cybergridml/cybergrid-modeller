@@ -4,6 +4,7 @@ import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
 import cea.fr.CybergridML.view.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.diagrams.Node;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
@@ -13,7 +14,6 @@ import org.eclipse.sirius.components.view.diagram.InsideLabelStyle;
 import org.eclipse.sirius.components.view.diagram.NodeDescription;
 import org.eclipse.sirius.components.view.diagram.NodeStyleDescription;
 import org.eclipse.sirius.components.view.diagram.NodeTool;
-import org.eclipse.syson.util.AQLUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +42,8 @@ public class CommunicationMediaNodeDescriptionProvider extends AbstractCybergrid
 
     private NodeTool createConnectInBulkNodeTool() {
         var selectionDialogTree = this.diagramBuilderHelper.newSelectionDialogTreeDescription()
-                .elementsExpression(AQLUtils.getServiceCallExpression(IEditingContext.EDITING_CONTEXT, "getComputingResourceSelectionDialogElements"))
-                .childrenExpression(AQLUtils.getSelfServiceCallExpression("getComputingResourceSelectionDialogChildren"))
+                .elementsExpression(CybergridMLAQLUtils.getServiceCallExpression(IEditingContext.EDITING_CONTEXT, "getComputingResourceSelectionDialogElements"))
+                .childrenExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getComputingResourceSelectionDialogChildren"))
                 .isSelectableExpression("aql:true")
                 .build();
 
@@ -55,7 +55,7 @@ public class CommunicationMediaNodeDescriptionProvider extends AbstractCybergrid
                 .build();
 
         var createConnectEdge = this.viewBuilderHelper.newChangeContext()
-                .expression(AQLUtils.getServiceCallExpression(SELECTED_COMPUTING_RESOURCE_ITERATOR, "createAllocateEdge",
+                .expression(CybergridMLAQLUtils.getServiceCallExpression(SELECTED_COMPUTING_RESOURCE_ITERATOR, "createAllocateEdge",
                         List.of("self", Node.SELECTED_NODE, IEditingContext.EDITING_CONTEXT, "diagramServices")))
                 .build();
 

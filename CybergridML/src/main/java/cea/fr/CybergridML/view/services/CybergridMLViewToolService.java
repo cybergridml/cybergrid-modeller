@@ -8,6 +8,7 @@ import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.core.api.IFeedbackMessageService;
 import org.eclipse.sirius.components.core.api.IIdentityService;
+import org.eclipse.sirius.components.core.api.ILabelService;
 import org.eclipse.sirius.components.core.api.IObjectSearchService;
 import org.eclipse.sirius.components.emf.services.api.IEMFEditingContext;
 import org.eclipse.sirius.components.view.emf.IViewRepresentationDescriptionSearchService;
@@ -24,8 +25,8 @@ public class CybergridMLViewToolService extends ViewToolService {
 
     private final CybergridMLUtilService cybergridMLUtilService;
 
-    public CybergridMLViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService, IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService, ISysONExplorerService sysONExplorerService) {
-        super(identityService, objectSearchService, viewRepresentationDescriptionSearchService, feedbackMessageService, moveService, sysONExplorerService);
+    public CybergridMLViewToolService(IIdentityService identityService, IObjectSearchService objectSearchService, IViewRepresentationDescriptionSearchService viewRepresentationDescriptionSearchService, IFeedbackMessageService feedbackMessageService, ISysMLMoveElementService moveService, ISysONExplorerService sysONExplorerService, ILabelService labelService) {
+        super(identityService, objectSearchService, viewRepresentationDescriptionSearchService, feedbackMessageService, moveService, sysONExplorerService, labelService);
         cybergridMLUtilService = new CybergridMLUtilService();
     }
 

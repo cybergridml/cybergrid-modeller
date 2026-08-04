@@ -1,6 +1,7 @@
 package cea.fr.CybergridML.view.services;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.view.ChangeContext;
@@ -22,7 +23,7 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CybergridMLToolDescriptionService.class);
 
-    private static final String GET_VIEW_USAGE_OWNER_EXPRESSION = AQLUtils.getSelfServiceCallExpression("getViewUsageOwner");
+    private static final String GET_VIEW_USAGE_OWNER_EXPRESSION = CybergridMLAQLUtils.getSelfServiceCallExpression("getViewUsageOwner");
 
     private static final String SELF_EXPRESSION = "aql:self";
 
@@ -60,7 +61,7 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
                         .map(ChangeContext.class::cast)
                         .ifPresent(newInstanceChangeContext -> {
                             List<String> parameters = List.of(IEditingContext.EDITING_CONTEXT, AQLUtils.aqlString(cybergridMLElementType.getName()));
-                            newInstanceChangeContext.setExpression(AQLUtils.getServiceCallExpression(NEW_INSTANCE, SERVICE_ELEMENT_INITIALIZER, parameters));
+                            newInstanceChangeContext.setExpression(CybergridMLAQLUtils.getServiceCallExpression(NEW_INSTANCE, SERVICE_ELEMENT_INITIALIZER, parameters));
                         });
             }
             changeElementCreation(operation.getChildren(), cybergridMLElementType);

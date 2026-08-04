@@ -12,8 +12,8 @@ import org.eclipse.sirius.components.view.Operation;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.sirius.components.view.diagram.*;
-import org.eclipse.syson.util.AQLUtils;
 
 public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
@@ -80,7 +80,7 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
                 .ifPresent(sourceNode -> {
 
                     var changeContext = this.viewBuilderHelper.newChangeContext()
-                            .expression(AQLUtils.getServiceCallExpression(
+                            .expression(CybergridMLAQLUtils.getServiceCallExpression(
                                     "semanticEdgeSource",
                                     "createAllocateEdge",
                                     List.of("semanticEdgeTarget", "edgeSource",
@@ -105,7 +105,7 @@ public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescr
                 .ifPresent(sourceNode -> {
 
                     var changeContext = this.viewBuilderHelper.newChangeContext()
-                            .expression(AQLUtils.getServiceCallExpression(
+                            .expression(CybergridMLAQLUtils.getServiceCallExpression(
                                     "semanticEdgeSource",
                                     "createAllocateEdge",
                                     List.of("semanticEdgeTarget", "edgeSource",

@@ -6,6 +6,7 @@ import cea.fr.CybergridML.view.nodes.CentralControllerNodeDescriptionProvider;
 import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
 import cea.fr.CybergridML.view.nodes.SoftwareResourceNodeDescriptionProvider;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.sirius.components.view.RepresentationDescription;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
@@ -15,7 +16,6 @@ import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescr
 import org.eclipse.sirius.components.view.diagram.*;
 import org.eclipse.syson.diagram.common.view.ViewDiagramElementFinder;
 import org.eclipse.syson.sysml.SysmlPackage;
-import org.eclipse.syson.util.AQLUtils;
 import org.eclipse.syson.util.IDescriptionNameGenerator;
 import org.eclipse.syson.util.SysMLMetamodelHelper;
 
@@ -42,7 +42,7 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
         diagramDescriptionBuilder.arrangeLayoutDirection(ArrangeLayoutDirection.RIGHT)
                 .layoutOption(DiagramLayoutOption.NONE)
                 .domainType(domainType)
-                .preconditionExpression(AQLUtils.getSelfServiceCallExpression("canCreateDiagram"))
+                .preconditionExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("canCreateDiagram"))
                 .name(DESCRIPTION_NAME)
                 .style(this.diagramBuilderHelper.newDiagramStyleDescription().build())
                 .titleExpression("aql:'%s'+ Sequence{self.existingViewUsagesCountForRepresentationCreation(), 1}->sum()".formatted(DESCRIPTION_NAME));

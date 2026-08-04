@@ -2,9 +2,9 @@ package cea.fr.CybergridML.domain.util;
 
 
 import org.eclipse.syson.sysml.*;
-import org.eclipse.syson.sysml.textual.SysMLElementSerializer;
-import org.eclipse.syson.sysml.textual.SysMLSerializingOptions;
-import org.eclipse.syson.sysml.textual.utils.FileNameDeresolver;
+import org.eclipse.syson.sysml.metamodel.services.textual.SysMLElementSerializer;
+import org.eclipse.syson.sysml.metamodel.services.textual.SysMLSerializingOptions;
+import org.eclipse.syson.sysml.metamodel.services.textual.utils.FileNameDeresolver;
 
 import java.math.BigDecimal;
 import java.util.Optional;
