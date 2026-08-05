@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.edges;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 
@@ -18,14 +18,14 @@ import org.eclipse.sirius.components.view.diagram.*;
 public class ControlEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Control";
-    private final CybergridMLDescriptionNameGenerator cybergridMLNameGenerator;
+    private final DescriptionNameGenerator cybergridMLNameGenerator;
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
-    public ControlEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public ControlEdgeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         this(colorProvider, nameGenerator, true);
     }
 
-    public ControlEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+    public ControlEdgeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator, boolean withHazardTool) {
         super(Objects.requireNonNull(colorProvider), withHazardTool);
         this.cybergridMLNameGenerator = Objects.requireNonNull(nameGenerator);
     }

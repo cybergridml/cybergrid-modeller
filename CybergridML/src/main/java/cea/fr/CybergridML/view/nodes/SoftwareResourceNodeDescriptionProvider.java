@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.nodes;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
@@ -16,11 +16,11 @@ import java.util.Set;
 
 public class SoftwareResourceNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
-    public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         this(colorProvider, nameGenerator, true);
     }
 
-    public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+    public SoftwareResourceNodeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator, boolean withHazardTool) {
         super(CybergridMLLibElementType.SOFTWARERESOURCE, colorProvider, nameGenerator, withHazardTool);
     }
 

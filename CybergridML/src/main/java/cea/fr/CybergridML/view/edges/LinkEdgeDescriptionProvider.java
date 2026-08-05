@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.edges;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.sirius.components.view.Operation;
@@ -17,10 +17,10 @@ import java.util.Objects;
 public class LinkEdgeDescriptionProvider extends AbstractCybergridMLEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Link";
-    private final CybergridMLDescriptionNameGenerator cybergridMLNameGenerator;
+    private final DescriptionNameGenerator cybergridMLNameGenerator;
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
-    public LinkEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public LinkEdgeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         super(Objects.requireNonNull(colorProvider));
         this.cybergridMLNameGenerator = Objects.requireNonNull(nameGenerator);
     }

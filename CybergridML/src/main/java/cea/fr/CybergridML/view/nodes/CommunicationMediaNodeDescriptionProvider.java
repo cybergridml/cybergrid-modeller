@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.nodes;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
@@ -25,7 +25,7 @@ public class CommunicationMediaNodeDescriptionProvider extends AbstractCybergrid
 
     private static final String SELECTED_COMPUTING_RESOURCE_ITERATOR = "selectedComputingResource";
 
-    public CommunicationMediaNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public CommunicationMediaNodeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.COMMUNICATIONMEDIA, colorProvider, nameGenerator);
     }
 

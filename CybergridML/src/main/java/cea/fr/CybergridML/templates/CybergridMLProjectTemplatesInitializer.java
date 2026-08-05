@@ -26,7 +26,6 @@ public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInit
 
     private final IDefaultSysMLv2ResourceProvider defaultSysMLv2ResourceProvider;
     private final CybergridMLModelMutationElementService cybergridMLModelMutationElementService;
-    private final CybergridMLElementUtil elementUtil;
     private final CybergridMLDiagramCreationService diagramMutationDiagramService;
     private final IEditingContextPersistenceService editingContextPersistenceService;
 
@@ -38,7 +37,6 @@ public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInit
         this.cybergridMLModelMutationElementService = CybergridMLModelMutationElementService;
         this.diagramMutationDiagramService = Objects.requireNonNull(diagramMutationDiagramService);
         this.editingContextPersistenceService = Objects.requireNonNull(editingContextPersistenceService);
-        this.elementUtil = new CybergridMLElementUtil();
     }
 
     @Override
@@ -64,7 +62,7 @@ public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInit
             Optional<ViewUsage> viewUsageOpt = Optional.empty();
             Optional<ViewUsage> viewUsageOpt1 = Optional.empty();
             Optional<ViewUsage> viewUsageOpt2 = Optional.empty();
-            Optional<Package> packageOpt = elementUtil.getRootPackage(resource);
+            Optional<Package> packageOpt = this.getRootPackage(resource);
             if (packageOpt.isPresent()) {
                 Package packageElt = packageOpt.get();
                 packageElt.setDeclaredName("CyberGridML");
@@ -84,6 +82,17 @@ public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInit
         }
     }
 
+
+    private Optional<Package> getRootPackage(Resource resource) {
+        Object rootElement = resource.getContents().get(0);
+        if (rootElement instanceof Namespace rootNamespace) {
+            Element rootMember = rootNamespace.getOwnedMember().get(0);
+            if (rootMember instanceof Package rootPackage) {
+                return Optional.of(rootPackage);
+            }
+        }
+        return Optional.empty();
+    }
 
     private Optional<ResourceSet> getResourceSet(IEditingContext editingContext) {
         return Optional.of(editingContext)

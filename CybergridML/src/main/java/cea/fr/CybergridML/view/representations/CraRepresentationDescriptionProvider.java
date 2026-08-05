@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.representations;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.nodes.CommunicationMediaNodeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.ComputingResourceNodeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.RedundancyClusterNodeDescriptionProvider;
@@ -41,7 +41,7 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("CYBERGRIDML_CRA");
+    private final DescriptionNameGenerator descriptionNameGenerator = new DescriptionNameGenerator("CYBERGRIDML_CRA");
     private final CybergridMLToolDescriptionService cybergridMLToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
@@ -70,7 +70,7 @@ public class CraRepresentationDescriptionProvider implements IRepresentationDesc
     }
 
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
-            IColorProvider cybergridMLColorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+            IColorProvider cybergridMLColorProvider, DescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
         providers.add(new CommunicationMediaNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
         providers.add(new ComputingResourceNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
