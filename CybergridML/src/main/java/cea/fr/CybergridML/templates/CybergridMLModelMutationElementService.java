@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.project;
+package cea.fr.CybergridML.templates;
 
 import cea.fr.CybergridML.domain.CybergridMLViewType;
 import org.eclipse.emf.ecore.EClass;

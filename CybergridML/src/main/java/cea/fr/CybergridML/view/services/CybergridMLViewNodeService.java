@@ -24,15 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * {@code ViewNodeService} was deleted by Syson in 2026.5.0 (its exposure logic moved into the
- * package-private internals of {@code DiagramQueryExposeService}), so this can no longer extend it.
- * The direct-exposure traversal and the ancestor-deduplication on top of it are reimplemented here;
- * {@code needToRevealCompartment} was dropped because its call path (through {@code ViewNodeService})
- * no longer exists and nothing else in CybergridML references it. The public {@code getExposedNacreElements}
- * methods are kept as-is: they are invoked by name from generated AQL expressions
- * (see {@code AbstractCybergridMLUsageNodeDescriptionProvider#getSemanticCandidatesExpression}).
- */
+
 @Service
 public class CybergridMLViewNodeService {
 

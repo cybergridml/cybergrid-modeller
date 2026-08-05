@@ -1,7 +1,7 @@
 
 package cea.fr.CybergridML.view.representations;
 
-import cea.fr.CybergridML.view.CybergridMLColorPaletteProvider;
+import cea.fr.CybergridML.view.colors.CybergridMLColorPaletteProvider;
 import org.eclipse.sirius.components.view.ColorPalette;
 import org.eclipse.sirius.components.view.builder.providers.IRepresentationDescriptionProvider;
 import org.eclipse.syson.common.view.api.IViewDescriptionProvider;

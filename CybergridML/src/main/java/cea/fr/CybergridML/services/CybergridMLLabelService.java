@@ -1,4 +1,5 @@
-package cea.fr.CybergridML.edit;
+package cea.fr.CybergridML.services;
+
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.sirius.components.core.api.ILabelServiceDelegate;
 import org.eclipse.sirius.components.core.api.labels.StyledString;

@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.project;
+package cea.fr.CybergridML.templates;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.syson.sysml.Element;

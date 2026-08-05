@@ -1,6 +1,7 @@
-package cea.fr.CybergridML.project;
+package cea.fr.CybergridML.templates;
 
 import cea.fr.CybergridML.domain.CybergridMLViewType;
+import cea.fr.CybergridML.view.CybergridMLRepresentationDescriptionIdentifiers;
 import org.eclipse.sirius.components.collaborative.api.ChangeDescription;
 import org.eclipse.sirius.components.collaborative.api.IInputPostProcessor;
 import org.eclipse.sirius.components.collaborative.api.IInputPreProcessor;

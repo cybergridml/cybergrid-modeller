@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.representations;
 
-import cea.fr.CybergridML.view.services.CybergridMLToolDescriptionService;
+import cea.fr.CybergridML.view.services.description.CybergridMLToolDescriptionService;
 import cea.fr.CybergridML.view.edges.AbstractEdgeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.CentralControllerNodeDescriptionProvider;
 import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;

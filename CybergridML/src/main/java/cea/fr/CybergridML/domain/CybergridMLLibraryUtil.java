@@ -1,6 +1,5 @@
-package cea.fr.CybergridML.domain.util;
+package cea.fr.CybergridML.domain;
 
-import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;

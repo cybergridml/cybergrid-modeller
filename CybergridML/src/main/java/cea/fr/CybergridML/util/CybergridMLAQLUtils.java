@@ -4,13 +4,7 @@ import org.eclipse.syson.util.AQLConstants;
 
 import java.util.List;
 
-/**
- * {@code org.eclipse.syson.util.AQLUtils#getSelfServiceCallExpression}/{@code #getServiceCallExpression} were
- * removed in Syson 2026.7.0 in favor of the type-safe {@code ServiceMethod} builder, which requires a resolvable
- * Java method reference for every call site. Some CybergridML expressions (e.g. {@code createAllocateEdge}) don't
- * have a locatable declaration in either CybergridML or Syson, so the exact string-building behavior of the
- * removed methods is reproduced here rather than guessing a {@code ServiceMethod} reference.
- */
+
 public final class CybergridMLAQLUtils {
 
     private CybergridMLAQLUtils() {

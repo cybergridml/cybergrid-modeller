@@ -1,7 +1,8 @@
-package cea.fr.CybergridML.view.services;
+package cea.fr.CybergridML.view.services.description;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import cea.fr.CybergridML.util.CybergridMLAQLUtils;
+import cea.fr.CybergridML.view.services.CybergridMLViewCreateService;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.sirius.components.view.ChangeContext;
@@ -27,9 +28,6 @@ public class CybergridMLToolDescriptionService extends ToolDescriptionService {
 
     private static final String SELF_EXPRESSION = "aql:self";
 
-    /** {@code ToolDescriptionService.SERVICE_ELEMENT_INITIALIZER} was removed in Syson 2026.5.0; this calls
-     * {@link CybergridMLViewCreateService#elementInitializer}, a distinct method of the same name, so the
-     * literal is kept locally instead of relying on the (now-gone) inherited constant. */
     private static final String SERVICE_ELEMENT_INITIALIZER = "elementInitializer";
 
     public CybergridMLToolDescriptionService(IDescriptionNameGenerator descriptionNameGenerator) {

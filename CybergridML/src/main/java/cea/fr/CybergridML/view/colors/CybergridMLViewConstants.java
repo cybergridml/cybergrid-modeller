@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.view;
+package cea.fr.CybergridML.view.colors;
 
 import org.springframework.stereotype.Service;
 
