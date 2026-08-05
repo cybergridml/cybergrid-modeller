@@ -1,9 +1,9 @@
 package cea.fr.CybergridML.view.representations;
 
 import cea.fr.CybergridML.view.services.description.CybergridMLToolDescriptionService;
-import cea.fr.CybergridML.view.edges.AbstractEdgeDescriptionProvider;
+import cea.fr.CybergridML.view.edges.AbstractionEdgeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.CentralControllerNodeDescriptionProvider;
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.nodes.SoftwareResourceNodeDescriptionProvider;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import cea.fr.CybergridML.util.CybergridMLAQLUtils;
@@ -33,7 +33,7 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
     );
 
     private final DiagramBuilders diagramBuilderHelper = new DiagramBuilders();
-    private final CybergridMLDescriptionNameGenerator descriptionNameGenerator = new CybergridMLDescriptionNameGenerator("CYBERGRIDML_CFRA");
+    private final DescriptionNameGenerator descriptionNameGenerator = new DescriptionNameGenerator("CYBERGRIDML_CFRA");
     private final CybergridMLToolDescriptionService cybergridMLToolDescriptionService = new CybergridMLToolDescriptionService(this.descriptionNameGenerator);
 
     public RepresentationDescription create(IColorProvider colorProvider) {
@@ -62,11 +62,11 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
     }
 
     protected List<IDiagramElementDescriptionProvider<? extends DiagramElementDescription>> createDiagramElementDescriptionProviders(
-            IColorProvider cybergridMLColorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+            IColorProvider cybergridMLColorProvider, DescriptionNameGenerator nameGenerator) {
         List<IDiagramElementDescriptionProvider<?>> providers = new ArrayList<>();
         providers.add(new CentralControllerNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.add(new SoftwareResourceNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
-        providers.add(new AbstractEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new AbstractionEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
 
         return providers;
     }

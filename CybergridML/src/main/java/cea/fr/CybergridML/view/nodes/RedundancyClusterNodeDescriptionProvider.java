@@ -1,7 +1,7 @@
 package cea.fr.CybergridML.view.nodes;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class RedundancyClusterNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
-    public RedundancyClusterNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public RedundancyClusterNodeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.REDUNDANCYCLUSTER, colorProvider, nameGenerator);
     }
 

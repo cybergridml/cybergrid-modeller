@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.edges;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.sirius.components.view.Operation;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AbstractEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
+public class AbstractionEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
 
     private static final String EDGE_NAME = "Abstract";
-    private final CybergridMLDescriptionNameGenerator cybergridMLNameGenerator;
+    private final DescriptionNameGenerator cybergridMLNameGenerator;
     private final DiagramBuilders diagramBuilder = new DiagramBuilders();
 
-    public AbstractEdgeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public AbstractionEdgeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         super(Objects.requireNonNull(colorProvider));
         this.cybergridMLNameGenerator = Objects.requireNonNull(nameGenerator);
     }

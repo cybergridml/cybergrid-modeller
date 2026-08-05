@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.nodes;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
@@ -23,11 +23,11 @@ public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends Ab
     private final CybergridMLLibElementType cybergridMLElementType;
     private final boolean withHazardTool;
 
-    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType cybergridMLElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType cybergridMLElementType, IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         this(cybergridMLElementType, colorProvider, nameGenerator, true);
     }
 
-    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType cybergridMLElementType, IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator, boolean withHazardTool) {
+    protected AbstractCybergridMLUsageNodeDescriptionProvider(CybergridMLLibElementType cybergridMLElementType, IColorProvider colorProvider, DescriptionNameGenerator nameGenerator, boolean withHazardTool) {
         super(cybergridMLElementType.geteClass(), colorProvider, nameGenerator);
         this.cybergridMLElementType = cybergridMLElementType;
         this.withHazardTool = withHazardTool;
@@ -139,8 +139,8 @@ protected abstract NodeStyleDescription createNodeStyle();
     }
 
     @Override
-    protected CybergridMLDescriptionNameGenerator getDescriptionNameGenerator() {
-        return (CybergridMLDescriptionNameGenerator) super.getDescriptionNameGenerator();
+    protected DescriptionNameGenerator getDescriptionNameGenerator() {
+        return (DescriptionNameGenerator) super.getDescriptionNameGenerator();
     }
 
     protected CybergridMLLibElementType getCybergridMLElementType() {

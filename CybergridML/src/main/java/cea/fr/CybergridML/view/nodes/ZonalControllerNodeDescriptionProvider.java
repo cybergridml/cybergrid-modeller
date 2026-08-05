@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.nodes;
 
-import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
+import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class ZonalControllerNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
-    public ZonalControllerNodeDescriptionProvider(IColorProvider colorProvider, CybergridMLDescriptionNameGenerator nameGenerator) {
+    public ZonalControllerNodeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         super(CybergridMLLibElementType.ZONALCONTROLLER, colorProvider, nameGenerator);
     }
 
