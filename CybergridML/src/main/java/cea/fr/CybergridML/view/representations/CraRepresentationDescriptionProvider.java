@@ -5,7 +5,7 @@ import cea.fr.CybergridML.view.nodes.CommunicationMediaNodeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.ComputingResourceNodeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.RedundancyClusterNodeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.SoftwareResourceNodeDescriptionProvider;
-import cea.fr.CybergridML.view.services.CybergridMLToolDescriptionService;
+import cea.fr.CybergridML.view.services.description.CybergridMLToolDescriptionService;
 import cea.fr.CybergridML.view.edges.AllocateCraEdgeDescriptionProvider;
 import cea.fr.CybergridML.view.edges.ConnectEdgeDescriptionProvider;
 import cea.fr.CybergridML.view.edges.ControlEdgeDescriptionProvider;

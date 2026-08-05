@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.configuration;
 
-import cea.fr.CybergridML.domain.util.CybergridMLLibraryUtil;
+import cea.fr.CybergridML.domain.CybergridMLLibraryUtil;
 import org.eclipse.sirius.components.emf.services.JSONResourceFactory;
 import org.eclipse.sirius.emfjson.resource.JsonResourceFactoryImpl;
 import org.eclipse.syson.application.configuration.SysONDefaultLibrariesConfiguration;

@@ -1,6 +1,6 @@
 package cea.fr.CybergridML.view.edges;
 
-import cea.fr.CybergridML.view.CybergridMLViewConstants;
+import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
 import org.eclipse.sirius.components.view.diagram.*;

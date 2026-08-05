@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.project;
+package cea.fr.CybergridML.templates;
 
 import org.eclipse.sirius.web.application.project.services.api.IProjectTemplateProvider;
 import org.eclipse.sirius.web.application.project.services.api.ProjectTemplate;

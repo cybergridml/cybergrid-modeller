@@ -1,7 +1,7 @@
 package cea.fr.CybergridML.view.nodes;
 
 import cea.fr.CybergridML.view.CybergridMLDescriptionNameGenerator;
-import cea.fr.CybergridML.view.CybergridMLViewConstants;
+import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.sirius.components.collaborative.diagrams.DiagramContext;

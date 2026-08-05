@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
-import cea.fr.CybergridML.domain.util.CybergridMLPropertyUtil;
+import cea.fr.CybergridML.domain.CybergridMLPropertyUtil;
 import cea.fr.CybergridML.util.CybergridMLAQLUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;

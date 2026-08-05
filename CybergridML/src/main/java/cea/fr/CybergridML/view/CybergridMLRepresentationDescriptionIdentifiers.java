@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.project;
+package cea.fr.CybergridML.view;
 
 public final class CybergridMLRepresentationDescriptionIdentifiers {
 

@@ -1,7 +1,7 @@
-package cea.fr.CybergridML.project;
-
+package cea.fr.CybergridML.templates;
 
 import cea.fr.CybergridML.domain.CybergridMLViewType;
+import cea.fr.CybergridML.view.CybergridMLRepresentationDescriptionIdentifiers;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;

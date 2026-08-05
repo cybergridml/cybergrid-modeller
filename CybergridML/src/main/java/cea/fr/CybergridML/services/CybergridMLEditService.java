@@ -1,7 +1,6 @@
-package cea.fr.CybergridML.edit;
+package cea.fr.CybergridML.services;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
-import cea.fr.CybergridML.services.CybergridMLElementInitializerSwitch;
 import cea.fr.CybergridML.view.representations.CfaRepresentationDescriptionProvider;
 import cea.fr.CybergridML.view.representations.CfraRepresentationDescriptionProvider;
 import cea.fr.CybergridML.view.representations.CraRepresentationDescriptionProvider;
@@ -22,13 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-/**
- * {@link SysMLv2EditService} can no longer be extended directly: its constructor requires a
- * package-private {@code SysMLv2EditServiceExtraServices} record that isn't visible outside
- * {@code org.eclipse.syson.application.services}. This delegate composes the Syson-provided bean
- * instead, and only delegates to it for the two capabilities ({@code createRootObject}, {@code delete})
- * that CybergridML does not customize.
- */
+
 @Service
 public class CybergridMLEditService implements IEditServiceDelegate {
 

@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.domain.util;
+package cea.fr.CybergridML.domain;
 
 
 import org.eclipse.syson.sysml.*;

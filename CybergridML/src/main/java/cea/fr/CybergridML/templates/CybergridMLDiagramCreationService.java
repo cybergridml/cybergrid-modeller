@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.project;
+package cea.fr.CybergridML.templates;
 
 import org.eclipse.sirius.components.collaborative.api.IRepresentationMetadataPersistenceService;
 import org.eclipse.sirius.components.collaborative.api.IRepresentationPersistenceService;

@@ -1,7 +1,7 @@
 package cea.fr.CybergridML.services;
 
-import cea.fr.CybergridML.domain.util.CybergridMLDefinitionsUtil;
-import cea.fr.CybergridML.domain.util.CybergridMLPropertyUtil;
+import cea.fr.CybergridML.domain.CybergridMLDefinitionsUtil;
+import cea.fr.CybergridML.domain.CybergridMLPropertyUtil;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.syson.sysml.Element;
 import org.eclipse.syson.sysml.MetadataUsage;

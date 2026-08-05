@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.edit;
+package cea.fr.CybergridML.services;
 
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
 import org.eclipse.emf.ecore.EObject;

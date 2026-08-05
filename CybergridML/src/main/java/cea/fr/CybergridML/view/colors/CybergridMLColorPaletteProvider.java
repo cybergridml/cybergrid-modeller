@@ -1,4 +1,4 @@
-package cea.fr.CybergridML.view;
+package cea.fr.CybergridML.view.colors;
 
 import org.eclipse.sirius.components.view.ColorPalette;
 import org.eclipse.sirius.components.view.FixedColor;
@@ -9,16 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-/**
- * {@code org.eclipse.syson.services.ColorProvider} resolves named colors (e.g. {@code "grey 100"}) by first
- * loading {@code studioColorPalettes.json} from the classpath into a fresh {@link org.eclipse.emf.ecore.resource.ResourceSet}
- * for every view, then falling back to whatever {@link ColorPalette} is attached to the view itself. That classpath
- * load has been observed to silently fail for one of CybergridML's three views at application startup (a
- * Sirius Web timing issue, not something reproducible from CybergridML's own code), leaving every named color on
- * that view unresolved and rendered with the "black" default. Registering CybergridML's own colors directly on
- * each view via {@code IViewDescriptionProvider#buildColorPalette()} removes the dependency on that classpath
- * load succeeding.
- */
+
 public final class CybergridMLColorPaletteProvider {
 
     private CybergridMLColorPaletteProvider() {
