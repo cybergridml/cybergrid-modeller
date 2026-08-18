@@ -1,0 +1,25 @@
+{
+  "name": "cybergridml-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend/cybergridml"
+  ],
+  "engines": {
+    "node": "18.7.0",
+    "npm": "10.9.2"
+  },
+  "packageManager": "npm@10.9.2",
+  "scripts": {
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "format": "turbo run format",
+    "format-lint": "turbo run format-lint",
+    "test": "turbo run test",
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1",
+    "prettier": "^3.2.5",
+    "turbo": "2.4.4"
+  }
+}

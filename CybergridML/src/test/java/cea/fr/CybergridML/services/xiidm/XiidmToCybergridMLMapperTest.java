@@ -1,0 +1,135 @@
+package cea.fr.CybergridML.services.xiidm;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.syson.sysml.Element;
+import org.eclipse.syson.sysml.FeatureMembership;
+import org.eclipse.syson.sysml.PartUsage;
+import org.eclipse.syson.sysml.SysmlFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Checks the structure produced for the IEEE-14 network against the hand-made
+ * {@code sysml.cybergridML.libraries/ieee14.sysml} reference.
+ *
+ * <p>The editing context is a stub, so the CybergridML library is not resolved and the created parts carry neither
+ * feature typing nor attributes. Everything this test asserts — containment, naming and counts — is independent of
+ * the library, and is exactly what used to be done by hand.
+ */
+class XiidmToCybergridMLMapperTest {
+
+    private XiidmToCybergridMLMapper mapper;
+
+    private IEditingContext editingContext;
+
+    private PartUsage grid;
+
+    @BeforeEach
+    void setUp() {
+        this.mapper = new XiidmToCybergridMLMapper();
+        this.editingContext = mock(IEditingContext.class);
+        this.grid = SysmlFactory.eINSTANCE.createPartUsage();
+        this.grid.setDeclaredName("maingrid1");
+    }
+
+    @Test
+    void createsTheWholeNetworkUnderTheGrid() throws Exception {
+        XiidmImportResult result = this.importIeee14();
+
+        assertThat(result.substations()).isEqualTo(11);
+        assertThat(result.buses()).isEqualTo(14);
+        assertThat(result.generators()).isEqualTo(5);
+        assertThat(result.loads()).isEqualTo(11);
+        // 17 lines and 3 transformers, each contributing one terminal at either end.
+        assertThat(result.terminals()).isEqualTo(40);
+
+        assertThat(names(this.grid)).containsExactly("S1", "S2", "S3", "S4", "S5", "S8", "S10", "S11", "S12", "S13", "S14");
+        assertThat(result.createdRootElements()).hasSize(11);
+    }
+
+    @Test
+    void attachesTheBusesOfEveryVoltageLevelDirectlyToTheirSubstation() throws Exception {
+        this.importIeee14();
+
+        // S4 has three voltage levels in the XIIDM file; CybergridML has no such concept.
+        assertThat(names(this.child(this.grid, "S4"))).containsExactly("B4", "B7", "B9");
+        assertThat(names(this.child(this.grid, "S1"))).containsExactly("B1");
+    }
+
+    @Test
+    void createsGeneratorsLoadsAndOneTerminalPerBranchEndUnderTheirBus() throws Exception {
+        this.importIeee14();
+
+        Element b1 = this.child(this.child(this.grid, "S1"), "B1");
+        assertThat(names(b1)).containsExactly("B1_G", "L1_2_1_1", "L1_5_1_1");
+
+        Element b2 = this.child(this.child(this.grid, "S2"), "B2");
+        assertThat(names(b2)).containsExactly("B2_G", "B2_L", "L1_2_1_2", "L2_3_1_1", "L2_4_1_1", "L2_5_1_1");
+
+        // Transformers are mapped exactly like lines: a terminal at either end.
+        Element b7 = this.child(this.child(this.grid, "S4"), "B7");
+        assertThat(names(b7)).contains("T4_7_1_2");
+        Element b4 = this.child(this.child(this.grid, "S4"), "B4");
+        assertThat(names(b4)).contains("T4_7_1_1", "T4_9_1_1");
+    }
+
+    @Test
+    void reportsWhatItCouldNotMap() throws Exception {
+        XiidmImportResult result = this.importIeee14();
+
+        assertThat(result.warnings()).containsExactly("Shunt compensator 'B9-SH' has no CybergridML equivalent and was skipped.");
+    }
+
+    @Test
+    void skipsBranchEndsPointingAtAnUnknownBus() throws Exception {
+        var network = new XiidmNetwork("n", List.of(new XiidmNetwork.Substation("S1",
+                List.of(new XiidmNetwork.VoltageLevel("VL1", 135.0,
+                        List.of(new XiidmNetwork.Bus("B1", "Bus 1", null, null)), List.of())))),
+                List.of(new XiidmNetwork.Branch(XiidmNetwork.BranchKind.LINE, "L1-99-1", "B1", "B99")));
+
+        XiidmImportResult result = this.mapper.importInto(this.grid, network, this.editingContext);
+
+        assertThat(result.terminals()).isEqualTo(1);
+        assertThat(names(this.child(this.child(this.grid, "S1"), "B1"))).containsExactly("L1_99_1_1");
+        assertThat(result.warnings())
+                .containsExactly("'L1-99-1' references the unknown bus 'B99' on side 2; that terminal was skipped.");
+    }
+
+    private XiidmImportResult importIeee14() throws Exception {
+        var network = new XiidmParser().parse(this.ieee14());
+        return this.mapper.importInto(this.grid, network, this.editingContext);
+    }
+
+    private Element child(Element owner, String declaredName) {
+        return children(owner).stream()
+                .filter(element -> declaredName.equals(element.getDeclaredName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("No child named '%s' under '%s'".formatted(declaredName, owner.getDeclaredName())));
+    }
+
+    private static List<String> names(Element owner) {
+        return children(owner).stream().map(Element::getDeclaredName).toList();
+    }
+
+    private static List<Element> children(Element owner) {
+        return owner.getOwnedRelationship().stream()
+                .filter(FeatureMembership.class::isInstance)
+                .map(FeatureMembership.class::cast)
+                .flatMap(featureMembership -> featureMembership.getOwnedRelatedElement().stream())
+                .toList();
+    }
+
+    private String ieee14() throws IOException {
+        try (InputStream inputStream = XiidmToCybergridMLMapperTest.class.getResourceAsStream("/xiidm/ieee14.xiidm")) {
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+    }
+}
