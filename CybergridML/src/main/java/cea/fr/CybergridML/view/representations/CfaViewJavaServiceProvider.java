@@ -1,6 +1,7 @@
 package cea.fr.CybergridML.view.representations;
 
 
+import cea.fr.CybergridML.services.CybergridMLHazardService;
 import cea.fr.CybergridML.view.services.CybergridMLDiagramAQLService;
 import cea.fr.CybergridML.view.services.CybergridMLViewCreateService;
 import cea.fr.CybergridML.view.services.CybergridMLViewNodeService;
@@ -46,7 +47,8 @@ public class CfaViewJavaServiceProvider implements IJavaServiceProvider {
                     CybergridMLViewToolService.class,
                     CybergridMLViewCreateService.class,
                     CybergridMLViewNodeService.class,
-                    CybergridMLDiagramAQLService.class
+                    CybergridMLDiagramAQLService.class,
+                    CybergridMLHazardService.class
                    );
         }
         return List.of();

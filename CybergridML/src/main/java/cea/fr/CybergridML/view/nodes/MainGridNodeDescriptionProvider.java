@@ -21,6 +21,11 @@ import java.util.Set;
 
 public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNodeDescriptionProvider {
 
+    /**
+     * Label of the XIIDM import tool. Also used by the frontend extension to recognize the dialog to render.
+     */
+    public static final String IMPORT_XIIDM_TOOL_NAME = "Import XIIDM file";
+
     public MainGridNodeDescriptionProvider(IColorProvider colorProvider, DescriptionNameGenerator nameGenerator) {
         this(colorProvider, nameGenerator, true);
     }
@@ -74,9 +79,42 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
 
         tools.add(createChildCreationTool(CybergridMLLibElementType.ZONE.getName(), "createZone"));
         tools.add(createChildCreationTool(CybergridMLLibElementType.SUBSTATION.getName(), "createSubstation"));
+        tools.add(createImportXiidmTool());
 
 
         return tools;
+    }
+
+    /**
+     * Tool uploading an XIIDM (PowSyBl) network file and creating the matching parts inside this grid.
+     *
+     * <p>The file picker itself lives in the frontend: the tool carries a {@link SelectionDialogDescription} used
+     * purely as a marker, and the {@code XiidmImportDialog} extension registered by the application replaces its
+     * rendering with a file upload dialog. That dialog hands the file back as the {@code xiidmContent} and
+     * {@code xiidmFileName} tool variables, which the body below passes to the import service. The marker has no
+     * tree description on purpose, so the built-in selection dialog machinery skips it.
+     */
+    private NodeTool createImportXiidmTool() {
+        var exposeImportedElement = this.viewBuilderHelper.newChangeContext()
+                .expression(ServiceMethod.of4(DiagramMutationAQLService::expose)
+                        .aqlSelf(IEditingContext.EDITING_CONTEXT, DiagramContext.DIAGRAM_CONTEXT, Node.SELECTED_NODE,
+                                ViewDiagramDescriptionConverter.CONVERTED_NODES_VARIABLE));
+
+        var importAndExpose = this.viewBuilderHelper.newChangeContext()
+                .expression("aql:self.importXiidm(xiidmContent, xiidmFileName, %s)".formatted(IEditingContext.EDITING_CONTEXT))
+                .children(exposeImportedElement.build())
+                .build();
+
+        var fileUploadDialogMarker = this.diagramBuilderHelper.newSelectionDialogDescription()
+                .descriptionExpression("Select an XIIDM file to import into this grid")
+                .build();
+
+        return this.diagramBuilderHelper.newNodeTool()
+                .name(IMPORT_XIIDM_TOOL_NAME)
+                .iconURLsExpression("/images/import_xiidm.svg")
+                .dialogDescription(fileUploadDialogMarker)
+                .body(importAndExpose)
+                .build();
     }
 
     private NodeTool createChildCreationTool(String toolName, String createServiceMethodName) {
