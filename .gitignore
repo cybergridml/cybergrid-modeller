@@ -32,3 +32,6 @@ build/
 # Java build output
 target/
 out/
+
+# Compiled frontend bundle copied into Spring Boot resources
+CybergridML/src/main/resources/static/
