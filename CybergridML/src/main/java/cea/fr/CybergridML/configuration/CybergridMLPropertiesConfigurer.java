@@ -134,6 +134,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         pageCore.setLabelExpression("CyberGridML");
         pageCore.getGroups().add(this.createCommonGroup());
         pageCore.getGroups().add(this.createPropertyGroup());
+        pageCore.getGroups().add(this.createChildrenGroup());
         pageCore.getGroups().add(this.createReferenceGroup());
 
         form.getPages().add(pageCore);
@@ -238,6 +239,35 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         widgets.add(textFieldIf);
 
         return widgets;
+    }
+
+
+    private GroupDescription createChildrenGroup() {
+        GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
+        group.setDisplayMode(GroupDisplayMode.LIST);
+        group.setName("CyberGridMLChildElements");
+        group.setLabelExpression("Children");
+        group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF
+                + "->select(e | not(e.getChildPartCandidates()->isEmpty()))");
+        group.getChildren().add(this.createChildElementWidgetsFor());
+        return group;
+    }
+
+    private FormElementDescription createChildElementWidgetsFor() {
+        FormElementFor forElt = FormFactory.eINSTANCE.createFormElementFor();
+        forElt.setName("Widgets for Child Elements");
+        forElt.setIterator(AQLConstants.SELF);
+        forElt.setIterableExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getChildPartCandidates"));
+        forElt.getChildren().add(this.createChildElementWidget());
+        return forElt;
+    }
+
+    private WidgetDescription createChildElementWidget() {
+        LabelDescription label = FormFactory.eINSTANCE.createLabelDescription();
+        label.setName("ChildElementLabel");
+        label.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getChildElementKind"));
+        label.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getLabel"));
+        return label;
     }
 
     private GroupDescription createReferenceGroup() {
@@ -668,6 +698,23 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
     public boolean isProperty(Element element) {
         return element instanceof AttributeUsage;
+    }
+
+    public List<PartUsage> getChildPartCandidates(Element element) {
+        if (element instanceof org.eclipse.syson.sysml.Usage usage) {
+            return usage.getNestedPart();
+        }
+        return List.of();
+    }
+
+    public String getChildElementKind(Element element) {
+        if (element instanceof Feature feature) {
+            CybergridMLLibElementType type = CybergridMLLibElementType.getCybergridMLElementFromUsage(feature);
+            if (type != null) {
+                return type.getName();
+            }
+        }
+        return element.eClass().getName();
     }
 
     public List<AttributeUsage> getPropertyCandidates(Element element) {
