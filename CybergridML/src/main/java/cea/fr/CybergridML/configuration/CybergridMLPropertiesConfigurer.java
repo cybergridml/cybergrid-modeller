@@ -241,17 +241,7 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         return widgets;
     }
 
-    /**
-     * Group listing the parts directly nested under the current element (e.g. the Buses of a
-     * Substation, or the Terminals/Generators/Loads of a Bus), so the hierarchy stays navigable
-     * without inlining each child's own properties here.
-     *
-     * <p>Uses a plain "for" loop over a Java service (like the Properties/References groups above)
-     * rather than a {@code ReferenceWidget}: three different ReferenceWidget configurations (derived
-     * feature, real stored feature, and after adding the missing converter/GraphQL modules to the
-     * POM) all rendered nothing in this deployment, so it is not usable here for now. Click-to-select
-     * for these children still works through the standard Explorer tree.</p>
-     */
+
     private GroupDescription createChildrenGroup() {
         GroupDescription group = FormFactory.eINSTANCE.createGroupDescription();
         group.setDisplayMode(GroupDisplayMode.LIST);
