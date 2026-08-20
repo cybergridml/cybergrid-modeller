@@ -6,6 +6,8 @@ import org.eclipse.syson.sysml.metamodel.services.textual.SysMLElementSerializer
 import org.eclipse.syson.sysml.metamodel.services.textual.SysMLSerializingOptions;
 import org.eclipse.syson.sysml.metamodel.services.textual.utils.FileNameDeresolver;
 
+import org.eclipse.emf.ecore.resource.Resource;
+
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -17,7 +19,18 @@ public class CybergridMLPropertyUtil {
     private CybergridMLPropertyUtil() {
     }
 
+    /**
+     * Copies the attributes/references owned directly by {@code definition}, then does the same for
+     * its explicit supertypes within the CybergridML library (e.g. Generator/Load only redeclare a
+     * Subclassification to Equipment; their "p"/"q" attributes live on Equipment). Stops at the
+     * library boundary so implicit standard SysML/KerML supertypes (e.g. the default general "Part")
+     * never leak their own built-in attributes (such as "isSolid") into CybergridML elements.
+     */
     public static void addAttributesFromDefinition(Element parent, Namespace definition) {
+        addAttributesFromDefinition(parent, definition, definition.eResource());
+    }
+
+    private static void addAttributesFromDefinition(Element parent, Namespace definition, Resource libraryResource) {
         definition.getOwnedRelationship().stream()
                 .filter(FeatureMembership.class::isInstance)
                 .map(FeatureMembership.class::cast)
@@ -29,6 +42,17 @@ public class CybergridMLPropertyUtil {
                         addReferenceFromDefinition(parent, defRef);
                     }
                 });
+
+        if (definition instanceof Type type) {
+            type.getOwnedRelationship().stream()
+                    .filter(Subclassification.class::isInstance)
+                    .map(Subclassification.class::cast)
+                    .map(Subclassification::getSuperclassifier)
+                    .filter(Namespace.class::isInstance)
+                    .map(Namespace.class::cast)
+                    .filter(superType -> superType.eResource() != null && superType.eResource() == libraryResource)
+                    .forEach(superType -> addAttributesFromDefinition(parent, superType, libraryResource));
+        }
     }
 
     private static void addAttributeFromDefinition(Element parent, AttributeUsage defAttr) {
