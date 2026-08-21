@@ -48,7 +48,8 @@ public class CfaRepresentationDescriptionProvider implements IRepresentationDesc
                 .preconditionExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("canCreateDiagram"))
                 .name(DESCRIPTION_NAME)
                 .style(this.diagramBuilderHelper.newDiagramStyleDescription().build())
-                .titleExpression("aql:'%s'+ Sequence{self.existingViewUsagesCountForRepresentationCreation(), 1}->sum()".formatted(DESCRIPTION_NAME));
+                .titleExpression("aql:'%s'+ Sequence{self.existingViewUsagesCountForRepresentationCreation(), 1}->sum()".formatted(DESCRIPTION_NAME))
+                .toolbar(this.diagramBuilderHelper.newDiagramToolbar().expandedByDefault(false).build());
         var diagramDescription = diagramDescriptionBuilder.build();
 
         var cache = new ViewDiagramElementFinder();
