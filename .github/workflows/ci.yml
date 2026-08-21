@@ -1,0 +1,92 @@
+name: CI
+
+"on":
+  pull_request:
+  push:
+    branches:
+      - main
+      - refactoring
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  PROJECT_DIR: CybergridML
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: Nacre-db
+          POSTGRES_USER: dbuser
+          POSTGRES_PASSWORD: dbpwd
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: ${{ env.PROJECT_DIR }}/pom.xml
+
+      - name: Configure Maven authentication for GitHub Packages
+        shell: bash
+        env:
+          PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN || github.token }}
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github-syson</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+              <server>
+                <id>github-sirius-web</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+              <server>
+                <id>github-sirius-emfjson</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${PACKAGES_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
+      - name: Build and test
+        shell: bash
+        run: |
+          cd "$PROJECT_DIR"
+          chmod +x ./mvnw
+          ./mvnw -B -ntp -U clean test
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: ${{ env.PROJECT_DIR }}/target/surefire-reports/**
+          if-no-files-found: ignore
