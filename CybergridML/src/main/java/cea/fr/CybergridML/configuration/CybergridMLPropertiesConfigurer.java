@@ -249,25 +249,18 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         group.setLabelExpression("Children");
         group.setSemanticCandidatesExpression(AQLConstants.AQL_SELF
                 + "->select(e | not(e.getChildPartCandidates()->isEmpty()))");
-        group.getChildren().add(this.createChildElementWidgetsFor());
+        group.getChildren().add(this.createChildElementsReferenceWidget());
         return group;
     }
 
-    private FormElementDescription createChildElementWidgetsFor() {
-        FormElementFor forElt = FormFactory.eINSTANCE.createFormElementFor();
-        forElt.setName("Widgets for Child Elements");
-        forElt.setIterator(AQLConstants.SELF);
-        forElt.setIterableExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getChildPartCandidates"));
-        forElt.getChildren().add(this.createChildElementWidget());
-        return forElt;
-    }
-
-    private WidgetDescription createChildElementWidget() {
-        LabelDescription label = FormFactory.eINSTANCE.createLabelDescription();
-        label.setName("ChildElementLabel");
-        label.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getChildElementKind"));
-        label.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getLabel"));
-        return label;
+    private WidgetDescription createChildElementsReferenceWidget() {
+        ReferenceWidgetDescription refWidget = ReferenceFactory.eINSTANCE.createReferenceWidgetDescription();
+        refWidget.setName("ChildElementsReferenceWidget");
+        refWidget.setLabelExpression("Children");
+        refWidget.setReferenceOwnerExpression(AQLConstants.AQL_SELF);
+        refWidget.setReferenceNameExpression(SysmlPackage.eINSTANCE.getUsage_NestedPart().getName());
+        refWidget.setIsEnabledExpression("aql:false");
+        return refWidget;
     }
 
     private GroupDescription createReferenceGroup() {
@@ -705,16 +698,6 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
             return usage.getNestedPart();
         }
         return List.of();
-    }
-
-    public String getChildElementKind(Element element) {
-        if (element instanceof Feature feature) {
-            CybergridMLLibElementType type = CybergridMLLibElementType.getCybergridMLElementFromUsage(feature);
-            if (type != null) {
-                return type.getName();
-            }
-        }
-        return element.eClass().getName();
     }
 
     public List<AttributeUsage> getPropertyCandidates(Element element) {
