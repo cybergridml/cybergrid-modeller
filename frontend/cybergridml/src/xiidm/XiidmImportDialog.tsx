@@ -9,13 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
-/**
- * File picker shown when the "Import XIIDM file" tool is invoked on a grid node.
- *
- * The backend tool declares a dialog so that Sirius asks the frontend for tool variables before running it. This
- * component replaces the built-in selection dialog for that tool, reads the chosen file, and hands its content
- * back as the `xiidmContent` and `xiidmFileName` tool variables.
- */
+// File picker for XIIDM import. Reads the file and passes content as tool variables.
 export const XiidmImportDialog = ({
   onClose,
   onFinish,
