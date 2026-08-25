@@ -12,12 +12,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.springframework.stereotype.Service;
 
 /**
- * Reads an XIIDM (PowSyBl IIDM) XML document into a {@link XiidmNetwork}.
- *
- * <p>The parser is namespace agnostic: it matches on local names only, so it accepts any {@code iidm} schema
- * version. Elements it does not know about are skipped silently; unsupported topologies are reported by
- * {@link XiidmToCybergridMLMapper} rather than here, because only the mapping stage knows what CybergridML can
- * represent.
+ * Parses XIIDM XML into {@link XiidmNetwork}.
+ * unknown elements are skipped.
  */
 @Service
 public class XiidmParser {
@@ -54,7 +50,6 @@ public class XiidmParser {
         var substations = new ArrayList<XiidmNetwork.Substation>();
         var branches = new ArrayList<XiidmNetwork.Branch>();
 
-        // State of the substation and voltage level currently being read.
         String currentSubstationId = null;
         List<XiidmNetwork.VoltageLevel> currentVoltageLevels = null;
         String currentVoltageLevelId = null;
@@ -89,13 +84,12 @@ public class XiidmParser {
                     case "line" -> branches.add(readBranch(reader, XiidmNetwork.BranchKind.LINE));
                     case "twoWindingsTransformer" -> branches.add(readBranch(reader, XiidmNetwork.BranchKind.TWO_WINDINGS_TRANSFORMER));
                     default -> {
-                        // Not a concept CybergridML maps: skip it.
                     }
                 }
             } else if (event == XMLStreamConstants.END_ELEMENT) {
                 switch (reader.getLocalName()) {
                     case "voltageLevel" -> {
-                        if (currentVoltageLevels != null) {
+                        if (currentVoltageLevels != null && currentBuses != null && currentEquipments != null) {
                             currentVoltageLevels.add(new XiidmNetwork.VoltageLevel(currentVoltageLevelId, currentNominalV,
                                     List.copyOf(currentBuses), List.copyOf(currentEquipments)));
                         }
@@ -105,12 +99,13 @@ public class XiidmParser {
                         currentEquipments = null;
                     }
                     case "substation" -> {
-                        substations.add(new XiidmNetwork.Substation(currentSubstationId, List.copyOf(currentVoltageLevels)));
+                        if (currentVoltageLevels != null) {
+                            substations.add(new XiidmNetwork.Substation(currentSubstationId, List.copyOf(currentVoltageLevels)));
+                        }
                         currentSubstationId = null;
                         currentVoltageLevels = null;
                     }
                     default -> {
-                        // Nothing to close.
                     }
                 }
             }
@@ -138,10 +133,7 @@ public class XiidmParser {
                 busAttribute(reader, "bus2", "connectableBus2"));
     }
 
-    /**
-     * A disconnected element carries only {@code connectableBus}; use it as a fallback so those elements are still
-     * imported rather than dropped.
-     */
+    /** Falls back to connectableBus for disconnected elements. */
     private String busAttribute(XMLStreamReader reader, String busAttribute, String connectableBusAttribute) {
         String bus = attribute(reader, busAttribute);
         return bus != null ? bus : attribute(reader, connectableBusAttribute);
@@ -172,8 +164,7 @@ public class XiidmParser {
         if (reader != null) {
             try {
                 reader.close();
-            } catch (XMLStreamException exception) {
-                // Closing a fully consumed reader cannot fail in a way the caller can act on.
+            } catch (XMLStreamException ignored) {
             }
         }
     }

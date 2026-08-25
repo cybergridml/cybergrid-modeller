@@ -1,8 +1,6 @@
 package cea.fr.CybergridML.services.xiidm;
 
-/**
- * Raised when an uploaded file cannot be read as an XIIDM network.
- */
+/** Thrown when XIIDM parsing fails. */
 public class XiidmParseException extends Exception {
 
     public XiidmParseException(String message) {

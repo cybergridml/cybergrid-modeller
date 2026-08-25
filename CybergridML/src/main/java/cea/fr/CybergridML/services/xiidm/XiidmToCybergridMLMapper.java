@@ -21,20 +21,10 @@ import org.eclipse.syson.sysml.PartUsage;
 import org.eclipse.syson.sysml.SysmlFactory;
 import org.springframework.stereotype.Service;
 
-/**
- * Creates CybergridML parts from an {@link XiidmNetwork}, under the grid the user clicked.
- * Substations and buses come from {@code substation} and {@code bus}. Generators and loads come
- * from {@code generator} and {@code load}. Each line or transformer becomes two Terminal parts,
- * one per connected bus. Voltage level is not kept as a separate element, only its
- * {@code nominalV} is copied onto the bus. Unmapped elements are skipped with a warning.
- */
+/** Maps {@link XiidmNetwork} to CybergridML parts. */
 @Service
 public class XiidmToCybergridMLMapper {
 
-    /**
-     * Runs the three import passes in order, and returns the created substations
-     * plus counts and warnings for user feedback.
-     */
     private static final String PRECISION = "precision";
 
     public XiidmImportResult importInto(Element grid, XiidmNetwork network, IEditingContext editingContext) {
@@ -44,16 +34,14 @@ public class XiidmToCybergridMLMapper {
 
         int busCount = this.createSubstationsAndBuses(grid, network, editingContext, createdSubstations, busesByXiidmId, warnings);
         var equipmentCounts = this.createEquipments(network, editingContext, busesByXiidmId, warnings);
-        int terminalCount = this.createTerminals(network, editingContext, busesByXiidmId, warnings);
+        var terminalCounts = this.createTerminals(network, editingContext, busesByXiidmId, warnings);
 
+        int totalLocalControllers = equipmentCounts.localControllers() + terminalCounts.localControllers();
         return new XiidmImportResult(List.copyOf(createdSubstations), createdSubstations.size(), busCount,
-                equipmentCounts.generators(), equipmentCounts.loads(), terminalCount, List.copyOf(warnings));
+                equipmentCounts.generators(), equipmentCounts.loads(), terminalCounts.terminals(), totalLocalControllers, List.copyOf(warnings));
     }
 
-    /**
-     * First pass. Creates substations and their buses, so equipment and branches
-     * can find the bus they belong to no matter the order they appear in the file.
-     */
+    /** Pass 1: create substations and buses. */
     private int createSubstationsAndBuses(Element grid, XiidmNetwork network, IEditingContext editingContext,
             List<Element> createdSubstations, Map<String, PartUsage> busesByXiidmId, List<String> warnings) {
         int busCount = 0;
@@ -81,13 +69,12 @@ public class XiidmToCybergridMLMapper {
         return busCount;
     }
 
-    /**
-     * Second pass. Creates generators and loads under the bus they are attached to.
-     */
+    /** Pass 2: create generators, loads, and their LocalControllers. */
     private EquipmentCounts createEquipments(XiidmNetwork network, IEditingContext editingContext,
             Map<String, PartUsage> busesByXiidmId, List<String> warnings) {
         int generators = 0;
         int loads = 0;
+        int localControllers = 0;
         for (XiidmNetwork.Substation substation : network.substations()) {
             for (XiidmNetwork.VoltageLevel voltageLevel : substation.voltageLevels()) {
                 for (XiidmNetwork.Equipment equipment : voltageLevel.equipments()) {
@@ -106,6 +93,11 @@ public class XiidmToCybergridMLMapper {
                     var equipmentPart = this.createPart(busPart, type, equipment.id(), editingContext);
                     this.setNumericValue(equipmentPart, "p", equipment.p());
                     this.setNumericValue(equipmentPart, "q", equipment.q());
+
+                    this.createPart(equipmentPart, CybergridMLLibElementType.LOCALCONTROLLER,
+                            "LC_" + equipment.id(), editingContext);
+                    localControllers++;
+
                     if (type == CybergridMLLibElementType.GENERATOR) {
                         generators++;
                     } else {
@@ -114,16 +106,14 @@ public class XiidmToCybergridMLMapper {
                 }
             }
         }
-        return new EquipmentCounts(generators, loads);
+        return new EquipmentCounts(generators, loads, localControllers);
     }
 
-    /**
-     * Third pass. Creates two Terminal parts per line or transformer, one on each
-     * connected bus.
-     */
-    private int createTerminals(XiidmNetwork network, IEditingContext editingContext, Map<String, PartUsage> busesByXiidmId,
+    /** Pass 3: create terminals and their LocalControllers. */
+    private TerminalCounts createTerminals(XiidmNetwork network, IEditingContext editingContext, Map<String, PartUsage> busesByXiidmId,
             List<String> warnings) {
-        int created = 0;
+        int terminals = 0;
+        int localControllers = 0;
         for (XiidmNetwork.Branch branch : network.branches()) {
             String[] busIds = { branch.bus1(), branch.bus2() };
             for (int side = 1; side <= 2; side++) {
@@ -134,19 +124,20 @@ public class XiidmToCybergridMLMapper {
                             .formatted(branch.id(), busId, side));
                     continue;
                 }
-                var terminal = this.createPart(busPart, CybergridMLLibElementType.TERMINAL, branch.id() + "_" + side, editingContext);
-                this.setStringValue(terminal, "branch", branch.id());
-                this.setIntegerValue(terminal, "side", side);
-                created++;
+                String terminalId = branch.id() + "_" + side;
+                var terminal = this.createPart(busPart, CybergridMLLibElementType.TERMINAL, terminalId, editingContext);
+                this.setStringValue(terminal, branch.id());
+                this.setIntegerValue(terminal, side);
+                terminals++;
+
+                this.createPart(terminal, CybergridMLLibElementType.LOCALCONTROLLER,
+                        "LC_" + terminalId, editingContext);
+                localControllers++;
             }
         }
-        return created;
+        return new TerminalCounts(terminals, localControllers);
     }
 
-    /**
-     * Creates a part typed from the CybergridML library, then renames it using
-     * the XIIDM id.
-     */
     private PartUsage createPart(Element owner, CybergridMLLibElementType type, String xiidmId, IEditingContext editingContext) {
         String name = this.uniqueName(owner, sanitizeName(xiidmId, type));
 
@@ -159,9 +150,7 @@ public class XiidmToCybergridMLMapper {
         return partUsage;
     }
 
-    /**
-     * Converts an XIIDM id like {@code B1-G} into a valid SysML name like {@code B1_G}.
-     */
+    /** Converts XIIDM id to valid SysML name (e.g. B1-G -> B1_G). */
     private static String sanitizeName(String xiidmId, CybergridMLLibElementType type) {
         if (xiidmId == null || xiidmId.isBlank()) {
             return type.getName().toLowerCase();
@@ -202,29 +191,26 @@ public class XiidmToCybergridMLMapper {
         });
     }
 
-    private void setIntegerValue(Element owner, String attributeName, int value) {
-        this.findAttribute(owner, attributeName).ifPresent(attribute -> {
+    private void setIntegerValue(Element owner, int value) {
+        this.findAttribute(owner, "side").ifPresent(attribute -> {
             var literal = SysmlFactory.eINSTANCE.createLiteralInteger();
             literal.setValue(value);
             this.setFeatureValue(this.valueHolder(attribute), literal);
         });
     }
 
-    private void setStringValue(Element owner, String attributeName, String value) {
+    private void setStringValue(Element owner, String value) {
         if (value == null) {
             return;
         }
-        this.findAttribute(owner, attributeName).ifPresent(attribute -> {
+        this.findAttribute(owner, "branch").ifPresent(attribute -> {
             var literal = SysmlFactory.eINSTANCE.createLiteralString();
             literal.setValue(value);
             this.setFeatureValue(this.valueHolder(attribute), literal);
         });
     }
 
-    /**
-     * Value lives on a nested precision attribute for {@code NFP_*} types, or directly
-     * on the attribute itself for plain scalars.
-     */
+    /** For NFP_* types, value is on nested precision attribute. */
     private AttributeUsage valueHolder(AttributeUsage attribute) {
         return this.findAttribute(attribute, PRECISION).orElse(attribute);
     }
@@ -247,6 +233,9 @@ public class XiidmToCybergridMLMapper {
         attribute.getOwnedRelationship().add(featureValue);
     }
 
-    private record EquipmentCounts(int generators, int loads) {
+    private record EquipmentCounts(int generators, int loads, int localControllers) {
+    }
+
+    private record TerminalCounts(int terminals, int localControllers) {
     }
 }
