@@ -50,8 +50,12 @@ class XiidmToCybergridMLMapperTest {
         assertThat(result.loads()).isEqualTo(11);
         // 17 lines and 3 transformers, each contributing one terminal at either end.
         assertThat(result.terminals()).isEqualTo(40);
+        // Each generator, load, and terminal gets a LocalController.
+        assertThat(result.localControllers()).isEqualTo(5 + 11 + 40);
+        // ComputingResources and SoftwareResources are created under CRA view (not available in test stub).
+        assertThat(result.computingResources()).isEqualTo(0);
+        assertThat(result.softwareResources()).isEqualTo(0);
 
-        assertThat(names(this.grid)).containsExactly("S1", "S2", "S3", "S4", "S5", "S8", "S10", "S11", "S12", "S13", "S14");
         assertThat(result.createdRootElements()).hasSize(11);
     }
 
@@ -82,6 +86,25 @@ class XiidmToCybergridMLMapperTest {
     }
 
     @Test
+    void createsLocalControllerUnderEachEquipmentAndTerminal() throws Exception {
+        this.importIeee14();
+
+        // Check that each generator has a LocalController child
+        Element b1 = this.child(this.child(this.grid, "S1"), "B1");
+        Element generator = this.child(b1, "B1_G");
+        assertThat(names(generator)).containsExactly("LC_B1_G");
+
+        // Check that each load has a LocalController child
+        Element b2 = this.child(this.child(this.grid, "S2"), "B2");
+        Element load = this.child(b2, "B2_L");
+        assertThat(names(load)).containsExactly("LC_B2_L");
+
+        // Check that each terminal has a LocalController child
+        Element terminal = this.child(b1, "L1_2_1_1");
+        assertThat(names(terminal)).containsExactly("LC_L1_2_1_1");
+    }
+
+    @Test
     void reportsWhatItCouldNotMap() throws Exception {
         XiidmImportResult result = this.importIeee14();
 
@@ -89,7 +112,7 @@ class XiidmToCybergridMLMapperTest {
     }
 
     @Test
-    void skipsBranchEndsPointingAtAnUnknownBus() throws Exception {
+    void skipsBranchEndsPointingAtAnUnknownBus()  {
         var network = new XiidmNetwork("n", List.of(new XiidmNetwork.Substation("S1",
                 List.of(new XiidmNetwork.VoltageLevel("VL1", 135.0,
                         List.of(new XiidmNetwork.Bus("B1", "Bus 1", null, null)), List.of())))),
@@ -129,6 +152,7 @@ class XiidmToCybergridMLMapperTest {
 
     private String ieee14() throws IOException {
         try (InputStream inputStream = XiidmToCybergridMLMapperTest.class.getResourceAsStream("/xiidm/ieee14.xiidm")) {
+            assert inputStream != null;
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         }
     }

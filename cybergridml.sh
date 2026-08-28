@@ -19,37 +19,120 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# ─── Java 21 JDK Check ──────────────────────────────────────────────────────
-# This project requires Java 21 JDK (with javac) to compile.
-# Sirius 2026.7.0 dependencies are compiled with Java 21.
-JAVA21_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
+# ─── OS Detection ───────────────────────────────────────────────────────────
+detect_os() {
+    case "$(uname -s)" in
+        Linux*)
+            if [ -f /etc/os-release ]; then
+                . /etc/os-release
+                case "$ID" in
+                    ubuntu|debian|linuxmint|pop) echo "debian" ;;
+                    fedora|rhel|centos|rocky|alma) echo "fedora" ;;
+                    arch|manjaro) echo "arch" ;;
+                    *) echo "linux-unknown" ;;
+                esac
+            else
+                echo "linux-unknown"
+            fi
+            ;;
+        Darwin*) echo "macos" ;;
+        MINGW*|MSYS*|CYGWIN*) echo "windows" ;;
+        *) echo "unknown" ;;
+    esac
+}
 
-if [ -f "$JAVA21_HOME/bin/javac" ]; then
-    export JAVA_HOME="$JAVA21_HOME"
+OS_TYPE=$(detect_os)
+
+# ─── Java 21 JDK Check ──────────────────────────────────────────────────────
+get_java21_home() {
+    case "$OS_TYPE" in
+        debian) echo "/usr/lib/jvm/java-21-openjdk-amd64" ;;
+        fedora) echo "/usr/lib/jvm/java-21-openjdk" ;;
+        arch) echo "/usr/lib/jvm/java-21-openjdk" ;;
+        macos) echo "$(/usr/libexec/java_home -v 21 2>/dev/null || echo '/opt/homebrew/opt/openjdk@21')" ;;
+        windows) echo "$PROGRAMFILES/Microsoft/jdk-21" ;;
+        *) echo "/usr/lib/jvm/java-21-openjdk-amd64" ;;
+    esac
+}
+
+JAVA21_HOME=$(get_java21_home)
+
+install_java21() {
+    echo ""
+    echo "[INFO]  Installing Java 21 JDK for $OS_TYPE..."
+    case "$OS_TYPE" in
+        debian)
+            sudo apt update && sudo apt install -y openjdk-21-jdk
+            ;;
+        fedora)
+            sudo dnf install -y java-21-openjdk-devel
+            ;;
+        arch)
+            sudo pacman -S --noconfirm jdk21-openjdk
+            ;;
+        macos)
+            if ! command -v brew &> /dev/null; then
+                echo "[ERROR] Homebrew is required. Install it from https://brew.sh"
+                exit 1
+            fi
+            brew install openjdk@21
+            ;;
+        windows)
+            if command -v winget &> /dev/null; then
+                winget install Microsoft.OpenJDK.21
+            elif command -v choco &> /dev/null; then
+                choco install openjdk21 -y
+            else
+                echo "[ERROR] Install winget or chocolatey, or download Java 21 manually."
+                exit 1
+            fi
+            ;;
+        *)
+            echo "[ERROR] Unsupported OS. Please install Java 21 JDK manually."
+            exit 1
+            ;;
+    esac
+
+    JAVA21_HOME=$(get_java21_home)
+    if command -v javac &> /dev/null && javac -version 2>&1 | grep -q "21"; then
+        echo "[OK]    Java 21 JDK installed successfully."
+    elif [ -f "$JAVA21_HOME/bin/javac" ]; then
+        echo "[OK]    Java 21 JDK installed successfully."
+    else
+        echo "[ERROR] Installation failed."
+        exit 1
+    fi
+}
+
+find_java21() {
+    if [ -f "$JAVA21_HOME/bin/javac" ]; then
+        echo "$JAVA21_HOME"
+        return 0
+    fi
+    if command -v javac &> /dev/null && javac -version 2>&1 | grep -q "21"; then
+        dirname "$(dirname "$(command -v javac)")"
+        return 0
+    fi
+    return 1
+}
+
+if FOUND_JAVA=$(find_java21); then
+    export JAVA_HOME="$FOUND_JAVA"
     export PATH="$JAVA_HOME/bin:$PATH"
     echo "[INFO]  Using Java 21 JDK: $JAVA_HOME"
-elif [ -f "$JAVA21_HOME/bin/java" ]; then
-    echo ""
-    echo "[ERROR] Java 21 JRE is installed but JDK (javac) is missing!"
-    echo ""
-    echo "This project requires the Java 21 JDK to compile."
-    echo "The Sirius 2026.7.0 libraries are compiled with Java 21."
-    echo ""
-    echo "To install the Java 21 JDK, run:"
-    echo "    sudo apt update && sudo apt install openjdk-21-jdk"
-    echo ""
-    exit 1
 else
     echo ""
-    echo "[ERROR] Java 21 JDK is not installed!"
-    echo ""
-    echo "This project requires the Java 21 JDK to compile."
-    echo "The Sirius 2026.7.0 libraries are compiled with Java 21."
-    echo ""
-    echo "To install the Java 21 JDK, run:"
-    echo "    sudo apt update && sudo apt install openjdk-21-jdk"
-    echo ""
-    exit 1
+    echo "[WARN]  Java 21 JDK not found. (Detected OS: $OS_TYPE)"
+    read -p "Install Java 21 JDK now? [Y/n] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        install_java21
+        JAVA21_HOME=$(get_java21_home)
+        export JAVA_HOME="$JAVA21_HOME"
+        export PATH="$JAVA_HOME/bin:$PATH"
+    else
+        exit 1
+    fi
 fi
 
 FRONTEND_DIR="frontend/cybergridml"
@@ -150,13 +233,6 @@ if [ "$RESET_DB" = true ]; then
 fi
 
 # ─── PostgreSQL ──────────────────────────────────────────────────────────────
-# Probe EXACTLY the path the application uses: from the host, through the
-# published port, with the real credentials. `docker exec ... pg_isready`
-# only proves Postgres is healthy *inside* the container - it says nothing
-# about whether the host -> published-port -> container path actually works.
-# Prefer a local `psql` (fast, no container spin-up). Spinning a throwaway
-# container with --network host can itself hang on locked-down/corporate
-# Docker setups, so every probe is wrapped in `timeout` as a hard backstop.
 wait_for_postgres() {
   local retries=${1:-30}
   while [ "$retries" -gt 0 ]; do
