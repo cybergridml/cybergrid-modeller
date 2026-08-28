@@ -11,13 +11,19 @@ permissions:
   contents: read
   packages: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   PROJECT_DIR: CybergridML
+  FRONTEND_NODE_VERSION: "18.7.0"
 
 jobs:
   build-and-test:
-    name: Build and test
+    name: Build and test (backend)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -90,3 +96,33 @@ jobs:
           name: surefire-reports
           path: ${{ env.PROJECT_DIR }}/target/surefire-reports/**
           if-no-files-found: ignore
+
+  frontend-build:
+    name: Build frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.FRONTEND_NODE_VERSION }}
+          cache: npm
+
+      - name: Configure npm authentication for GitHub Packages
+        shell: bash
+        env:
+          PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN || github.token }}
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${PACKAGES_TOKEN}" >> .npmrc
+
+      - name: Install frontend dependencies
+        shell: bash
+        run: npm install --legacy-peer-deps
+
+      - name: Build frontend
+        shell: bash
+        run: npm run build
