@@ -66,18 +66,20 @@ public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInit
             if (packageOpt.isPresent()) {
                 Package packageElt = packageOpt.get();
                 packageElt.setDeclaredName("CyberGridML");
+                viewUsageOpt2 = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CFA");
+                viewUsageOpt2.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFA_VIEW));
                 viewUsageOpt = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CRA");
                 viewUsageOpt.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CRA_VIEW));
                 viewUsageOpt1 = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CFRA");
                 viewUsageOpt1.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFRA_VIEW));
-                viewUsageOpt2 = cybergridMLModelMutationElementService.createViewUsage(packageElt, "CFA");
-                viewUsageOpt2.ifPresent(viewUsage -> cybergridMLModelMutationElementService.typeViewUsage(packageElt, viewUsage, CybergridMLViewType.CFA_VIEW));
+
             }
 
             if (viewUsageOpt.isPresent()) {
+                diagramMutationDiagramService.createDiagram(viewUsageOpt2.get(), editingContext, CybergridMLRepresentationDescriptionIdentifiers.CFA_VIEW_DIAGRAM_DESCRIPTION_ID);
                 diagramMutationDiagramService.createDiagram(viewUsageOpt.get(), editingContext, CybergridMLRepresentationDescriptionIdentifiers.CRA_VIEW_DIAGRAM_DESCRIPTION_ID);
                 diagramMutationDiagramService.createDiagram(viewUsageOpt1.get(), editingContext, CybergridMLRepresentationDescriptionIdentifiers.CFRA_VIEW_DIAGRAM_DESCRIPTION_ID);
-                diagramMutationDiagramService.createDiagram(viewUsageOpt2.get(), editingContext, CybergridMLRepresentationDescriptionIdentifiers.CFA_VIEW_DIAGRAM_DESCRIPTION_ID);
+
             }
         }
     }
