@@ -50,6 +50,7 @@ public class AbstractionEdgeDescriptionProvider extends AbstractAllocateEdgeDesc
     protected List<NodeDescription> getTargetNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
         cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.CENTRALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.LOCALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
         return nodes;
     }
 

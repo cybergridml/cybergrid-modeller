@@ -30,6 +30,8 @@ public class CybergridMLViewConstants {
     public static final String CENTRALCONTROLLER_NODE_BORDER_COLOR = "orange 800";
     public static final String ZONALCONTROLLER_NODE_BACKGROUND_COLOR = "orange 100";
     public static final String ZONALCONTROLLER_NODE_BORDER_COLOR = "orange 800";
+    public static final String LOCALCONTROLLER_NODE_BACKGROUND_COLOR = "orange 100";
+    public static final String LOCALCONTROLLER_NODE_BORDER_COLOR = "orange 800";
     public static final String CONTROLLER_EDGE_COLOR = "orange 800";
     public static final String COMMUNICATIONMEDIA_NODE_BACKGROUND_COLOR = "blue 100";
     public static final String COMMUNICATIONMEDIA_NODE_BORDER_COLOR = "blue 800";
