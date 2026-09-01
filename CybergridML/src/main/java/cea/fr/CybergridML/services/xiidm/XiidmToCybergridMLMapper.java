@@ -362,7 +362,7 @@ public class XiidmToCybergridMLMapper {
         this.addEndToAllocation(allocation, target);
     }
 
-    /** Creates an allocation with an explicit owner (used for cross-view abstractions). */
+    /**CFRA: Creates an allocation with an explicit owner (used for cross-view abstractions). */
     private void createAllocationIn(Element owner, PartUsage source, PartUsage target) {
         if (owner == null) {
             return;
@@ -384,6 +384,11 @@ public class XiidmToCybergridMLMapper {
 
         var feature = SysmlFactory.eINSTANCE.createFeature();
         endFeatureMembership.getOwnedRelatedElement().add(feature);
+
+        // Name the feature after the referenced element for clarity in UI
+        if (end.getDeclaredName() != null) {
+            feature.setDeclaredName(end.getDeclaredName());
+        }
 
         var referenceSubsetting = SysmlFactory.eINSTANCE.createReferenceSubsetting();
         feature.getOwnedRelationship().add(referenceSubsetting);
