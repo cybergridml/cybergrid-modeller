@@ -39,12 +39,13 @@ public class XiidmToCybergridMLMapper {
         var substationIdByBusId = new LinkedHashMap<String, String>();
 
         Element craView = this.findCraView(grid);
+        Element cfraView = this.findCfraView(grid);
 
         var substationCounts = this.createSubstationsAndBuses(grid, craView, network, editingContext, createdSubstations,
                 busesByXiidmId, computingResourcesBySubstationId, substationIdByBusId, warnings);
-        var equipmentCounts = this.createEquipments(craView, network, editingContext, busesByXiidmId,
+        var equipmentCounts = this.createEquipments(craView, cfraView, network, editingContext, busesByXiidmId,
                 computingResourcesBySubstationId, substationIdByBusId, warnings);
-        var terminalCounts = this.createTerminals(craView, network, editingContext, busesByXiidmId,
+        var terminalCounts = this.createTerminals(craView, cfraView, network, editingContext, busesByXiidmId,
                 computingResourcesBySubstationId, substationIdByBusId, warnings);
 
         int totalLocalControllers = equipmentCounts.localControllers() + terminalCounts.localControllers();
@@ -94,7 +95,7 @@ public class XiidmToCybergridMLMapper {
     }
 
     /** Pass 2: create generators, loads, and their LocalControllers. */
-    private EquipmentCounts createEquipments(Element craView, XiidmNetwork network, IEditingContext editingContext,
+    private EquipmentCounts createEquipments(Element craView, Element cfraView, XiidmNetwork network, IEditingContext editingContext,
             Map<String, PartUsage> busesByXiidmId, Map<String, PartUsage> computingResourcesBySubstationId,
             Map<String, String> substationIdByBusId, List<String> warnings) {
         int generators = 0;
@@ -120,7 +121,7 @@ public class XiidmToCybergridMLMapper {
                     this.setNumericValue(equipmentPart, "p", equipment.p());
                     this.setNumericValue(equipmentPart, "q", equipment.q());
 
-                    this.createPart(equipmentPart, CybergridMLLibElementType.LOCALCONTROLLER,
+                    var localController = this.createPart(equipmentPart, CybergridMLLibElementType.LOCALCONTROLLER,
                             "LC_" + equipment.id(), editingContext);
                     localControllers++;
 
@@ -137,6 +138,11 @@ public class XiidmToCybergridMLMapper {
                                 this.createAllocation(softwareResource, computingResource);
                             }
                         }
+
+                        // Create LocalController -> SoftwareResource abstraction in CFRA view
+                        if (cfraView != null) {
+                            this.createAllocationIn(cfraView, localController, softwareResource);
+                        }
                     }
 
                     if (type == CybergridMLLibElementType.GENERATOR) {
@@ -151,7 +157,7 @@ public class XiidmToCybergridMLMapper {
     }
 
     /** Pass 3: create terminals and their LocalControllers. */
-    private TerminalCounts createTerminals(Element craView, XiidmNetwork network, IEditingContext editingContext,
+    private TerminalCounts createTerminals(Element craView, Element cfraView, XiidmNetwork network, IEditingContext editingContext,
             Map<String, PartUsage> busesByXiidmId, Map<String, PartUsage> computingResourcesBySubstationId,
             Map<String, String> substationIdByBusId, List<String> warnings) {
         int terminals = 0;
@@ -173,7 +179,7 @@ public class XiidmToCybergridMLMapper {
                 this.setIntegerValue(terminal, side);
                 terminals++;
 
-                this.createPart(terminal, CybergridMLLibElementType.LOCALCONTROLLER,
+                var localController = this.createPart(terminal, CybergridMLLibElementType.LOCALCONTROLLER,
                         "LC_" + terminalId, editingContext);
                 localControllers++;
 
@@ -188,6 +194,11 @@ public class XiidmToCybergridMLMapper {
                         if (computingResource != null) {
                             this.createAllocation(softwareResource, computingResource);
                         }
+                    }
+
+                    // Create LocalController -> SoftwareResource abstraction in CFRA view
+                    if (cfraView != null) {
+                        this.createAllocationIn(cfraView, localController, softwareResource);
                     }
                 }
             }
@@ -310,6 +321,14 @@ public class XiidmToCybergridMLMapper {
     }
 
     private Element findCraView(Element grid) {
+        return this.findSiblingView(grid, "CRA");
+    }
+
+    private Element findCfraView(Element grid) {
+        return this.findSiblingView(grid, "CFRA");
+    }
+
+    private Element findSiblingView(Element grid, String viewName) {
         Namespace cfaView = grid.getOwningNamespace();
         if (cfaView == null) {
             return null;
@@ -322,13 +341,29 @@ public class XiidmToCybergridMLMapper {
 
         return parentPackage.getOwnedMember().stream()
                 .filter(ViewUsage.class::isInstance)
-                .filter(member -> "CRA".equals(member.getDeclaredName()))
+                .filter(member -> viewName.equals(member.getDeclaredName()))
                 .findFirst()
                 .orElse(null);
     }
 
     private void createAllocation(PartUsage source, PartUsage target) {
         var owner = source.getOwner();
+        if (owner == null) {
+            return;
+        }
+
+        var owningMembership = SysmlFactory.eINSTANCE.createOwningMembership();
+        owner.getOwnedRelationship().add(owningMembership);
+
+        var allocation = SysmlFactory.eINSTANCE.createAllocationUsage();
+        owningMembership.getOwnedRelatedElement().add(allocation);
+
+        this.addEndToAllocation(allocation, source);
+        this.addEndToAllocation(allocation, target);
+    }
+
+    /** Creates an allocation with an explicit owner (used for cross-view abstractions). */
+    private void createAllocationIn(Element owner, PartUsage source, PartUsage target) {
         if (owner == null) {
             return;
         }
