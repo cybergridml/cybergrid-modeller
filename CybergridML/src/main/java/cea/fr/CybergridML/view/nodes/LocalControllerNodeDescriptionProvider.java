@@ -65,7 +65,7 @@ public class LocalControllerNodeDescriptionProvider extends AbstractCybergridMLU
 
     protected InsideLabelStyle createInsideLabelStyle() {
         InsideLabelStyle labelStyle = super.createInsideLabelStyle();
-        labelStyle.setLabelIcon("/images/local_controller1.png");
+        labelStyle.setLabelIcon("/images/local_controller.png");
         return labelStyle;
     }
 

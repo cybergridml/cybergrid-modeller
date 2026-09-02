@@ -3,7 +3,7 @@ private import Metaobjects::SemanticMetadata;
 private import ScalarValues::*;
 private import ISQBase::*;
 enum def VoltageUnitKind {
-        enum K;
+        enum V;
         enum KV;
         enum MV;
     }
@@ -95,7 +95,7 @@ private import CyberGridMLEnum::*;
         attribute unit : CapacityUnitKind[0..1] default := Kilobytes;
         attribute precision : Integer[1] default := 250;
     }
- s
+ 
     attribute def NFP_Voltage {
         attribute unit : VoltageUnitKind[0..1];
         attribute precision : Real[0..1];
@@ -191,7 +191,7 @@ private import CyberGridMLDatatypes::*;
         substation : Substation[1..*];
         centralController : CentralController;
 		part zone : Zone[1..*];
-        part line : Line[1..*];
+        part line : Line[0..*];
 
     }
 
@@ -199,7 +199,7 @@ private import CyberGridMLDatatypes::*;
 
          part zonalController : ZonalController;
 		 part substations : Substation[1..*];
-		 part line : Line[1..*];
+		 part line : Line[0..*];
 
     }
 
@@ -236,7 +236,7 @@ private import CyberGridMLDatatypes::*;
         localController : LocalController;
 		attribute connected : Boolean;
         attribute p : NFP_Power;
-        attribute q : NFP_Power;
+        attribute q : NFP_ReactivePower;
         attribute activable  : Boolean;
     }
 
@@ -247,7 +247,7 @@ private import CyberGridMLDatatypes::*;
 
     part def Line{
 	ref maingrid : MainGrid[1];
-	ref terminal : Terminal[0..1];
+	ref terminal : Terminal[1..2];
 	}
     part def Terminal :> Equipment
 	{
@@ -255,7 +255,7 @@ private import CyberGridMLDatatypes::*;
 		attribute branch : String;
         attribute side : Integer;
         attribute ecr : NFP_Current;
-		ref line : Line[0..2];
+		ref line : Line[1];
 		attribute v : NFP_Voltage;
 	}
 
