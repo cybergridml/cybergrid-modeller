@@ -2,6 +2,7 @@ package cea.fr.CybergridML.view.representations;
 
 import cea.fr.CybergridML.view.services.description.CybergridMLToolDescriptionService;
 import cea.fr.CybergridML.view.edges.AbstractionEdgeDescriptionProvider;
+import cea.fr.CybergridML.view.edges.LocalControllerAbstractionEdgeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.CentralControllerNodeDescriptionProvider;
 import cea.fr.CybergridML.view.nodes.LocalControllerNodeDescriptionProvider;
 import org.eclipse.syson.util.DescriptionNameGenerator;
@@ -30,6 +31,7 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
 
     public static final List<CybergridMLLibElementType> ELEMENTS = List.of(
             CybergridMLLibElementType.CENTRALCONTROLLER,
+            CybergridMLLibElementType.LOCALCONTROLLER,
             CybergridMLLibElementType.SOFTWARERESOURCE
     );
 
@@ -70,6 +72,7 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
         providers.add(new LocalControllerNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.add(new SoftwareResourceNodeDescriptionProvider(cybergridMLColorProvider, nameGenerator, false));
         providers.add(new AbstractionEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
+        providers.add(new LocalControllerAbstractionEdgeDescriptionProvider(cybergridMLColorProvider, nameGenerator));
 
         return providers;
     }
