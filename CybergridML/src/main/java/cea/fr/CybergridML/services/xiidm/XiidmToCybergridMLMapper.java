@@ -139,9 +139,9 @@ public class XiidmToCybergridMLMapper {
                             }
                         }
 
-                        // Create LocalController -> SoftwareResource abstraction in CFRA view
+                        // Create SoftwareResource -> LocalController abstraction in CFRA view
                         if (cfraView != null) {
-                            this.createAllocationIn(cfraView, localController, softwareResource);
+                            this.createAllocationIn(cfraView, softwareResource, localController);
                         }
                     }
 
@@ -196,9 +196,9 @@ public class XiidmToCybergridMLMapper {
                         }
                     }
 
-                    // Create LocalController -> SoftwareResource abstraction in CFRA view
+                    // Create SoftwareResource -> LocalController abstraction in CFRA view
                     if (cfraView != null) {
-                        this.createAllocationIn(cfraView, localController, softwareResource);
+                        this.createAllocationIn(cfraView, softwareResource, localController);
                     }
                 }
             }
