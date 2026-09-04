@@ -3,7 +3,6 @@ package cea.fr.CybergridML.view.edges;
 import org.eclipse.syson.util.DescriptionNameGenerator;
 import cea.fr.CybergridML.view.colors.CybergridMLViewConstants;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
-import org.eclipse.sirius.components.view.Operation;
 import org.eclipse.sirius.components.view.builder.IViewDiagramElementFinder;
 import org.eclipse.sirius.components.view.builder.generated.diagram.DiagramBuilders;
 import org.eclipse.sirius.components.view.builder.providers.IColorProvider;
@@ -46,14 +45,14 @@ public class LocalControllerAbstractionEdgeDescriptionProvider extends AbstractA
     @Override
     protected List<NodeDescription> getSourceNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
-        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.LOCALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.SOFTWARERESOURCE.getServiceSuffix())).ifPresent(nodes::add);
         return nodes;
     }
 
     @Override
     protected List<NodeDescription> getTargetNodes(IViewDiagramElementFinder cache) {
         List<NodeDescription> nodes = new ArrayList<>();
-        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.SOFTWARERESOURCE.getServiceSuffix())).ifPresent(nodes::add);
+        cache.getNodeDescription(cybergridMLNameGenerator.getNodeName(CybergridMLLibElementType.LOCALCONTROLLER.getServiceSuffix())).ifPresent(nodes::add);
         return nodes;
     }
 
@@ -71,7 +70,7 @@ public class LocalControllerAbstractionEdgeDescriptionProvider extends AbstractA
 
             var edgeTool = this.diagramBuilderHelper.newEdgeTool()
                     .name(EDGE_NAME)
-                    .body(new Operation[] { changeContext })
+                    .body(changeContext)
                     .targetElementDescriptions(targetNodes.toArray(NodeDescription[]::new))
                     .build();
 
