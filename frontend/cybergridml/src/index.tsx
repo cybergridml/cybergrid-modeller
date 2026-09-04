@@ -11,6 +11,7 @@ import {
 } from "@eclipse-syson/syson-components";
 import { createRoot } from "react-dom/client";
 import { CybergridMLExtensionRegistryMergeStrategy } from "./core/CybergridMLExtensionRegistryMergeStrategy";
+import { cybergridMLTheme } from "./core/theme";
 import { httpOrigin, wsOrigin } from "./core/URL";
 import { xiidmDialogContribution } from "./xiidm/xiidmDialogContribution";
 
@@ -37,6 +38,7 @@ root.render(
     wsOrigin={wsOrigin}
     extensionRegistry={extensionRegistry}
     extensionRegistryMergeStrategy={mergeStrategy}
+    theme={cybergridMLTheme}
   >
     <DiagramRepresentationConfiguration
       nodeTypeRegistry={sysONNodeTypeRegistry}
