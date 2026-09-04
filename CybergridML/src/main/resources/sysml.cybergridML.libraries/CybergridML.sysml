@@ -97,8 +97,8 @@ private import CyberGridMLEnum::*;
     }
  
     attribute def NFP_Voltage {
-        attribute unit : VoltageUnitKind[0..1];
-        attribute precision : Real[0..1];
+        attribute unit : VoltageUnitKind[0..1]  default := KV;
+        attribute precision : Real[0..1]  default := 135;
     }
 
     attribute def NFP_Power {
