@@ -190,7 +190,7 @@ private import CyberGridMLDatatypes::*;
     part def MainGrid :> GridElement {
         substation : Substation[1..*];
         centralController : CentralController;
-		part zone : Zone[1..*];
+		part zone : Zone[0..*];
         part line : Line[0..*];
 
     }
