@@ -9,30 +9,60 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
-// File picker for XIIDM import. Reads the file and passes content as tool variables.
 export const XiidmImportDialog = ({
+  editingContextId,
+  variables,
   onClose,
   onFinish,
 }: DiagramDialogComponentProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [reading, setReading] = useState<boolean>(false);
+  const [uploading, setUploading] = useState<boolean>(false);
+
+  const targetElementId =
+    variables.find((v) => v.name === "targetObjectId")?.value ?? "";
 
   const onImport = async () => {
     if (!file) {
       return;
     }
-    setReading(true);
+    if (!targetElementId) {
+      setError("Target element ID is not available");
+      return;
+    }
+
+    setUploading(true);
     setError(null);
+
     try {
-      const xiidmContent = await file.text();
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("editingContextId", editingContextId);
+      formData.append("targetElementId", targetElementId);
+
+      const response = await fetch("/api/xiidm/import", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || `Upload failed: ${response.status}`);
+      }
+
+      // Trigger tool body to expose substations in diagram
       onFinish([
-        { name: "xiidmContent", value: xiidmContent, type: "STRING" },
+        { name: "xiidmContent", value: "", type: "STRING" },
         { name: "xiidmFileName", value: file.name, type: "STRING" },
       ]);
     } catch (exception) {
-      setReading(false);
-      setError(`The file could not be read: ${exception}`);
+      setUploading(false);
+      setError(
+        `Import failed: ${
+          exception instanceof Error ? exception.message : exception
+        }`
+      );
     }
   };
 
@@ -87,11 +117,11 @@ export const XiidmImportDialog = ({
         <Button onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
-          disabled={!file || reading}
+          disabled={!file || uploading}
           onClick={onImport}
           data-testid="import-xiidm-submit"
         >
-          Import
+          {uploading ? "Importing..." : "Import"}
         </Button>
       </DialogActions>
     </Dialog>

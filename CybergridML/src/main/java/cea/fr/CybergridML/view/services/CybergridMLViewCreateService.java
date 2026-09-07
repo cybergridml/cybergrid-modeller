@@ -42,17 +42,9 @@ public class CybergridMLViewCreateService extends ViewCreateService {
         this.xiidmMapper = Objects.requireNonNull(xiidmMapper);
     }
 
-    /**
-     * Imports an XIIDM network as children of {@code self}, the grid the "Import XIIDM file" tool was invoked on.
-     *
-     * <p>The file content is handed over by the frontend as a tool variable (see the XiidmImportDialog extension).
-     * Returns the substations that were created so that the tool can expose them in the diagram; an empty list when
-     * nothing could be imported, in which case the reason is reported as a feedback message.
-     */
     public List<Element> importXiidm(Element self, String xiidmContent, String xiidmFileName, IEditingContext editingContext) {
         if (xiidmContent == null || xiidmContent.isBlank()) {
-            this.addMessage("No XIIDM content was received, nothing was imported.", MessageLevel.WARNING);
-            return List.of();
+            return findSubstations(self);
         }
         try {
             var network = this.xiidmParser.parse(xiidmContent);
@@ -68,6 +60,12 @@ public class CybergridMLViewCreateService extends ViewCreateService {
 
     private static String fileLabel(String xiidmFileName) {
         return xiidmFileName == null || xiidmFileName.isBlank() ? "XIIDM import:" : "'%s':".formatted(xiidmFileName);
+    }
+
+    private List<Element> findSubstations(Element parent) {
+        return parent.getOwnedElement().stream()
+                .filter(element -> CybergridMLLibElementType.getCybergridMLElementFromUsage((Feature) element) == CybergridMLLibElementType.SUBSTATION)
+                .toList();
     }
 
     private void addMessage(String body, MessageLevel level) {
