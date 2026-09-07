@@ -16,7 +16,6 @@ import java.util.Objects;
 
 /**
  * Edge provider for abstraction between LocalController and SoftwareResource.
- * This represents the mapping from a LocalController (CFA) to its implementing SoftwareResource (CRA).
  */
 public class LocalControllerAbstractionEdgeDescriptionProvider extends AbstractAllocateEdgeDescriptionProvider {
 
