@@ -9,4 +9,13 @@ export default defineConfig(({ mode }) => ({
   define: {
     'process.env': { ...process.env, ...loadEnv(mode, process.cwd()) },
   },
+  server: {
+    proxy: {
+      // Proxy API requests to the backend server
+      '/api': {
+        target: 'http://localhost:9090',
+        changeOrigin: true,
+      },
+    },
+  },
 }));
