@@ -62,8 +62,8 @@ public class AbstractionEdgeDescriptionProvider extends AbstractAllocateEdgeDesc
 
         getSourceNodes(cache).forEach(sourceNode -> {
             var changeContext = this.viewBuilderHelper.newChangeContext()
-                    .expression(CybergridMLAQLUtils.getServiceCallExpression("semanticEdgeSource", "createAllocateEdge",
-                            List.of("semanticEdgeTarget", "edgeSource", "editingContext", "diagramServices")))
+                    .expression(CybergridMLAQLUtils.getServiceCallExpression("semanticEdgeSource", "createAbstractAllocateEdge",
+                            List.of("semanticEdgeTarget", "editingContext")))
                     .build();
 
             var edgeTool = this.diagramBuilderHelper.newEdgeTool()
