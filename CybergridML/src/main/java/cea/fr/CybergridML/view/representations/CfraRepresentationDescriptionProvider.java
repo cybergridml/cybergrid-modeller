@@ -92,7 +92,10 @@ public class CfraRepresentationDescriptionProvider implements IRepresentationDes
 
     private NodeTool[] createNodeTools(IViewDiagramElementFinder cache) {
         var nodeTools = new ArrayList<NodeTool>();
-        ELEMENTS.forEach(element -> nodeTools.addAll(this.getCreationToolsForElement(element, cache)));
+        // SoftwareResource is only created from the CRA view; in CFRA it can only be exposed/allocated.
+        ELEMENTS.stream()
+                .filter(element -> element != CybergridMLLibElementType.SOFTWARERESOURCE)
+                .forEach(element -> nodeTools.addAll(this.getCreationToolsForElement(element, cache)));
         nodeTools.sort(Comparator.comparing(NodeTool::getName));
         return nodeTools.toArray(NodeTool[]::new);
     }

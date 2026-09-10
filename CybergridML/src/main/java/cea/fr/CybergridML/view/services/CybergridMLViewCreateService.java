@@ -19,6 +19,7 @@ import org.eclipse.syson.sysml.Package;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -160,5 +161,54 @@ public class CybergridMLViewCreateService extends ViewCreateService {
         featureMembership.getOwnedRelatedElement().add(newPartUsage);
         new CybergridMLElementInitializerSwitch(editingContext, CybergridMLLibElementType.REDUNDANCYCLUSTER).doSwitch(newPartUsage);
         return newPartUsage;
+    }
+
+    public Element createAbstractAllocateEdge(Element source, Element target, IEditingContext editingContext) {
+        Element owner = this.findCfraView(source);
+        if (owner == null) {
+            owner = source.getOwner();
+        }
+
+        var ownerMembership = SysmlFactory.eINSTANCE.createOwningMembership();
+        owner.getOwnedRelationship().add(ownerMembership);
+        var allocation = SysmlFactory.eINSTANCE.createAllocationUsage();
+        ownerMembership.getOwnedRelatedElement().add(allocation);
+
+        this.addEndToAbstractAllocateEdge(allocation, source);
+        this.addEndToAbstractAllocateEdge(allocation, target);
+        return source;
+    }
+
+    private void addEndToAbstractAllocateEdge(AllocationUsage allocation, Element end) {
+        if (end instanceof Usage usage) {
+            var featureMembership = SysmlFactory.eINSTANCE.createEndFeatureMembership();
+            allocation.getOwnedRelationship().add(featureMembership);
+            var feature = SysmlFactory.eINSTANCE.createFeature();
+            featureMembership.getOwnedRelatedElement().add(feature);
+            var reference = SysmlFactory.eINSTANCE.createReferenceSubsetting();
+            feature.getOwnedRelationship().add(reference);
+            reference.setReferencedFeature(usage);
+        }
+    }
+
+    /** Walks up the ownership chain of the given element looking for the CFRA view, either as an ancestor or as a sibling of one. */
+    private Element findCfraView(Element element) {
+        Element current = element.getOwner();
+        while (current != null) {
+            if (current instanceof ViewUsage viewUsage && "CFRA".equals(viewUsage.getDeclaredName())) {
+                return viewUsage;
+            }
+            if (current instanceof Namespace namespace) {
+                Optional<Element> sibling = namespace.getOwnedMember().stream()
+                        .filter(ViewUsage.class::isInstance)
+                        .filter(member -> "CFRA".equals(member.getDeclaredName()))
+                        .findFirst();
+                if (sibling.isPresent()) {
+                    return sibling.get();
+                }
+            }
+            current = current.getOwner();
+        }
+        return null;
     }
 }
