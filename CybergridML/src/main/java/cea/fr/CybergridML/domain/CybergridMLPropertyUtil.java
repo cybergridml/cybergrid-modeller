@@ -207,6 +207,8 @@ public class CybergridMLPropertyUtil {
             return BigDecimal.valueOf(((LiteralInteger) expression).getValue());
         } else if (expression.eClass().equals(SysmlPackage.eINSTANCE.getLiteralString())) {
             return ((LiteralString) expression).getValue();
+        } else if (expression.eClass().equals(SysmlPackage.eINSTANCE.getLiteralBoolean())) {
+            return ((LiteralBoolean) expression).isValue();
         } else if (expression.eClass().equals(SysmlPackage.eINSTANCE.getOperatorExpression())
                 || expression.eClass().equals(SysmlPackage.eINSTANCE.getFeatureChainExpression())
                 || expression.eClass().equals(SysmlPackage.eINSTANCE.getFeatureReferenceExpression())) {
