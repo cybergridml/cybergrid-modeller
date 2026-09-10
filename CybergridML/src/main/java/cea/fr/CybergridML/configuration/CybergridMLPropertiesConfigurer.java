@@ -57,6 +57,7 @@ import org.eclipse.syson.sysml.Expression;
 import org.eclipse.syson.sysml.Feature;
 import org.eclipse.syson.sysml.FeatureTyping;
 import org.eclipse.syson.sysml.FeatureValue;
+import org.eclipse.syson.sysml.LiteralBoolean;
 import org.eclipse.syson.sysml.LiteralInfinity;
 import org.eclipse.syson.sysml.LiteralInteger;
 import org.eclipse.syson.sysml.LiteralString;
@@ -230,11 +231,18 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
             widgets.add(compositeIf);
         }
 
+        FormElementIf booleanIf = FormFactory.eINSTANCE.createFormElementIf();
+        booleanIf.setName("BooleanProperty_Precondition");
+        booleanIf.setPredicateExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("isBooleanProperty"));
+        booleanIf.getChildren().add(this.createPropertyValueBooleanSelectWidget());
+        widgets.add(booleanIf);
+
         FormElementIf textFieldIf = FormFactory.eINSTANCE.createFormElementIf();
         textFieldIf.setName("TextFieldProperty_Precondition");
         textFieldIf.setPredicateExpression(AQLConstants.AQL
                 + "not(self.isTextAreaProperty()) and not(self.isEnumProperty())"
-                + " and not(self.isMeasurementProperty()) and not(self.isCompositeProperty())");
+                + " and not(self.isMeasurementProperty()) and not(self.isCompositeProperty())"
+                + " and not(self.isBooleanProperty())");
         textFieldIf.getChildren().add(this.createPropertyValueWidget());
         widgets.add(textFieldIf);
 
@@ -410,6 +418,23 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
         ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
         setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setEnumPropertyValue",
+                ViewFormDescriptionConverter.NEW_VALUE));
+        select.getBody().add(setNewValueOperation);
+
+        return select;
+    }
+
+    private WidgetDescription createPropertyValueBooleanSelectWidget() {
+        SelectDescription select = FormFactory.eINSTANCE.createSelectDescription();
+        select.setName("PropertyValueBooleanSelectWidget");
+        select.setLabelExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getPropertyLabel"));
+        select.setCandidatesExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getBooleanCandidates"));
+        select.setCandidateLabelExpression("aql:candidate.toString()");
+        select.setValueExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("getBooleanPropertyValue"));
+        select.setIsEnabledExpression(AQL_NOT_SELF_IS_READ_ONLY);
+
+        ChangeContext setNewValueOperation = ViewFactory.eINSTANCE.createChangeContext();
+        setNewValueOperation.setExpression(CybergridMLAQLUtils.getSelfServiceCallExpression("setBooleanPropertyValue",
                 ViewFormDescriptionConverter.NEW_VALUE));
         select.getBody().add(setNewValueOperation);
 
@@ -805,6 +830,44 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
         return element instanceof AttributeUsage usage && this.getEnumerationDefinition(usage) != null;
     }
 
+    public boolean isBooleanProperty(Element element) {
+        return element instanceof AttributeUsage usage && this.isDefaultedBooleanName(usage.getDeclaredName());
+    }
+
+    private boolean isDefaultedBooleanName(String name) {
+        return "connected".equals(name) || "activable".equals(name);
+    }
+
+    public List<Boolean> getBooleanCandidates(AttributeUsage usage) {
+        return List.of(Boolean.TRUE, Boolean.FALSE);
+    }
+
+    public boolean getBooleanPropertyValue(AttributeUsage usage) {
+        Object value = CybergridMLPropertyUtil.getAttributeValue(usage);
+        if (value instanceof Boolean booleanValue) {
+            return booleanValue;
+        }
+        return true;
+    }
+
+    public AttributeUsage setBooleanPropertyValue(AttributeUsage usage, String newValue) {
+        if (this.readOnlyObjectPredicate.test(usage) || newValue == null) {
+            return usage;
+        }
+        List<FeatureValue> toRemove = usage.getOwnedRelationship().stream()
+                .filter(FeatureValue.class::isInstance)
+                .map(FeatureValue.class::cast)
+                .toList();
+        usage.getOwnedRelationship().removeAll(toRemove);
+
+        LiteralBoolean literalValue = SysmlFactory.eINSTANCE.createLiteralBoolean();
+        literalValue.setValue(Boolean.parseBoolean(newValue));
+        FeatureValue featureValueMembership = SysmlFactory.eINSTANCE.createFeatureValue();
+        usage.getOwnedRelationship().add(featureValueMembership);
+        featureValueMembership.getOwnedRelatedElement().add(literalValue);
+        return usage;
+    }
+
     private EnumerationDefinition getEnumerationDefinition(AttributeUsage usage) {
         return usage.getType().stream()
                 .filter(EnumerationDefinition.class::isInstance)
@@ -933,7 +996,35 @@ public class CybergridMLPropertiesConfigurer implements IPropertiesDescriptionRe
 
     public String getPropertyValue(AttributeUsage usage) {
         Object value = CybergridMLPropertyUtil.getAttributeValue(usage);
-        return value != null ? value.toString() : "";
+        if (value != null) {
+            return value.toString();
+        }
+        return this.getDefaultPropertyValue(usage);
+    }
+
+    private String getDefaultPropertyValue(AttributeUsage usage) {
+        String name = usage.getDeclaredName();
+        if (name == null) {
+            return "";
+        }
+        return switch (name) {
+            case "unit" -> this.getDefaultUnit(usage);
+            default -> "";
+        };
+    }
+
+    private String getDefaultUnit(AttributeUsage unitAttribute) {
+        Type owningType = unitAttribute.getOwningType();
+        String parentName = owningType != null ? owningType.getDeclaredName() : null;
+        if (parentName == null) {
+            return "";
+        }
+        return switch (parentName) {
+            case "p" -> "MW";
+            case "q" -> "MVAR";
+            case "nominalLevel", "v" -> "KV";
+            default -> "";
+        };
     }
 
     public AttributeUsage setPropertyValue(AttributeUsage usage, String newValue) {
