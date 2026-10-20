@@ -1,17 +1,17 @@
 services:
   database:
-    container_name: Nacre_db
+    container_name: CybergridML_db
     image: postgres:15
     environment:
-      POSTGRES_DB: Nacre-db
+      POSTGRES_DB: CybergridML-db
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: dbpwd
       PGDATA: /data/postgres
     ports:
       - "5433:5432"
     volumes:
-      - Nacre_db_data:/data/postgres
+      - CybergridML_db_data:/data/postgres
 volumes:
-  Nacre_db_data:
+  CybergridML_db_data:
 
 

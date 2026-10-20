@@ -78,7 +78,7 @@ Copy/paste the following configuration, replacing `$GITHUB_USERNAME` with your G
 
 You can also use the capabilities of your IDE.
 
-For Intellij/Eclipse, create a spring boot run configuration for the `NacreRteApplication`, setting the spring active profile to dev.
+For Intellij/Eclipse, create a spring boot run configuration for the `CybergridMLApplication`, setting the spring active profile to dev.
 
 Alternatively, the `cybergridml.sh` script at the repository root starts the database and the backend for you (and optionally builds/embeds the frontend). It requires the Java 21 JDK and will fail with an install hint if it is missing.
 ```

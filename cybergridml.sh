@@ -140,12 +140,12 @@ BACKEND_DIR="CybergridML"
 STATIC_DIR="$BACKEND_DIR/src/main/resources/static"
 COMPOSE_FILE="$BACKEND_DIR/docker-compose.yml"
 
-PG_CONTAINER="Nacre_db"
+PG_CONTAINER="CybergridML_db"
 PG_IMAGE="postgres:15"
 PG_PORT=5433
 PG_USER="dbuser"
 PG_PASSWORD="dbpwd"
-PG_DB="Nacre-db"
+PG_DB="CybergridML-db"
 
 # ─── Color helpers ───────────────────────────────────────────────────────────
 RED='\033[0;31m'

@@ -27,7 +27,7 @@ public class CfaViewDescriptionProvider implements IViewDescriptionProvider {
 
 	@Override
 	public String getViewId() {
-		return "NacreViewDiagram";
+		return "CybergridMLViewDiagram";
 	}
 
 	@Override

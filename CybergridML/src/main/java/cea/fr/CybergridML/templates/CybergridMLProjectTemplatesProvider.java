@@ -27,9 +27,9 @@ public class CybergridMLProjectTemplatesProvider implements IProjectTemplateProv
 
     @Override
     public List<ProjectTemplate> getProjectTemplates() {
-        var nacreTemplate = new ProjectTemplate(CYBERGRIDML_TEMPLATE_ID, "CyberGridML", "/images/Cybergrid.png", List.of());
+        var cybergridMLTemplate = new ProjectTemplate(CYBERGRIDML_TEMPLATE_ID, "CyberGridML", "/images/Cybergrid.png", List.of());
 
-        return List.of(nacreTemplate);
+        return List.of(cybergridMLTemplate);
     }
 }
 

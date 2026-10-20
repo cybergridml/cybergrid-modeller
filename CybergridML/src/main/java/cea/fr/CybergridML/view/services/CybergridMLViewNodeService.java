@@ -102,11 +102,11 @@ public class CybergridMLViewNodeService {
         return element != null && Objects.equals(element.eClass(), domainType);
     }
 
-    public List<Element> getExposedNacreElements(Element element, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
-        return this.getExposedNacreElements(element, null, cybergridMLElementTypeName, domainType, ancestors, editingContext, diagramContext);
+    public List<Element> getExposedCybergridMLElements(Element element, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
+        return this.getExposedCybergridMLElements(element, null, cybergridMLElementTypeName, domainType, ancestors, editingContext, diagramContext);
     }
 
-    public List<Element> getExposedNacreElements(Element element, Element parent, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
+    public List<Element> getExposedCybergridMLElements(Element element, Element parent, String cybergridMLElementTypeName, EClass domainType, List<Object> ancestors, IEditingContext editingContext, DiagramContext diagramContext) {
         List<Element> elementsToExpose = new ArrayList<>();
         if (element instanceof ViewUsage viewUsage) {
             var exposedElements = new ArrayList<Element>();
@@ -117,7 +117,7 @@ public class CybergridMLViewNodeService {
             }
             var filteredExposedElements = exposedElements.stream()
                     .filter(elt -> this.isTypeOf(elt, domainType)
-                            && this.isTypedWithNacreDefinition(elt, cybergridMLElementTypeName)
+                            && this.isTypedWithCybergridMLDefinition(elt, cybergridMLElementTypeName)
                             && isAncestor(parent, elt))
                     .toList();
             elementsToExpose.addAll(filteredExposedElements);
@@ -131,7 +131,7 @@ public class CybergridMLViewNodeService {
         } else if (element instanceof Namespace namespace && (ancestors == null || ancestors.isEmpty())) {
             namespace.getOwnedMember().stream()
                     .filter(elt -> this.isTypeOf(elt, domainType))
-                    .filter(elt -> this.isTypedWithNacreDefinition(elt, cybergridMLElementTypeName))
+                    .filter(elt -> this.isTypedWithCybergridMLDefinition(elt, cybergridMLElementTypeName))
                     .forEach(elementsToExpose::add);
         } else if (ancestors != null) {
             var viewUsageContainingElement = ancestors.stream()
@@ -139,14 +139,14 @@ public class CybergridMLViewNodeService {
                     .map(ViewUsage.class::cast)
                     .findFirst();
             if (viewUsageContainingElement.isPresent()) {
-                List<Element> exposedNacreElements = this.getExposedNacreElements(viewUsageContainingElement.get(), element, cybergridMLElementTypeName, domainType, ancestors, editingContext, diagramContext);
-                elementsToExpose.addAll(exposedNacreElements);
+                List<Element> exposedCybergridMLElements = this.getExposedCybergridMLElements(viewUsageContainingElement.get(), element, cybergridMLElementTypeName, domainType, ancestors, editingContext, diagramContext);
+                elementsToExpose.addAll(exposedCybergridMLElements);
             }
         }
         return elementsToExpose;
     }
 
-    private boolean isTypedWithNacreDefinition(Element elt, String cybergridMLElementTypeName) {
+    private boolean isTypedWithCybergridMLDefinition(Element elt, String cybergridMLElementTypeName) {
         if (cybergridMLElementTypeName == null || cybergridMLElementTypeName.isEmpty()) {
             return true;
         }
