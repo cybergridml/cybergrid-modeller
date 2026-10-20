@@ -14,7 +14,7 @@
 import { DiagramDialogContribution } from "@eclipse-sirius/sirius-components-diagrams";
 import { XiidmImportDialog } from "./XiidmImportDialog";
 
-const CYBERGRIDML_VIEW_SOURCE_ID = "862e39fd-7d88-352b-8fe4-e59d52a39bce";
+const CYBERGRIDML_VIEW_SOURCE_ID = "5c890f20-9a2d-3046-b773-467bc36887c6";
 
 // Dialogs that use default Sirius selection tree
 const EXCLUDED_DIALOG_IDS = [

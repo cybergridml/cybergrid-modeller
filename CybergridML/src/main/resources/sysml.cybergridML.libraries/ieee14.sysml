@@ -2,7 +2,7 @@ import ScalarValues::*;
 import ISQBase::*;
 import ISQ::*;
 import SI::*;
-import NACREEnum::*;
+import CyberGridMLEnum::*;
 import CyberGridMLDatatypes::*;
 import CyberGridMLProfile::*;
 import CRA::*;

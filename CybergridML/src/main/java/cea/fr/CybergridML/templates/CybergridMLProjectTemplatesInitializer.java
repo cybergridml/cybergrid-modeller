@@ -60,12 +60,12 @@ public class CybergridMLProjectTemplatesInitializer implements ISemanticDataInit
     @Override
     public void handle(ICause cause, IEditingContext editingContext, String projectTemplateId) {
         if (canHandle(projectTemplateId)) {
-            initializeNacreProject(editingContext);
+            initializeCybergridMLProject(editingContext);
             this.editingContextPersistenceService.persist(cause, editingContext);
         }
     }
 
-    private void initializeNacreProject(IEditingContext editingContext) {
+    private void initializeCybergridMLProject(IEditingContext editingContext) {
         Optional<ResourceSet> resourceSetOpt = this.getResourceSet(editingContext);
         if (resourceSetOpt.isPresent()) {
             ResourceSet resourceSet = resourceSetOpt.get();

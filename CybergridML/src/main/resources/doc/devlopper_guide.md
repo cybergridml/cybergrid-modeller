@@ -97,13 +97,13 @@ A complete CRA for a decentralized SCADA system is illustrated in **Figure 5**.
 
 Each CRA component has properties whose values can be configured by the user. The **Details** tab, located on the right-hand side of the window, displays the name, documentation, type, and properties of the selected element.
 
-![Figure 11 – Details tab](images/nacre_properties_1.png)
+![Figure 11 – Details tab](images/cybergridml_properties_1.png)
 
 *Figure 11 – Details tab*
 
 Property values can be edited directly from this panel, as illustrated in **Figure 7**.
 
-![Figure 12 – Filling in capacity value in details tab](images/nacre_properties_2.png)
+![Figure 12 – Filling in capacity value in details tab](images/cybergridml_properties_2.png)
 
 *Figure 12 – Filling in capacity value in the Details tab*
 

@@ -50,7 +50,7 @@ public abstract class AbstractCybergridMLUsageNodeDescriptionProvider extends Ab
 
     @Override
     protected String getSemanticCandidatesExpression(String domainType) {
-        return CybergridMLAQLUtils.getSelfServiceCallExpression("getExposedNacreElements",
+        return CybergridMLAQLUtils.getSelfServiceCallExpression("getExposedCybergridMLElements",
                 List.of(AQLUtils.aqlString(getCybergridMLElementType().getCybergridMLLibDefinitionName()),
                         domainType,
                         "ancestors",
