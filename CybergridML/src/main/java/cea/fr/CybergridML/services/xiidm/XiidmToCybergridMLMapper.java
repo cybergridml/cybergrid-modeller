@@ -230,12 +230,12 @@ public class XiidmToCybergridMLMapper {
         partUsage.setDeclaredName(name);
 
         // MembershipExpose makes elements appear in the diagram
-        if (owner instanceof ViewUsage viewUsage) {
-            var membershipExpose = SysmlFactory.eINSTANCE.createMembershipExpose();
-            membershipExpose.setImportedMembership(featureMembership);
-            membershipExpose.setIsRecursive(false);
-            viewUsage.getOwnedRelationship().add(membershipExpose);
-        }
+//        if (owner instanceof ViewUsage viewUsage) {
+//            var membershipExpose = SysmlFactory.eINSTANCE.createMembershipExpose();
+//            membershipExpose.setImportedMembership(featureMembership);
+//            membershipExpose.setIsRecursive(false);
+//            viewUsage.getOwnedRelationship().add(membershipExpose);
+//        }
 
         return partUsage;
     }

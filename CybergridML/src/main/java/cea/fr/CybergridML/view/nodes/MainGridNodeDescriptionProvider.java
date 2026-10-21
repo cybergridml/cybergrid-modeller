@@ -100,22 +100,10 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
 
     /**
      * Tool uploading an XIIDM (PowSyBl) network file and creating the matching parts inside this grid.
-     *
-     * <p>The file picker itself lives in the frontend: the tool carries a {@link SelectionDialogDescription} used
-     * purely as a marker, and the {@code XiidmImportDialog} extension registered by the application replaces its
-     * rendering with a file upload dialog. That dialog hands the file back as the {@code xiidmContent} and
-     * {@code xiidmFileName} tool variables, which the body below passes to the import service. The marker has no
-     * tree description on purpose, so the built-in selection dialog machinery skips it.
      */
     private NodeTool createImportXiidmTool() {
-        var exposeImportedElement = this.viewBuilderHelper.newChangeContext()
-                .expression(ServiceMethod.of4(DiagramMutationAQLService::expose)
-                        .aqlSelf(IEditingContext.EDITING_CONTEXT, DiagramContext.DIAGRAM_CONTEXT, Node.SELECTED_NODE,
-                                ViewDiagramDescriptionConverter.CONVERTED_NODES_VARIABLE));
-
-        var importAndExpose = this.viewBuilderHelper.newChangeContext()
+        var importBody = this.viewBuilderHelper.newChangeContext()
                 .expression("aql:self.importXiidm(xiidmContent, xiidmFileName, %s)".formatted(IEditingContext.EDITING_CONTEXT))
-                .children(exposeImportedElement.build())
                 .build();
 
         var fileUploadDialogMarker = this.diagramBuilderHelper.newSelectionDialogDescription()
@@ -126,7 +114,7 @@ public class MainGridNodeDescriptionProvider extends AbstractCybergridMLUsageNod
                 .name(IMPORT_XIIDM_TOOL_NAME)
                 .iconURLsExpression("/images/import_xiidm.svg")
                 .dialogDescription(fileUploadDialogMarker)
-                .body(importAndExpose)
+                .body(importBody)
                 .build();
     }
 

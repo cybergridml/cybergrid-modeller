@@ -58,7 +58,7 @@ public class CybergridMLViewCreateService extends ViewCreateService {
 
     public List<Element> importXiidm(Element self, String xiidmContent, String xiidmFileName, IEditingContext editingContext) {
         if (xiidmContent == null || xiidmContent.isBlank()) {
-            return findSubstations(self);
+            return List.of();
         }
         try {
             var network = this.xiidmParser.parse(xiidmContent);
@@ -74,12 +74,6 @@ public class CybergridMLViewCreateService extends ViewCreateService {
 
     private static String fileLabel(String xiidmFileName) {
         return xiidmFileName == null || xiidmFileName.isBlank() ? "XIIDM import:" : "'%s':".formatted(xiidmFileName);
-    }
-
-    private List<Element> findSubstations(Element parent) {
-        return parent.getOwnedElement().stream()
-                .filter(element -> CybergridMLLibElementType.getCybergridMLElementFromUsage((Feature) element) == CybergridMLLibElementType.SUBSTATION)
-                .toList();
     }
 
     private void addMessage(String body, MessageLevel level) {
