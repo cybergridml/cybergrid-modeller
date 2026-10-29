@@ -14,6 +14,8 @@
 package cea.fr.CybergridML.services.xiidm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +24,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import cea.fr.CybergridML.domain.CybergridMLDefinitionsUtil;
 import cea.fr.CybergridML.domain.CybergridMLLibElementType;
+import cea.fr.CybergridML.domain.CybergridMLPropertyUtil;
 import cea.fr.CybergridML.services.CybergridMLElementInitializerSwitch;
 import org.eclipse.sirius.components.core.api.IEditingContext;
+import org.eclipse.syson.services.UtilService;
 import org.eclipse.syson.sysml.AllocationUsage;
 import org.eclipse.syson.sysml.AttributeUsage;
+import org.eclipse.syson.sysml.Definition;
 import org.eclipse.syson.sysml.Element;
 import org.eclipse.syson.sysml.Expression;
 import org.eclipse.syson.sysml.FeatureMembership;
@@ -44,6 +50,8 @@ public class XiidmToCybergridMLMapper {
 
     private static final String PRECISION = "precision";
 
+    private final UtilService utilService = new UtilService();
+
     public XiidmImportResult importInto(Element grid, XiidmNetwork network, IEditingContext editingContext) {
         var warnings = new ArrayList<String>();
         var createdSubstations = new ArrayList<Element>();
@@ -51,15 +59,21 @@ public class XiidmToCybergridMLMapper {
         var computingResourcesBySubstationId = new LinkedHashMap<String, PartUsage>();
         var substationIdByBusId = new LinkedHashMap<String, String>();
 
+        var session = new ImportSession(editingContext);
         Element craView = this.findCraView(grid);
         Element cfraView = this.findCfraView(grid);
 
-        var substationCounts = this.createSubstationsAndBuses(grid, craView, network, editingContext, createdSubstations,
+        var substationCounts = this.createSubstationsAndBuses(grid, craView, network, session, createdSubstations,
                 busesByXiidmId, computingResourcesBySubstationId, substationIdByBusId, warnings);
-        var equipmentCounts = this.createEquipments(craView, cfraView, network, editingContext, busesByXiidmId,
+        var equipmentCounts = this.createEquipments(craView, cfraView, network, session, busesByXiidmId,
                 computingResourcesBySubstationId, substationIdByBusId, warnings);
-        var terminalCounts = this.createTerminals(craView, cfraView, network, editingContext, busesByXiidmId,
+        var terminalCounts = this.createTerminals(craView, cfraView, network, session, busesByXiidmId,
                 computingResourcesBySubstationId, substationIdByBusId, warnings);
+
+        if (session.skippedOnOtherBuses > 0) {
+            warnings.add("Only the first bus of each substation is imported: %d equipment(s) and terminal(s) on the other buses were skipped."
+                    .formatted(session.skippedOnOtherBuses));
+        }
 
         int totalLocalControllers = equipmentCounts.localControllers() + terminalCounts.localControllers();
         int totalSoftwareResources = equipmentCounts.softwareResources() + terminalCounts.softwareResources();
@@ -69,46 +83,50 @@ public class XiidmToCybergridMLMapper {
                 substationCounts.computingResources(), totalSoftwareResources, List.copyOf(warnings));
     }
 
-    /** Pass 1: create substations and buses. */
-    private SubstationCounts createSubstationsAndBuses(Element grid, Element craView, XiidmNetwork network, IEditingContext editingContext,
+    /** Pass 1: create substations and their first bus (the other buses of a substation are not imported). */
+    private SubstationCounts createSubstationsAndBuses(Element grid, Element craView, XiidmNetwork network, ImportSession session,
             List<Element> createdSubstations, Map<String, PartUsage> busesByXiidmId,
             Map<String, PartUsage> computingResourcesBySubstationId, Map<String, String> substationIdByBusId, List<String> warnings) {
         int busCount = 0;
         int computingResources = 0;
         for (XiidmNetwork.Substation substation : network.substations()) {
-            var substationPart = this.createPart(grid, CybergridMLLibElementType.SUBSTATION, substation.id(), editingContext);
+            var substationPart = this.createPart(grid, CybergridMLLibElementType.SUBSTATION, substation.id(), session);
             createdSubstations.add(substationPart);
 
             if (craView != null) {
                 var computingResource = this.createPart(craView, CybergridMLLibElementType.COMPUTINGRESOURCE,
-                        "CR_" + substation.id(), editingContext);
+                        "CR_" + substation.id(), session);
                 computingResourcesBySubstationId.put(substation.id(), computingResource);
                 computingResources++;
             }
 
-            for (XiidmNetwork.VoltageLevel voltageLevel : substation.voltageLevels()) {
-                for (XiidmNetwork.Bus bus : voltageLevel.buses()) {
-                    if (bus.id() == null || bus.id().isBlank()) {
-                        warnings.add("A bus of voltage level '%s' has no id and was skipped.".formatted(voltageLevel.id()));
-                        continue;
-                    }
-                    if (busesByXiidmId.containsKey(bus.id())) {
-                        warnings.add("Bus '%s' is declared more than once; only the first one was imported.".formatted(bus.id()));
-                        continue;
-                    }
-                    var busPart = this.createPart(substationPart, CybergridMLLibElementType.BUS, bus.id(), editingContext);
-                    this.setNumericValue(busPart, "nominalLevel", voltageLevel.nominalV());
-                    busesByXiidmId.put(bus.id(), busPart);
-                    substationIdByBusId.put(bus.id(), substation.id());
-                    busCount++;
-                }
+            // Only one voltage level matters per substation: its first bus is imported, the others are ignored.
+            var firstBus = this.findFirstBus(substation);
+            String firstBusId = firstBus.map(first -> first.bus().id()).orElse(null);
+            substation.voltageLevels().stream()
+                    .flatMap(voltageLevel -> voltageLevel.buses().stream())
+                    .map(XiidmNetwork.Bus::id)
+                    .filter(busId -> busId != null && !busId.equals(firstBusId))
+                    .forEach(session.otherBusIds::add);
+            if (firstBus.isEmpty()) {
+                continue;
             }
+            var bus = firstBus.get().bus();
+            if (busesByXiidmId.containsKey(bus.id())) {
+                warnings.add("Bus '%s' is declared more than once; only the first one was imported.".formatted(bus.id()));
+                continue;
+            }
+            var busPart = this.createPart(substationPart, CybergridMLLibElementType.BUS, bus.id(), session);
+            this.setNumericValue(busPart, "nominalLevel", firstBus.get().voltageLevel().nominalV());
+            busesByXiidmId.put(bus.id(), busPart);
+            substationIdByBusId.put(bus.id(), substation.id());
+            busCount++;
         }
         return new SubstationCounts(busCount, computingResources);
     }
 
     /** Pass 2: create generators, loads, and their LocalControllers. */
-    private EquipmentCounts createEquipments(Element craView, Element cfraView, XiidmNetwork network, IEditingContext editingContext,
+    private EquipmentCounts createEquipments(Element craView, Element cfraView, XiidmNetwork network, ImportSession session,
             Map<String, PartUsage> busesByXiidmId, Map<String, PartUsage> computingResourcesBySubstationId,
             Map<String, String> substationIdByBusId, List<String> warnings) {
         int generators = 0;
@@ -123,6 +141,10 @@ public class XiidmToCybergridMLMapper {
                         continue;
                     }
                     var busPart = busesByXiidmId.get(equipment.busId());
+                    if (busPart == null && session.otherBusIds.contains(equipment.busId())) {
+                        session.skippedOnOtherBuses++;
+                        continue;
+                    }
                     if (busPart == null) {
                         warnings.add("'%s' references the unknown bus '%s' and was skipped.".formatted(equipment.id(), equipment.busId()));
                         continue;
@@ -130,18 +152,18 @@ public class XiidmToCybergridMLMapper {
                     var type = equipment.kind() == XiidmNetwork.EquipmentKind.GENERATOR
                             ? CybergridMLLibElementType.GENERATOR
                             : CybergridMLLibElementType.LOAD;
-                    var equipmentPart = this.createPart(busPart, type, equipment.id(), editingContext);
+                    var equipmentPart = this.createPart(busPart, type, equipment.id(), session);
                     this.setNumericValue(equipmentPart, "p", equipment.p());
                     this.setNumericValue(equipmentPart, "q", equipment.q());
 
                     var localController = this.createPart(equipmentPart, CybergridMLLibElementType.LOCALCONTROLLER,
-                            "LC_" + equipment.id(), editingContext);
+                            "LC_" + equipment.id(), session);
                     localControllers++;
 
                     if (craView != null) {
                         String categoryCode = this.getCategoryCode(type);
                         var softwareResource = this.createPart(craView, CybergridMLLibElementType.SOFTWARERESOURCE,
-                                "SR_" + categoryCode + "_" + equipment.id(), editingContext);
+                                "SR_" + categoryCode + "_" + equipment.id(), session);
                         softwareResources++;
 
                         String substationId = substationIdByBusId.get(equipment.busId());
@@ -170,7 +192,7 @@ public class XiidmToCybergridMLMapper {
     }
 
     /** Pass 3: create terminals and their LocalControllers. */
-    private TerminalCounts createTerminals(Element craView, Element cfraView, XiidmNetwork network, IEditingContext editingContext,
+    private TerminalCounts createTerminals(Element craView, Element cfraView, XiidmNetwork network, ImportSession session,
             Map<String, PartUsage> busesByXiidmId, Map<String, PartUsage> computingResourcesBySubstationId,
             Map<String, String> substationIdByBusId, List<String> warnings) {
         int terminals = 0;
@@ -181,24 +203,28 @@ public class XiidmToCybergridMLMapper {
             for (int side = 1; side <= 2; side++) {
                 String busId = busIds[side - 1];
                 var busPart = busesByXiidmId.get(busId);
+                if (busPart == null && session.otherBusIds.contains(busId)) {
+                    session.skippedOnOtherBuses++;
+                    continue;
+                }
                 if (busPart == null) {
                     warnings.add("'%s' references the unknown bus '%s' on side %d; that terminal was skipped."
                             .formatted(branch.id(), busId, side));
                     continue;
                 }
                 String terminalId = branch.id() + "_" + side;
-                var terminal = this.createPart(busPart, CybergridMLLibElementType.TERMINAL, terminalId, editingContext);
+                var terminal = this.createPart(busPart, CybergridMLLibElementType.TERMINAL, terminalId, session);
                 this.setStringValue(terminal, branch.id());
                 this.setIntegerValue(terminal, side);
                 terminals++;
 
                 var localController = this.createPart(terminal, CybergridMLLibElementType.LOCALCONTROLLER,
-                        "LC_" + terminalId, editingContext);
+                        "LC_" + terminalId, session);
                 localControllers++;
 
                 if (craView != null) {
                     var softwareResource = this.createPart(craView, CybergridMLLibElementType.SOFTWARERESOURCE,
-                            "SR_tie_" + terminalId, editingContext);
+                            "SR_tie_" + terminalId, session);
                     softwareResources++;
 
                     String substationId = substationIdByBusId.get(busId);
@@ -219,15 +245,19 @@ public class XiidmToCybergridMLMapper {
         return new TerminalCounts(terminals, localControllers, softwareResources);
     }
 
-    private PartUsage createPart(Element owner, CybergridMLLibElementType type, String xiidmId, IEditingContext editingContext) {
-        String name = this.uniqueName(owner, sanitizeName(xiidmId, type));
+    private PartUsage createPart(Element owner, CybergridMLLibElementType type, String xiidmId, ImportSession session) {
+        String name = session.uniqueName(owner, sanitizeName(xiidmId, type));
+
+        var partUsage = SysmlFactory.eINSTANCE.createPartUsage();
+        Definition definition = CybergridMLDefinitionsUtil.getDefinition(session.editingContext, type);
+        this.utilService.setFeatureTyping(partUsage, definition);
+        CybergridMLPropertyUtil.addAttributesFromDefinition(partUsage, definition);
+        partUsage.setIsComposite(true);
+        partUsage.setDeclaredName(name);
 
         var featureMembership = SysmlFactory.eINSTANCE.createFeatureMembership();
-        owner.getOwnedRelationship().add(featureMembership);
-        var partUsage = SysmlFactory.eINSTANCE.createPartUsage();
         featureMembership.getOwnedRelatedElement().add(partUsage);
-        new CybergridMLElementInitializerSwitch(editingContext, type).doSwitch(partUsage);
-        partUsage.setDeclaredName(name);
+        owner.getOwnedRelationship().add(featureMembership);
 
         // MembershipExpose makes elements appear in the diagram
 //        if (owner instanceof ViewUsage viewUsage) {
@@ -240,6 +270,15 @@ public class XiidmToCybergridMLMapper {
         return partUsage;
     }
 
+    /** First bus (with an id) of the substation, in file order, with its voltage level. */
+    private Optional<BusInVoltageLevel> findFirstBus(XiidmNetwork.Substation substation) {
+        return substation.voltageLevels().stream()
+                .flatMap(voltageLevel -> voltageLevel.buses().stream()
+                        .filter(bus -> bus.id() != null && !bus.id().isBlank())
+                        .map(bus -> new BusInVoltageLevel(voltageLevel, bus)))
+                .findFirst();
+    }
+
     /** Converts XIIDM id to valid SysML name (e.g. B1-G -> B1_G). */
     private static String sanitizeName(String xiidmId, CybergridMLLibElementType type) {
         if (xiidmId == null || xiidmId.isBlank()) {
@@ -250,24 +289,6 @@ public class XiidmToCybergridMLMapper {
             name = "_" + name;
         }
         return name;
-    }
-
-    private String uniqueName(Element owner, String baseName) {
-        Set<String> usedNames = owner.getOwnedRelationship().stream()
-                .filter(FeatureMembership.class::isInstance)
-                .map(FeatureMembership.class::cast)
-                .flatMap(featureMembership -> featureMembership.getOwnedRelatedElement().stream())
-                .map(Element::getDeclaredName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-        if (!usedNames.contains(baseName)) {
-            return baseName;
-        }
-        int index = 2;
-        while (usedNames.contains(baseName + "_" + index)) {
-            index++;
-        }
-        return baseName + "_" + index;
     }
 
     private void setNumericValue(Element owner, String attributeName, Double value) {
@@ -406,6 +427,44 @@ public class XiidmToCybergridMLMapper {
         var referenceSubsetting = SysmlFactory.eINSTANCE.createReferenceSubsetting();
         feature.getOwnedRelationship().add(referenceSubsetting);
         referenceSubsetting.setReferencedFeature(end);
+    }
+
+    /** State kept for one import, so creating a part costs the same whatever the size of the model. */
+    private static final class ImportSession {
+
+        private final IEditingContext editingContext;
+
+        private final Map<Element, Set<String>> usedNamesByOwner = new HashMap<>();
+
+        /** Buses that are not the first one of their substation: they are not imported, nor what is connected to them. */
+        private final Set<String> otherBusIds = new HashSet<>();
+
+        private int skippedOnOtherBuses;
+
+        ImportSession(IEditingContext editingContext) {
+            this.editingContext = editingContext;
+        }
+
+        /** Adds a suffix if the name is already used under this owner (e.g. B1 -> B1_2). Owner names are read once per import. */
+        String uniqueName(Element owner, String baseName) {
+            Set<String> usedNames = this.usedNamesByOwner.computeIfAbsent(owner, o -> o.getOwnedRelationship().stream()
+                    .filter(FeatureMembership.class::isInstance)
+                    .map(FeatureMembership.class::cast)
+                    .flatMap(featureMembership -> featureMembership.getOwnedRelatedElement().stream())
+                    .map(Element::getDeclaredName)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toCollection(HashSet::new)));
+            String name = baseName;
+            int index = 2;
+            while (usedNames.contains(name)) {
+                name = baseName + "_" + index++;
+            }
+            usedNames.add(name);
+            return name;
+        }
+    }
+
+    private record BusInVoltageLevel(XiidmNetwork.VoltageLevel voltageLevel, XiidmNetwork.Bus bus) {
     }
 
     private record SubstationCounts(int buses, int computingResources) {

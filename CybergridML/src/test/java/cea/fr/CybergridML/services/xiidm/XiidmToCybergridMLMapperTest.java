@@ -58,13 +58,15 @@ class XiidmToCybergridMLMapperTest {
         XiidmImportResult result = this.importIeee14();
 
         assertThat(result.substations()).isEqualTo(11);
-        assertThat(result.buses()).isEqualTo(14);
-        assertThat(result.generators()).isEqualTo(5);
-        assertThat(result.loads()).isEqualTo(11);
-        // 17 lines and 3 transformers, each contributing one terminal at either end.
-        assertThat(result.terminals()).isEqualTo(40);
+        // Only the first bus of each substation is imported:
+        assertThat(result.buses()).isEqualTo(11);
+        // B6-G, B6-L and B9-L are connected to buses that are not imported.
+        assertThat(result.generators()).isEqualTo(4);
+        assertThat(result.loads()).isEqualTo(9);
+        // 17 lines and 3 transformers, one terminal at either end, except the 11 ends on B6, B7 and B9.
+        assertThat(result.terminals()).isEqualTo(40 - 11);
         // Each generator, load, and terminal gets a LocalController.
-        assertThat(result.localControllers()).isEqualTo(5 + 11 + 40);
+        assertThat(result.localControllers()).isEqualTo(4 + 9 + 29);
         // ComputingResources and SoftwareResources are created under CRA view (not available in test stub).
         assertThat(result.computingResources()).isEqualTo(0);
         assertThat(result.softwareResources()).isEqualTo(0);
@@ -73,11 +75,12 @@ class XiidmToCybergridMLMapperTest {
     }
 
     @Test
-    void attachesTheBusesOfEveryVoltageLevelDirectlyToTheirSubstation() throws Exception {
+    void importsOnlyTheFirstBusOfEachSubstation() throws Exception {
         this.importIeee14();
 
-        // S4 has three voltage levels in the XIIDM file; CybergridML has no such concept.
-        assertThat(names(this.child(this.grid, "S4"))).containsExactly("B4", "B7", "B9");
+        // S4 has three voltage levels (B4, B7, B9) and S5 two (B5, B6) in the XIIDM file: only one level matters.
+        assertThat(names(this.child(this.grid, "S4"))).containsExactly("B4");
+        assertThat(names(this.child(this.grid, "S5"))).containsExactly("B5");
         assertThat(names(this.child(this.grid, "S1"))).containsExactly("B1");
     }
 
@@ -91,11 +94,9 @@ class XiidmToCybergridMLMapperTest {
         Element b2 = this.child(this.child(this.grid, "S2"), "B2");
         assertThat(names(b2)).containsExactly("B2_G", "B2_L", "L1_2_1_2", "L2_3_1_1", "L2_4_1_1", "L2_5_1_1");
 
-        // Transformers are mapped exactly like lines: a terminal at either end.
-        Element b7 = this.child(this.child(this.grid, "S4"), "B7");
-        assertThat(names(b7)).contains("T4_7_1_2");
+        // Transformers are mapped exactly like lines; their ends on B7 and B9 are not imported with those buses.
         Element b4 = this.child(this.child(this.grid, "S4"), "B4");
-        assertThat(names(b4)).contains("T4_7_1_1", "T4_9_1_1");
+        assertThat(names(b4)).contains("T4_7_1_1", "T4_9_1_1").doesNotContain("T4_7_1_2", "T4_9_1_2");
     }
 
     @Test
@@ -121,7 +122,9 @@ class XiidmToCybergridMLMapperTest {
     void reportsWhatItCouldNotMap() throws Exception {
         XiidmImportResult result = this.importIeee14();
 
-        assertThat(result.warnings()).containsExactly("Shunt compensator 'B9-SH' has no CybergridML equivalent and was skipped.");
+        assertThat(result.warnings()).containsExactly(
+                "Shunt compensator 'B9-SH' has no CybergridML equivalent and was skipped.",
+                "Only the first bus of each substation is imported: 14 equipment(s) and terminal(s) on the other buses were skipped.");
     }
 
     @Test
